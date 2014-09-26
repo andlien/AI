@@ -19,8 +19,7 @@ class MyCanvas extends JComponent {
 	    int height = 30;
 	    int width = 30;
 	   // g.setColor(Color.red);
-	   // g.fillRect(10,10,height,width);
-	    
+	    System.out.println("heia");	    
 	    
 	    for (int i = 0; i < lines.size(); i++) {
 	    	String line = lines.get(i);
@@ -56,16 +55,16 @@ class MyCanvas extends JComponent {
 	}
 
 	public class DrawRect {
-	  public static void main(String[] a) throws FileNotFoundException, IOException {
-		  
-		  ArrayList<String> lines = CreateLevels.readLevel();
-		  
-	    JFrame window = new JFrame();
-	    MyCanvas c = new MyCanvas();
-	    c.setLines(lines);
-	    window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	    window.setBounds(30, 30, 900, 900);
-	    window.getContentPane().add(c);
-	    window.setVisible(true);
-	  }
+		  public static void main(String[] a) throws FileNotFoundException, IOException {
+			  
+			ArrayList<String> lines = CreateLevels.readLevel();
+	
+			JFrame window = new JFrame();
+			MyCanvas c = new MyCanvas();
+			c.setLines(lines);
+			window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			window.setBounds(30, 30, 900, 900);
+			window.getContentPane().add(c);
+			window.setVisible(true);
+		  }
 	}
