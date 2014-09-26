@@ -9,7 +9,9 @@ import java.util.ArrayList;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 
-class MyCanvas extends JComponent {
+
+
+class BoardGraphics extends JComponent {
 	
 	private ArrayList<String> lines;
 	
@@ -53,8 +55,9 @@ class MyCanvas extends JComponent {
 	  
 	  
 	}
-
-	public class DrawRect {
+	
+/*
+	public class  {
 		  public static void main(String[] a) throws FileNotFoundException, IOException {
 			  
 			ArrayList<String> lines = ReadBoardTXT.readBoard("src/levels/board-1-1.txt");
@@ -68,3 +71,4 @@ class MyCanvas extends JComponent {
 			window.setVisible(true);
 		  }
 	}
+*/
