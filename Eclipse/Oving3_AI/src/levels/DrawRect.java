@@ -57,7 +57,7 @@ class MyCanvas extends JComponent {
 	public class DrawRect {
 		  public static void main(String[] a) throws FileNotFoundException, IOException {
 			  
-			ArrayList<String> lines = CreateLevels.readLevel();
+			ArrayList<String> lines = ReadBoardTXT.readBoard("src/levels/board-1-1.txt");
 	
 			JFrame window = new JFrame();
 			MyCanvas c = new MyCanvas();
