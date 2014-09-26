@@ -1,0 +1,47 @@
+package levels;
+
+import java.awt.Color;
+import java.awt.Graphics;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.ArrayList;
+
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+
+class MyCanvas extends JComponent {
+	
+	private ArrayList<String> lines;
+	
+	  public void paint(Graphics g) {
+	    //g.drawRect (10, 10, 200, 200); 
+	    
+	    int height = 30;
+	    int width = 30;
+	    g.setColor(Color.red);
+	    g.fillRect(10,10,height,width);
+	    
+	    System.out.println("Hei");
+	  }
+	  
+	  public void setLines(ArrayList<String> lines){
+		  this.lines = lines;
+	  }
+	  
+	  
+	  
+	}
+
+	public class DrawRect {
+	  public static void main(String[] a) throws FileNotFoundException, IOException {
+		  
+		  ArrayList<String> lines = CreateLevels.readLevel();
+		  
+	    JFrame window = new JFrame();
+	    MyCanvas c = new MyCanvas()
+	    window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	    window.setBounds(30, 30, 900, 900);
+	    window.getContentPane().add(c);
+	    window.setVisible(true);
+	  }
+	}
