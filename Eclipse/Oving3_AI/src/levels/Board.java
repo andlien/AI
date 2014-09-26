@@ -1,6 +1,7 @@
 package levels;
 
 import java.util.ArrayList;
+import java.util.PriorityQueue;
 
 public class Board {
 	GridTile[][] gridTiles;
@@ -9,9 +10,11 @@ public class Board {
 	int startTileY;
 	int endTileX;
 	int endTileY;
+	GridTile startTile, endTile;
 	
 	GridTile currentTile;
-	
+	private PriorityQueue<GridTile> open = new PriorityQueue<GridTile>();
+	private ArrayList<GridTile> closed = new ArrayList<GridTile>();
 	
 	public Board(ArrayList<String> lines){
 		gridTiles = new GridTile[lines.get(0).length()][lines.size()];
@@ -24,15 +27,18 @@ public class Board {
 				if(line.charAt(j) == 'A'){
 					startTileX = i;
 					startTileY = j;
+					startTile = gridTiles[i][j];
 				}
 				else if(line.charAt(j) == 'B'){
 					endTileX = i;
 					endTileY = j;
+					endTile = gridTiles[i][j];
 				}
 			}
 	    }
 	    
 	    setHInAllTiles();
+	    
 	    
 	    
 	    
@@ -59,6 +65,12 @@ public class Board {
 		return xDist + yDist;
 	}
 	
+	public PriorityQueue<GridTile> getOpen() {
+		return open;
+	}
 	
+	public ArrayList<GridTile> getClosed() {
+		return closed;
+	}
 	
 }
