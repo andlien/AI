@@ -27,7 +27,11 @@ public class Mainprogram {
 				else if(line.charAt(j) == 'B') endTile = grid[i][j];
 			}
 	    }
-
+	    
+	    ArrayList<GridTile> open = new ArrayList<GridTile>();
+	    ArrayList<GridTile> closed = new ArrayList<GridTile>();
+	    
+	    
+	    
 	}
-
 }
