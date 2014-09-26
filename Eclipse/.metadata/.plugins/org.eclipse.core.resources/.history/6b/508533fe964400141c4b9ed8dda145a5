@@ -1,7 +1,0 @@
-package levels;
-
-public class GridTile {
-	private int xCord;
-	private int ycord;
-	private char symbol;
-}
