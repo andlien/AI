@@ -7,8 +7,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.PriorityQueue;
 
-import levels.ReadBoardTXT;
-import levels.GridTile;
+import javax.swing.JFrame;
 
 public class Mainprogram {
 
@@ -17,10 +16,12 @@ public class Mainprogram {
 		ArrayList<String> lines = ReadBoardTXT.readBoard("src/levels/board-1-1.txt");
 		Board board = new Board(lines);
 		
+		BoardGraphics c = createBoardGraphics(board.getGridTiles());
+		
 	    GridTile currentTile;
 	    PriorityQueue<GridTile> open = board.getOpen();
 	    ArrayList<GridTile> closed = board.getClosed();
-	    open.add(board.startTile);
+	    open.add(board.getStartTile());
 	    
 	    while (board.endTile.getParent() != null) {
 	    	if (open.isEmpty()) {
@@ -33,5 +34,19 @@ public class Mainprogram {
 	    	
 	    }
 	    
+	}
+	
+	
+	private static BoardGraphics createBoardGraphics(GridTile[][] gridTiles){
+		
+		JFrame window = new JFrame();
+		BoardGraphics c = new BoardGraphics(gridTiles);
+		//c.setLines(lines);
+		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		window.setBounds(30, 30, 900, 900);
+		window.getContentPane().add(c);
+		window.setVisible(true);
+		
+		return c;
 	}
 }

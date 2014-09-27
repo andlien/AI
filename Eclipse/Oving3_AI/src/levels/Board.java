@@ -6,6 +6,8 @@ import java.util.PriorityQueue;
 public class Board {
 	GridTile[][] gridTiles;
 	
+
+
 	int startTileX;
 	int startTileY;
 	int endTileX;
@@ -71,6 +73,18 @@ public class Board {
 	
 	public ArrayList<GridTile> getClosed() {
 		return closed;
+	}
+	
+	public GridTile[][] getGridTiles() {
+		return gridTiles;
+	}
+
+	public GridTile getStartTile() {
+		return startTile;
+	}
+
+	public GridTile getEndTile() {
+		return endTile;
 	}
 	
 }

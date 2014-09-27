@@ -13,44 +13,62 @@ import javax.swing.JFrame;
 
 class BoardGraphics extends JComponent {
 	
-	private ArrayList<String> lines;
+	private GridTile[][] gridTiles;
+	private final int rectangleEdge = 30;
 	
-	  public void paint(Graphics g) {
-	    //g.drawRect (10, 10, 200, 200); 
-	    
-	    int height = 30;
-	    int width = 30;
-	   // g.setColor(Color.red);
-	    System.out.println("heia");	    
-	    
-	    for (int i = 0; i < lines.size(); i++) {
-	    	String line = lines.get(i);
-			for (int j = 0; j < line.length(); j++) {
-				char word = line.charAt(j);
-				//System.out.println();
-				if(word == '.'){
-					g.setColor(Color.GRAY);
-					g.fillRect(31 *j,31*i,height,width);
+	
+	 public BoardGraphics(GridTile[][] gridTiles) {
+		this.gridTiles = gridTiles;
+	}
+
+	public void paint(Graphics g) {
+		
+		
+	    for (int y = 0; y < gridTiles.length; y++) {
+			for (int x = 0; x < gridTiles[0].length; x++) {
+				GridTile tile = gridTiles[x][y];
+				
+				//TILE NOT VISITED
+				if(tile.getSymbol() == '.'){
+					g.setColor(Color.WHITE);
+					g.fillRect(31 *x,31*y,rectangleEdge,rectangleEdge);
 				}
-				else if(word == '#'){
+				//WALL
+				else if(tile.getSymbol() == '#'){
 					g.setColor(Color.BLUE);
-					g.fillRect(31 *j,31*i,height,width);
+					g.fillRect(31 *x,31*y,rectangleEdge,rectangleEdge);
 				}
-				else if(word == 'A'){
+				//TILE, IN CLOSED
+				else if(tile.getSymbol() == '-'){
+					g.setColor(Color.BLACK);
+					g.fillRect(31 *x,31*y,rectangleEdge,rectangleEdge);
+				}
+				//TILE, CHECKED
+				else if(tile.getSymbol() == ','){
+					g.setColor(Color.BLACK);
+					g.fillRect(31 *x,31*y,rectangleEdge,rectangleEdge);
+				}
+				//START
+				else if(tile.getSymbol() == 'A'){
 					g.setColor(Color.GREEN);
-					g.fillRect(31 *j,31*i,height,width);
+					g.fillRect(31 *x,31*y,rectangleEdge,rectangleEdge);
 				}
-				else if(word == 'B'){
+				//GOAL
+				else if(tile.getSymbol() == 'B'){
 					g.setColor(Color.RED);
-					g.fillRect(31 *j,31*i,height,width);
+					g.fillRect(31 *x,31*y,rectangleEdge,rectangleEdge);
 				}
 			}
-		}
+	    }
+		
+
 	  }
-	  
-	  public void setLines(ArrayList<String> lines){
-		  this.lines = lines;
-	  }
+
+	public void setGridTiles(GridTile[][] gridTiles) {
+		this.gridTiles = gridTiles;
+		repaint();
+	}
+
 	  
 	  
 	  
