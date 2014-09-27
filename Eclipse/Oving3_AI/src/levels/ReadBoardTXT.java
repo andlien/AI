@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 public class ReadBoardTXT {
 
-	//"src/levels/board-1-1.txt"
+	//This class 
 	
 	public static ArrayList<String> readBoard(String adresse) throws FileNotFoundException, IOException{
 		ArrayList<String> lines = new ArrayList<String>();
