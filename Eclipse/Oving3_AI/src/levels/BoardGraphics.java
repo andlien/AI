@@ -52,6 +52,12 @@ class BoardGraphics extends JComponent {
 					g.setColor(Color.RED);
 					g.fillRect((re+pixelBetweenTiles)*x,(re+pixelBetweenTiles)*y,re,re);
 				}
+				// Path to goal
+				else if(tile.getSymbol() == 'G'){
+					g.setColor(Color.YELLOW);
+					g.fillRect((re+pixelBetweenTiles)*x,(re+pixelBetweenTiles)*y,re,re);
+				}
+				
 			}
 	    }
 		

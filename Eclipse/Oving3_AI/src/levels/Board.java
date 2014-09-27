@@ -19,7 +19,6 @@ public class Board {
 	
 	public Board(ArrayList<String> lines){
 		gridTiles = new GridTile[lines.size()][lines.get(0).length()];
-
 		
 	    for (int i = 0; i < lines.size() ; i++) {
 	    	String line = lines.get(i);

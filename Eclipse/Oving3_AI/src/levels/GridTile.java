@@ -29,7 +29,7 @@ public class GridTile implements Comparable<GridTile> {
 	@Override
 	public int compareTo(GridTile o) {
 		// TODO: Sjekk at denne blir rett mtp -1 
-		return (o.getH() + o.getCurrentG()) - (h + currentG);
+		return (h + currentG) - (o.getH() + o.getCurrentG());
 	}
 
 	public GridTile getParent() {

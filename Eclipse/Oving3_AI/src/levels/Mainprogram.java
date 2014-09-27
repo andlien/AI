@@ -12,7 +12,7 @@ public class Mainprogram {
 
 	public static void main(String[] args) throws FileNotFoundException, IOException {
 
-		ArrayList<String> lines = ReadBoardTXT.readBoard("src/levels/board-1-1.txt");
+		ArrayList<String> lines = ReadBoardTXT.readBoard("src/levels/board-1-3.txt");
 		Board board = new Board(lines);
 		
 		BoardGraphics bg = createBoardGraphics(board.getGridTiles());
@@ -24,9 +24,13 @@ public class Mainprogram {
 	    ArrayList<GridTile> closed = board.getClosed();
 	    open.add(board.getStartTile());
 	    
-	    while (true) {
+	    board.getStartTile().setCurrentG(0);
+	    
+	    boolean done = false;
+	    
+	    while (!done) {
 	    	
-	    	tick(1, bg);
+	    	tick(200, bg);
 	    	
 	    	if (open.isEmpty()) {
 	    		throw new RuntimeException("No solution found!");
@@ -34,25 +38,23 @@ public class Mainprogram {
 	    	
 	    	currentTile = open.poll();
 	    	closed.add(currentTile);
-	    	currentTile.setSymbol('-');
-	    	
-	    	if (board.isSolution(currentTile)){
-	    		GridTile pathTile = currentTile;
-	    		while (pathTile != board.getStartTile()){
-	    			 pathTile.setSymbol('A');
-	    			 pathTile = pathTile.getParent();
-	    		}
-	    		board.getStartTile().setSymbol('A');
+
+	    	if (board.isSolution(currentTile))
 	    		break;
-	    		
-	    	}
+	    	if (currentTile.getSymbol() != 'A')
+	    		currentTile.setSymbol('-');
 	    	
 	    	ArrayList<GridTile> succ = board.getSurroundingTiles(currentTile);
-	    	succ.remove(currentTile.getParent());
+	    	succ.remove(currentTile);
 	    	
 	    	for (GridTile tile : succ) {
-	    		tile.setSymbol(',');
-	    		tick(100, bg);
+	    		if (board.isSolution(tile)) {
+	    			tile.setParent(currentTile);
+	    			done = true;
+	    			break;
+	    		}
+		    	if (tile.getSymbol() != 'B' && !closed.contains(tile))
+		    		tile.setSymbol(',');
 	    		// First time tile is visited
 				if (!open.contains(tile) && !closed.contains(tile)) {
 					tile.setParent(currentTile);
@@ -71,6 +73,11 @@ public class Mainprogram {
 				}
 				
 			}
+	    }
+	    GridTile t = board.getEndTile().getParent();
+	    while (t.getParent() != null) {
+	    	t.setSymbol('G');
+	    	t = t.getParent();
 	    }
 	    
 	}
