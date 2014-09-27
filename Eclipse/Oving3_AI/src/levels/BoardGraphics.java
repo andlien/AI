@@ -67,6 +67,7 @@ class BoardGraphics extends JComponent {
 						if(allowSmallerBoxes) g.fillRect((re+pixelBetweenTiles)*x+ re/2 - sre/2,(re+pixelBetweenTiles)*y+ re/2 -sre/2,sre,sre);
 						else g.fillRect((re+pixelBetweenTiles)*x,(re+pixelBetweenTiles)*y,re,re);
 					}
+					//Road
 					else if(tile.getSymbol() == 'r'){
 						g.setColor(new Color(110,95,80,255));
 						g.fillRect((re+pixelBetweenTiles)*x,(re+pixelBetweenTiles)*y,re,re);
@@ -88,16 +89,17 @@ class BoardGraphics extends JComponent {
 						else g.fillRect((re+pixelBetweenTiles)*x,(re+pixelBetweenTiles)*y,re,re);
 					}
 					
+					//Forrest
 					else if(tile.getSymbol() == 'f'){
 						g.setColor(new Color(68,94,26,250));
 						g.fillRect((re+pixelBetweenTiles)*x,(re+pixelBetweenTiles)*y,re,re);
 					}
-					
+					//Grass
 					else if(tile.getSymbol() == 'g'){
 						g.setColor(new Color(190,235,178,250));
 						g.fillRect((re+pixelBetweenTiles)*x,(re+pixelBetweenTiles)*y,re,re);
 					}
-					
+					//Water
 					else if(tile.getSymbol() == 'w'){
 						g.setColor(Color.BLUE);
 						g.fillRect((re+pixelBetweenTiles)*x,(re+pixelBetweenTiles)*y,re,re);
