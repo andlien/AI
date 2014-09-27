@@ -12,7 +12,7 @@ public class Mainprogram {
 
 	public static void main(String[] args) throws FileNotFoundException, IOException {
 
-		ArrayList<String> lines = ReadBoardTXT.readBoard("src/levels/board-2-2.txt");
+		ArrayList<String> lines = ReadBoardTXT.readBoard("src/levels/board-2-4.txt");
 		Board board = new Board(lines);
 		
 		BoardGraphics bg = createBoardGraphics(board.getGridTiles());

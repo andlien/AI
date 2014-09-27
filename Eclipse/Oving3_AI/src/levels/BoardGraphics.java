@@ -51,7 +51,7 @@ class BoardGraphics extends JComponent {
 						g.fillRect((re+pixelBetweenTiles)*x,(re+pixelBetweenTiles)*y,re,re);
 					}
 					//WALL
-					else if(tile.getSymbol() == '#' || tile.getSymbol() == 'w'){
+					else if(tile.getSymbol() == '#'){
 						g.setColor(Color.DARK_GRAY);
 						g.fillRect((re+pixelBetweenTiles)*x,(re+pixelBetweenTiles)*y,re,re);
 					}
@@ -95,6 +95,11 @@ class BoardGraphics extends JComponent {
 					
 					else if(tile.getSymbol() == 'g'){
 						g.setColor(new Color(190,235,178,250));
+						g.fillRect((re+pixelBetweenTiles)*x,(re+pixelBetweenTiles)*y,re,re);
+					}
+					
+					else if(tile.getSymbol() == 'w'){
+						g.setColor(Color.BLUE);
 						g.fillRect((re+pixelBetweenTiles)*x,(re+pixelBetweenTiles)*y,re,re);
 					}
 					
