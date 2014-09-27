@@ -19,26 +19,22 @@ public class Board {
 	
 	public Board(ArrayList<String> lines){
 		gridTiles = new GridTile[lines.size()][lines.get(0).length()];
-		
-		int[][] hei = new int [7][20];
-		//System.out.println(Arrays.toString(hei));
-		//System.out.println(lines.size() + "," + lines.get(0).length());
+
 		
 	    for (int i = 0; i < lines.size() ; i++) {
 	    	String line = lines.get(i);
-	    	//System.out.println(i);
 	    	
 			for (int j = 0; j < line.length() ; j++) {
 				gridTiles[i][j] = new GridTile( line.charAt(j));
 				
 				if(line.charAt(j) == 'A'){
-					startTileX = i;
-					startTileY = j;
+					startTileX = j;
+					startTileY = i;
 					startTile = gridTiles[i][j];
 				}
 				else if(line.charAt(j) == 'B'){
-					endTileX = i;
-					endTileY = j;
+					endTileX = j;
+					endTileY = i;
 					endTile = gridTiles[i][j];
 				}
 			}
@@ -46,13 +42,14 @@ public class Board {
 	    
 	    setHInAllTiles();
 	    
-	    System.out.println(gridTiles[3][6].getH());
+
 	    
 	    
 	}
 	
 	private void setHInAllTiles(){
 	    for (int y = 0; y < gridTiles.length; y++) {
+	    	
 			for (int x = 0; x < gridTiles[0].length; x++) {
 				setHInTile(gridTiles[y][x],x,y);
 			}
@@ -68,7 +65,7 @@ public class Board {
 	private int manhattenDistanceToEndTile(int x, int y){
 		int xDist = Math.abs(x - endTileX); 
 		int yDist = Math.abs(y - endTileY); 
-		
+
 		return xDist + yDist;
 	}
 	
