@@ -6,6 +6,7 @@ import java.util.Arrays;
 
 import javax.swing.JComponent;
 
+@SuppressWarnings("serial")
 class BoardGraphics extends JComponent {
 	
 	private GridTile[][] gridTiles;

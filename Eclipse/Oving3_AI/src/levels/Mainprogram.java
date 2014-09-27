@@ -12,13 +12,11 @@ public class Mainprogram {
 
 	public static void main(String[] args) throws FileNotFoundException, IOException {
 
-		ArrayList<String> lines = ReadBoardTXT.readBoard("src/levels/board-2-4.txt");
+		ArrayList<String> lines = ReadBoardTXT.readBoard("src/levels/board-1-1.txt");
 		Board board = new Board(lines);
 		
 		BoardGraphics bg = createBoardGraphics(board.getGridTiles());
 	
-		
-		
 	    GridTile currentTile;
 	    PriorityQueue<GridTile> open = board.getOpen();
 	    ArrayList<GridTile> closed = board.getClosed();
@@ -30,7 +28,7 @@ public class Mainprogram {
 	    
 	    while (!done) {
 	    	
-	    	tick(20, bg);
+	    	tick(100, bg);
 	    	
 	    	if (open.isEmpty()) {
 	    		throw new RuntimeException("No solution found!");
@@ -41,8 +39,8 @@ public class Mainprogram {
 
 	    	if (board.isSolution(currentTile))
 	    		break;
-	    	if (currentTile.getSymbol() != 'A')
-	    		currentTile.setSymbol('-');
+	    	if (!currentTile.getSymbol().equals(Symbol.START))
+	    		currentTile.setSymbol(Symbol.CLOSED);
 	    	
 	    	ArrayList<GridTile> succ = board.getSurroundingTiles(currentTile);
 	    	succ.remove(currentTile);
@@ -53,19 +51,19 @@ public class Mainprogram {
 	    			done = true;
 	    			break;
 	    		}
-		    	if (tile.getSymbol() != 'B' && !closed.contains(tile))
-		    		tile.setSymbol(',');
+		    	if (!tile.getSymbol().equals(Symbol.END) && !closed.contains(tile))
+		    		tile.setSymbol(Symbol.CHCEKED);
 	    		// First time tile is visited
 				if (!open.contains(tile) && !closed.contains(tile)) {
 					tile.setParent(currentTile);
-					tile.setCurrentG(currentTile.getCurrentG() + 1);
+					tile.setCurrentG(currentTile.getCurrentG() + tile.getSymbol().getCost());
 					open.add(tile);
 				}
 				
 				// Already visited, but found cheaper path
-				else if (currentTile.getCurrentG() + 1 < tile.getCurrentG()) {
+				else if (currentTile.getCurrentG() + tile.getSymbol().getCost() < tile.getCurrentG()) {
 					tile.setParent(currentTile);
-					tile.setCurrentG(currentTile.getCurrentG() + 1);
+					tile.setCurrentG(currentTile.getCurrentG() + tile.getSymbol().getCost());
 					//Has children that must be updated
 					if (closed.contains(tile)) {
 						board.propagateBetterPath(tile);
@@ -76,7 +74,7 @@ public class Mainprogram {
 	    }
 	    GridTile t = board.getEndTile().getParent();
 	    while (t.getParent() != null) {
-	    	t.setSymbol('G');
+	    	t.setSymbol(Symbol.SHORTEST);
 	    	t = t.getParent();
 	    }
 	    

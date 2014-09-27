@@ -97,13 +97,13 @@ public class Board {
 		for (int y = 0; y < gridTiles.length; y++) {
 			for (int x = 0; x < gridTiles[0].length; x++) {
 				if (gridTiles[y][x].equals(tile)) {
-					if (x > 0 && gridTiles[y][x-1].getSymbol() != '#')
+					if (x > 0 && !gridTiles[y][x-1].getSymbol().equals(Symbol.WALL))
 						tiles.add(gridTiles[y][x-1]);
-					if (x < gridTiles[0].length - 1 && gridTiles[y][x+1].getSymbol() != '#')
+					if (x < gridTiles[0].length - 1 && !gridTiles[y][x+1].getSymbol().equals(Symbol.WALL))
 						tiles.add(gridTiles[y][x+1]);
-					if (y > 0 && gridTiles[y-1][x].getSymbol() != '#')
+					if (y > 0 && !gridTiles[y-1][x].getSymbol().equals(Symbol.WALL))
 						tiles.add(gridTiles[y-1][x]);
-					if (y < gridTiles.length - 1 && gridTiles[y+1][x].getSymbol() != '#')
+					if (y < gridTiles.length - 1 && !gridTiles[y+1][x].getSymbol().equals(Symbol.WALL))
 						tiles.add(gridTiles[y+1][x]);
 					
 				}
@@ -116,7 +116,7 @@ public class Board {
 		ArrayList<GridTile> possibleKids = getSurroundingTiles(tile);
 		for (GridTile kid : possibleKids) {
 			if (tile.equals(kid.getParent())) {
-				kid.setCurrentG(kid.getParent().getCurrentG() + 1);
+				kid.setCurrentG(kid.getParent().getCurrentG() + kid.getSymbol().getCost());
 				propagateBetterPath(kid);
 			}
 		}

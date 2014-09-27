@@ -1,11 +1,13 @@
 package levels;
 
+import javax.management.RuntimeErrorException;
+
 public class GridTile implements Comparable<GridTile> {
 
-	private char symbol;
+	private Symbol symbol;
 	private int h;
 	private GridTile parent = null;
-	private int currentG = 100;
+	private int currentG = Integer.MAX_VALUE;
 	
 	public int getH() {
 		return h;
@@ -14,21 +16,24 @@ public class GridTile implements Comparable<GridTile> {
 	public void setH(int h) {
 		this.h = h;
 	}
+	
+	public GridTile(Symbol sym) {
+		this.symbol = sym;
+	}
 
 	public GridTile( char symbol) {
-		this.symbol = symbol;
+		this.symbol = Symbol.getSymByChar(symbol);
 	}
 	
-	public char getSymbol() {
+	public Symbol getSymbol() {
 		return symbol;
 	}
-	public void setSymbol(char symbol) {
+	public void setSymbol(Symbol symbol) {
 		this.symbol = symbol;
 	}
 
 	@Override
 	public int compareTo(GridTile o) {
-		// TODO: Sjekk at denne blir rett mtp -1 
 		return (h + currentG) - (o.getH() + o.getCurrentG());
 	}
 
