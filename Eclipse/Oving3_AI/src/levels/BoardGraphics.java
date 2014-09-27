@@ -14,7 +14,8 @@ import javax.swing.JFrame;
 class BoardGraphics extends JComponent {
 	
 	private GridTile[][] gridTiles;
-	private final int rectangleEdge = 30;
+	private final int re = 30; //Rectangel edges
+	private final int pixelBetweenTiles = 1;
 	
 	
 	 public BoardGraphics(GridTile[][] gridTiles) {
@@ -31,32 +32,32 @@ class BoardGraphics extends JComponent {
 				//TILE NOT VISITED
 				if(tile.getSymbol() == '.'){
 					g.setColor(Color.WHITE);
-					g.fillRect(31 *x,31*y,rectangleEdge,rectangleEdge);
+					g.fillRect((re+pixelBetweenTiles)*x,(re+pixelBetweenTiles)*y,re,re);
 				}
 				//WALL
 				else if(tile.getSymbol() == '#'){
 					g.setColor(Color.BLUE);
-					g.fillRect(31 *x,31*y,rectangleEdge,rectangleEdge);
+					g.fillRect((re+pixelBetweenTiles)*x,(re+pixelBetweenTiles)*y,re,re);
 				}
 				//TILE, IN CLOSED
 				else if(tile.getSymbol() == '-'){
 					g.setColor(Color.BLACK);
-					g.fillRect(31 *x,31*y,rectangleEdge,rectangleEdge);
+					g.fillRect((re+pixelBetweenTiles)*x,(re+pixelBetweenTiles)*y,re,re);
 				}
 				//TILE, CHECKED
 				else if(tile.getSymbol() == ','){
 					g.setColor(Color.BLACK);
-					g.fillRect(31 *x,31*y,rectangleEdge,rectangleEdge);
+					g.fillRect((re+pixelBetweenTiles)*x,(re+pixelBetweenTiles)*y,re,re);
 				}
 				//START
 				else if(tile.getSymbol() == 'A'){
 					g.setColor(Color.GREEN);
-					g.fillRect(31 *x,31*y,rectangleEdge,rectangleEdge);
+					g.fillRect((re+pixelBetweenTiles)*x,(re+pixelBetweenTiles)*y,re,re);
 				}
 				//GOAL
 				else if(tile.getSymbol() == 'B'){
 					g.setColor(Color.RED);
-					g.fillRect(31 *x,31*y,rectangleEdge,rectangleEdge);
+					g.fillRect((re+pixelBetweenTiles)*x,(re+pixelBetweenTiles)*y,re,re);
 				}
 			}
 	    }
