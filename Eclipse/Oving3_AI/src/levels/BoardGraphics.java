@@ -13,7 +13,7 @@ class BoardGraphics extends JComponent {
 	
 	private final int re = 30; //Rectangel edges
 	private final int sre = 10; //Small Rectangel edges
-	private final int pixelBetweenTiles = 1;
+	private final int pixelBetweenTiles = 0;
 	private final boolean allowSmallerBoxes = true;
 	
 	
@@ -51,7 +51,7 @@ class BoardGraphics extends JComponent {
 						g.fillRect((re+pixelBetweenTiles)*x,(re+pixelBetweenTiles)*y,re,re);
 					}
 					//WALL
-					else if(tile.getSymbol() == '#'){
+					else if(tile.getSymbol() == '#' || tile.getSymbol() == 'm'){
 						g.setColor(Color.DARK_GRAY);
 						g.fillRect((re+pixelBetweenTiles)*x,(re+pixelBetweenTiles)*y,re,re);
 					}
