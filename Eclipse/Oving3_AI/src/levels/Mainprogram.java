@@ -16,7 +16,11 @@ public class Mainprogram {
 		ArrayList<String> lines = ReadBoardTXT.readBoard("src/levels/board-1-1.txt");
 		Board board = new Board(lines);
 		
-		BoardGraphics c = createBoardGraphics(board.getGridTiles());
+		BoardGraphics bg = createBoardGraphics(board.getGridTiles());
+		
+
+		//Kjør bg.repaint() for å tegne brettet på nytt
+		
 		
 	    GridTile currentTile;
 	    PriorityQueue<GridTile> open = board.getOpen();
@@ -33,6 +37,7 @@ public class Mainprogram {
 	    	
 	    	
 	    }
+	    
 	    
 	}
 	

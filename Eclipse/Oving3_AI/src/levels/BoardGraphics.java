@@ -26,7 +26,7 @@ class BoardGraphics extends JComponent {
 		
 	    for (int y = 0; y < gridTiles.length; y++) {
 			for (int x = 0; x < gridTiles[0].length; x++) {
-				GridTile tile = gridTiles[x][y];
+				GridTile tile = gridTiles[y][x];
 				
 				//TILE NOT VISITED
 				if(tile.getSymbol() == '.'){
@@ -66,7 +66,8 @@ class BoardGraphics extends JComponent {
 
 	public void setGridTiles(GridTile[][] gridTiles) {
 		this.gridTiles = gridTiles;
-		repaint();
+		//repaint();
+
 	}
 
 	  

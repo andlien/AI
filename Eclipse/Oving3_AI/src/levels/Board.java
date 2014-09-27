@@ -1,6 +1,7 @@
 package levels;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.PriorityQueue;
 
 public class Board {
@@ -19,11 +20,17 @@ public class Board {
 	private ArrayList<GridTile> closed = new ArrayList<GridTile>();
 	
 	public Board(ArrayList<String> lines){
-		gridTiles = new GridTile[lines.get(0).length()][lines.size()];
+		gridTiles = new GridTile[lines.size()][lines.get(0).length()];
 		
-	    for (int i = 0; i < lines.size(); i++) {
+		int[][] hei = new int [7][20];
+		//System.out.println(Arrays.toString(hei));
+		//System.out.println(lines.size() + "," + lines.get(0).length());
+		
+	    for (int i = 0; i < lines.size() ; i++) {
 	    	String line = lines.get(i);
-			for (int j = 0; j < line.length(); j++) {
+	    	//System.out.println(i);
+	    	
+			for (int j = 0; j < line.length() ; j++) {
 				gridTiles[i][j] = new GridTile( line.charAt(j));
 				
 				if(line.charAt(j) == 'A'){
@@ -41,7 +48,7 @@ public class Board {
 	    
 	    setHInAllTiles();
 	    
-	    
+	    System.out.println(gridTiles[3][6].getH());
 	    
 	    
 	}
@@ -49,7 +56,7 @@ public class Board {
 	private void setHInAllTiles(){
 	    for (int y = 0; y < gridTiles.length; y++) {
 			for (int x = 0; x < gridTiles[0].length; x++) {
-				setHInTile(gridTiles[x][y],x,y);
+				setHInTile(gridTiles[y][x],x,y);
 			}
 	    }
 	}
