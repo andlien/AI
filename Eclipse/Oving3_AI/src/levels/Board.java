@@ -1,7 +1,6 @@
 package levels;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.PriorityQueue;
 
 public class Board {
@@ -15,7 +14,6 @@ public class Board {
 	int endTileY;
 	GridTile startTile, endTile;
 	
-	GridTile currentTile;
 	private PriorityQueue<GridTile> open = new PriorityQueue<GridTile>();
 	private ArrayList<GridTile> closed = new ArrayList<GridTile>();
 	
@@ -94,4 +92,37 @@ public class Board {
 		return endTile;
 	}
 	
+	public boolean isSolution(GridTile tile) {
+		return tile.equals(endTile);
+	}
+	
+	public ArrayList<GridTile> getSurroundingTiles(GridTile tile) {
+		ArrayList<GridTile> tiles = new ArrayList<GridTile>();
+		for (int y = 0; y < gridTiles.length; y++) {
+			for (int x = 0; x < gridTiles[0].length; x++) {
+				if (gridTiles[y][x].equals(tile)) {
+					if (x > 0 && gridTiles[y][x-1].getSymbol() != '#')
+						tiles.add(gridTiles[y][x-1]);
+					if (x < gridTiles[0].length - 1 && gridTiles[y][x+1].getSymbol() != '#')
+						tiles.add(gridTiles[y][x+1]);
+					if (y > 0 && gridTiles[y-1][x].getSymbol() != '#')
+						tiles.add(gridTiles[y-1][x]);
+					if (y < gridTiles.length - 1 && gridTiles[y+1][x].getSymbol() != '#')
+						tiles.add(gridTiles[y+1][x]);
+					
+				}
+			}
+	    }
+		return tiles;
+	}
+	
+	public void propagateBetterPath(GridTile tile) {
+		ArrayList<GridTile> possibleKids = getSurroundingTiles(tile);
+		for (GridTile kid : possibleKids) {
+			if (tile.equals(kid.getParent())) {
+				kid.setCurrentG(kid.getParent().getCurrentG() + 1);
+				propagateBetterPath(kid);
+			}
+		}
+	}
 }

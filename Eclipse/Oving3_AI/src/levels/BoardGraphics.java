@@ -2,14 +2,7 @@ package levels;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.ArrayList;
-
 import javax.swing.JComponent;
-import javax.swing.JFrame;
-
-
 
 class BoardGraphics extends JComponent {
 	
@@ -46,7 +39,7 @@ class BoardGraphics extends JComponent {
 				}
 				//TILE, CHECKED
 				else if(tile.getSymbol() == ','){
-					g.setColor(Color.BLACK);
+					g.setColor(Color.GRAY);
 					g.fillRect((re+pixelBetweenTiles)*x,(re+pixelBetweenTiles)*y,re,re);
 				}
 				//START
@@ -67,7 +60,7 @@ class BoardGraphics extends JComponent {
 
 	public void setGridTiles(GridTile[][] gridTiles) {
 		this.gridTiles = gridTiles;
-		//repaint();
+//		repaint();
 
 	}
 

@@ -1,11 +1,11 @@
 package levels;
 
-public class GridTile implements Comparable<GridTile>{
+public class GridTile implements Comparable<GridTile> {
 
 	private char symbol;
 	private int h;
 	private GridTile parent = null;
-	private int currentG = -1;
+	private int currentG = 100;
 	
 	public int getH() {
 		return h;
@@ -28,18 +28,23 @@ public class GridTile implements Comparable<GridTile>{
 
 	@Override
 	public int compareTo(GridTile o) {
-		int f1 = this.h, f2 = o.getH();
-		GridTile t = this;
-		while ((t = t.parent) != null) {
-			f1++;
-		}
-		while ((o = o.parent) != null) {
-			f2++;
-		}
-		return f1 - f2;
+		// TODO: Sjekk at denne blir rett mtp -1 
+		return (o.getH() + o.getCurrentG()) - (h + currentG);
 	}
 
 	public GridTile getParent() {
 		return parent;
+	}
+	
+	public void setParent(GridTile parent) {
+		this.parent = parent;
+	}
+	
+	public void setCurrentG(int g) {
+		this.currentG = g;
+	}
+	
+	public int getCurrentG() {
+		return currentG;
 	}
 }
