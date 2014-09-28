@@ -12,7 +12,7 @@ public class Mainprogram {
 
 	public static void main(String[] args) throws FileNotFoundException, IOException {
 
-		ArrayList<String> lines = ReadBoardTXT.readBoard("src/levels/board-1-1.txt");
+		ArrayList<String> lines = ReadBoardTXT.readBoard("src/levels/board-2-2.txt");
 		Board board = new Board(lines);
 		
 		BoardGraphics bg = createBoardGraphics(board.getGridTiles());
@@ -28,7 +28,7 @@ public class Mainprogram {
 	    
 	    while (!done) {
 	    	
-	    	tick(100, bg);
+	    	tick(10, bg);
 	    	
 	    	if (open.isEmpty()) {
 	    		throw new RuntimeException("No solution found!");
@@ -56,14 +56,15 @@ public class Mainprogram {
 	    		// First time tile is visited
 				if (!open.contains(tile) && !closed.contains(tile)) {
 					tile.setParent(currentTile);
-					tile.setCurrentG(currentTile.getCurrentG() + tile.getSymbol().getCost());
+					
+					tile.setCurrentG(currentTile.getCurrentG() + tile.getSymbolCost());
 					open.add(tile);
 				}
 				
 				// Already visited, but found cheaper path
-				else if (currentTile.getCurrentG() + tile.getSymbol().getCost() < tile.getCurrentG()) {
+				else if (currentTile.getCurrentG() + tile.getSymbolCost() < tile.getCurrentG()) {
 					tile.setParent(currentTile);
-					tile.setCurrentG(currentTile.getCurrentG() + tile.getSymbol().getCost());
+					tile.setCurrentG(currentTile.getCurrentG() + tile.getSymbolCost());
 					//Has children that must be updated
 					if (closed.contains(tile)) {
 						board.propagateBetterPath(tile);
@@ -76,6 +77,7 @@ public class Mainprogram {
 	    while (t.getParent() != null) {
 	    	t.setSymbol(Symbol.SHORTEST);
 	    	t = t.getParent();
+	    	bg.repaint();
 	    }
 	    
 	}

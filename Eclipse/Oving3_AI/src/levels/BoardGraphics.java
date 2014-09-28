@@ -45,14 +45,26 @@ class BoardGraphics extends JComponent {
 				for (int x = 0; x < gridTiles[0].length; x++) {
 					GridTile tile = gridTiles[y][x]; 
 					if(tall == 1) tile = orignalGridTiles[y][x];
-						
+					Symbol sym = tile.getSymbol();
+					
+					g.setColor(sym.getColor());
+					if(sym.isSmall() && allowSmallerBoxes){
+						g.fillRect((re+pixelBetweenTiles)*x+ re/2 - sre/2,(re+pixelBetweenTiles)*y+ re/2 -sre/2,sre,sre);
+
+					}
+					else {
+						g.fillRect((re+pixelBetweenTiles)*x,(re+pixelBetweenTiles)*y,re,re);
+					}
+					
+					
+					/*
 					//TILE NOT VISITED
-					if(tile.getSymbol() == '.'){
+					if(tile.getSymbol() == Symbol.NONE){
 						g.setColor(Color.WHITE);
 						g.fillRect((re+pixelBetweenTiles)*x,(re+pixelBetweenTiles)*y,re,re);
 					}
 					//WALL
-					else if(tile.getSymbol() == '#' || tile.getSymbol() == 'm'){
+					else if(tile.getSymbol() == Symbol.WALL || tile.getSymbol() == 'm'){
 						g.setColor(Color.DARK_GRAY);
 						g.fillRect((re+pixelBetweenTiles)*x,(re+pixelBetweenTiles)*y,re,re);
 					}
@@ -105,6 +117,7 @@ class BoardGraphics extends JComponent {
 						g.setColor(Color.BLUE);
 						g.fillRect((re+pixelBetweenTiles)*x,(re+pixelBetweenTiles)*y,re,re);
 					}
+					*/
 					
 				}
 		    }

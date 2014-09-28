@@ -3,36 +3,40 @@ package levels;
 import java.awt.Color;
 
 public enum Symbol {
-	NONE (Color.WHITE, 1),
-	WALL (Color.GRAY, -1),
-	CHCEKED (Color.GRAY.darker(), -1),
-	CLOSED (Color.BLACK, -1),
-	START (Color.GREEN, 1),
-	END (Color.RED, 1),
-	WATER (Color.BLUE, 100),
-	MOUNTAINS (Color.GRAY, 50),
-	FORESTS (Color.GREEN, 10),
-	GRASSLANDS (Color.GREEN.brighter(), 5),
-	ROADS (Color.ORANGE.darker(), 1),
-	SHORTEST (Color.YELLOW, -1);
+	NONE (Color.WHITE, 1,false),
+	WALL (Color.GRAY, -1,false),
+	CHCEKED (Color.GRAY.darker(), -1,true),
+	CLOSED (Color.BLACK, -1,true),
+	START (Color.ORANGE, 1,false),
+	END (Color.RED, 1,false),
+	WATER (Color.BLUE, 100,false),
+	MOUNTAINS (Color.GRAY, 50,false),
+	FORESTS (new Color(68,94,26,250), 10,false),
+	GRASSLANDS (Color.GREEN.brighter(), 5,false),
+	ROADS (Color.ORANGE.darker(), 1,false),
+	SHORTEST (Color.YELLOW, -1,true);
 	
 	private final Color color;
 	private final int cost;
+	private final boolean small;
 	
-	private Symbol(Color color, int cost) {
+	private Symbol(Color color, int cost, boolean small) {
 		this.color = color;
 		this.cost = cost;
+		this.small = small;
 	}
 	
 	public Color getColor() {
 		return this.color;
 	}
 	
+	public boolean isSmall() {
+		return small;
+	}
+
 	public int getCost() {
-		if (this.cost != -1)
-			return this.cost;
-		else
-			throw new RuntimeException("WOOOOOOT!");
+		return this.cost;
+
 	}
 	
 	public static Symbol getSymByChar(char c) {

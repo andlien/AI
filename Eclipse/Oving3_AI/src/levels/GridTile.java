@@ -5,6 +5,7 @@ import javax.management.RuntimeErrorException;
 public class GridTile implements Comparable<GridTile> {
 
 	private Symbol symbol;
+	private Symbol oldSymbol;
 	private int h;
 	private GridTile parent = null;
 	private int currentG = Integer.MAX_VALUE;
@@ -29,7 +30,14 @@ public class GridTile implements Comparable<GridTile> {
 		return symbol;
 	}
 	public void setSymbol(Symbol symbol) {
+		if(oldSymbol == null) oldSymbol = this.symbol;
 		this.symbol = symbol;
+	}
+	
+	public int getSymbolCost(){
+		int cost = symbol.getCost();
+		if(cost != -1) return cost;
+		return oldSymbol.getCost();
 	}
 
 	@Override
