@@ -29,6 +29,11 @@ public class GridTile implements Comparable<GridTile> {
 	public Symbol getSymbol() {
 		return symbol;
 	}
+	
+	public Symbol getOldSymbol() {
+		return oldSymbol;
+	}
+	
 	public void setSymbol(Symbol symbol) {
 		if(oldSymbol == null) oldSymbol = this.symbol;
 		this.symbol = symbol;
