@@ -13,14 +13,19 @@ public class Mainprogram {
 
 	public static void main(String[] args) throws FileNotFoundException, IOException {
 		
-		String typeOfSearch = "A*";
+		//String typeOfSearch = "A*";
+		//String typeOfSearch = "Dijkstra";
+		String typeOfSearch = "BFS";
+
+		
+		String adresse = "/levels/board-2-3.txt";
 
 		// Read and create board from textfile
-		ArrayList<String> lines = ReadBoardTXT.readBoard("/levels/board-2-4.txt");
+		ArrayList<String> lines = ReadBoardTXT.readBoard(adresse);
 		Board board = new Board(lines, typeOfSearch);
 		
 		// Create graphics
-		BoardGraphics bg = createBoardGraphics(board.getGridTiles());
+		BoardGraphics bg = createBoardGraphics(board.getGridTiles(),typeOfSearch,adresse);
 	
 		// Initialize the lists
 	    GridTile currentTile;
@@ -39,7 +44,7 @@ public class Mainprogram {
 	    while (!done) {
 	    	
 	    	//Repaint board
-	    	tick(10, bg);
+	    	tick(100, bg);
 	    	
 	    	// All tiles explored, but no solution found
 	    	if (open.isEmpty()) {
@@ -60,6 +65,7 @@ public class Mainprogram {
 	    	// Process neighbouring nodes except parent of the current tile
 	    	for (GridTile tile : succ) {
 	    		it++;
+	    		bg.setIterations(it);
 	    		// If tile is the end, we're done
 	    		if (board.isSolution(tile)) {
 	    			tile.setParent(currentTile);
@@ -115,10 +121,10 @@ public class Mainprogram {
 	}
 	
 	
-	private static BoardGraphics createBoardGraphics(GridTile[][] gridTiles){
+	private static BoardGraphics createBoardGraphics(GridTile[][] gridTiles, String adresse, String algorithm){
 		
 		JFrame window = new JFrame();
-		BoardGraphics c = new BoardGraphics(gridTiles);
+		BoardGraphics c = new BoardGraphics(gridTiles, algorithm, adresse);
 		//c.setLines(lines);
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		window.setBounds(30, 30, 1300, 900);

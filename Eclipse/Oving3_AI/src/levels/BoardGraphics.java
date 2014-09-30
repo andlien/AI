@@ -2,6 +2,7 @@ package levels;
 
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.RenderingHints;
 
 import javax.swing.JComponent;
 
@@ -34,9 +35,12 @@ class BoardGraphics extends JComponent {
 
 	 //The board is repainted from the mainprogram class at a given intervall
 	public void paint(Graphics g) {
+
+		
 		g.setFont(new Font("TimesRoman", Font.PLAIN, 20)); 
-		g.drawString("Algorithm: " + algorithm, 30, (gridTiles.length +1)* re);
+		g.drawString("Type of search: " + algorithm, 30, (gridTiles.length +1)* re);
 		g.drawString("Board: " + adresse, 30, (gridTiles.length +2)* re);
+		g.drawString("Iterations: " + iteration, 30, (gridTiles.length +3)* re);
 		
 		
 		    for (int y = 0; y < gridTiles.length; y++) {
