@@ -12,67 +12,84 @@ public class Mainprogram {
 
 	public static void main(String[] args) throws FileNotFoundException, IOException {
 
-		ArrayList<String> lines = ReadBoardTXT.readBoard("src/levels/board-2-2.txt");
+		// Read and create board from textfile
+		ArrayList<String> lines = ReadBoardTXT.readBoard("/levels/board-1-1.txt");
 		Board board = new Board(lines);
 		
+		// Create graphics
 		BoardGraphics bg = createBoardGraphics(board.getGridTiles());
 	
+		// Initialize the lists
 	    GridTile currentTile;
 	    PriorityQueue<GridTile> open = board.getOpen();
 	    ArrayList<GridTile> closed = board.getClosed();
+
+	    // Algorithm start
 	    open.add(board.getStartTile());
 	    
 	    board.getStartTile().setCurrentG(0);
 	    
-	    boolean done = false;
+	    // Possible?
+	    boolean done = board.isSolution(board.getStartTile());
 	    
 	    while (!done) {
 	    	
+	    	//Repaint board
 	    	tick(10, bg);
 	    	
+	    	// All tiles explored, but no solution found
 	    	if (open.isEmpty()) {
 	    		throw new RuntimeException("No solution found!");
 	    	}
 	    	
+	    	// Explore currentTile
 	    	currentTile = open.poll();
-	    	closed.add(currentTile);
 
-	    	if (board.isSolution(currentTile))
-	    		break;
+	    	// Mark/paint current tile as closed
+	    	closed.add(currentTile);
 	    	if (!currentTile.getSymbol().equals(Symbol.START))
 	    		currentTile.setSymbol(Symbol.CLOSED);
 	    	
 	    	ArrayList<GridTile> succ = board.getSurroundingTiles(currentTile);
-	    	succ.remove(currentTile);
+	    	succ.remove(currentTile.getParent());
 	    	
+	    	// Process neighbouring nodes except parent of the current tile
 	    	for (GridTile tile : succ) {
+	    		// If tile is the end, we're done
 	    		if (board.isSolution(tile)) {
 	    			tile.setParent(currentTile);
 	    			done = true;
 	    			break;
 	    		}
-		    	if (!tile.getSymbol().equals(Symbol.END) && !closed.contains(tile))
-		    		tile.setSymbol(Symbol.CHCEKED);
+	    		
 	    		// First time tile is visited
 				if (!open.contains(tile) && !closed.contains(tile)) {
+					// Paint it as checked
+					if (!tile.getSymbol().equals(Symbol.END))
+						tile.setSymbol(Symbol.CHCEKED);
 					tile.setParent(currentTile);
 					
+					// set g of neighbouring node to cost of parent + cost from parent to this 
 					tile.setCurrentG(currentTile.getCurrentG() + tile.getSymbolCost());
 					open.add(tile);
 				}
 				
 				// Already visited, but found cheaper path
 				else if (currentTile.getCurrentG() + tile.getSymbolCost() < tile.getCurrentG()) {
+					//Update parent and g
 					tile.setParent(currentTile);
 					tile.setCurrentG(currentTile.getCurrentG() + tile.getSymbolCost());
 					//Has children that must be updated
 					if (closed.contains(tile)) {
+						// Updates cost recursively
 						board.propagateBetterPath(tile);
 					}
 				}
 				
 			}
 	    }
+	    
+	    // Paints shortest path
 	    GridTile t = board.getEndTile().getParent();
 	    while (t.getParent() != null) {
 	    	t.setSymbol(Symbol.SHORTEST);
