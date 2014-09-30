@@ -1,24 +1,26 @@
 package levels;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.PriorityQueue;
+import java.util.Queue;
 
 public class Board {
 	GridTile[][] gridTiles;
 	
-
-
 	int startTileX;
 	int startTileY;
 	int endTileX;
 	int endTileY;
 	GridTile startTile, endTile;
+	private String searchType;
 	
-	private PriorityQueue<GridTile> open = new PriorityQueue<GridTile>();
-	private ArrayList<GridTile> closed = new ArrayList<GridTile>();
+	private Queue<GridTile> open;
+	private ArrayList<GridTile> closed;
 	
-	public Board(ArrayList<String> lines){
+	public Board(ArrayList<String> lines, String typeSearch){
 		gridTiles = new GridTile[lines.size()][lines.get(0).length()];
+		this.searchType = typeSearch;
 		
 	    for (int i = 0; i < lines.size() ; i++) {
 	    	String line = lines.get(i);
@@ -38,6 +40,13 @@ public class Board {
 				}
 			}
 	    }
+	    
+	    if (typeSearch.equals("BFS")) {
+	    	open = new LinkedList<GridTile>();
+	    } else {
+	    	open = new PriorityQueue<GridTile>();
+	    }
+	    closed = new ArrayList<GridTile>();
 	    
 	    setHInAllTiles();
 	    
@@ -62,13 +71,15 @@ public class Board {
 	
 	
 	private int manhattenDistanceToEndTile(int x, int y){
+		if (!this.searchType.equals("A*"))
+			return 0;
 		int xDist = Math.abs(x - endTileX); 
 		int yDist = Math.abs(y - endTileY); 
 
 		return xDist + yDist;
 	}
 	
-	public PriorityQueue<GridTile> getOpen() {
+	public Queue<GridTile> getOpen() {
 		return open;
 	}
 	

@@ -14,15 +14,15 @@ public class ReadBoardTXT {
 	
 	public static ArrayList<String> readBoard(String adresse) throws FileNotFoundException, IOException{
 		ArrayList<String> lines = new ArrayList<String>();
-		
-		   try(BufferedReader br = new BufferedReader(new InputStreamReader(InputStream.class.getResourceAsStream(adresse)))) {
-		       String line; 
-			   
-		        while ((line = br.readLine()) != null) {
-		            if(line != null) lines.add(line);
-		        }
-		        
-		        return lines;
-		    }
+
+		BufferedReader br = new BufferedReader(new InputStreamReader(InputStream.class.getResourceAsStream(adresse)));
+		String line; 
+
+		while ((line = br.readLine()) != null) {
+			if(line != null) lines.add(line);
+		}
+
+		return lines;
+
 	}
 }
