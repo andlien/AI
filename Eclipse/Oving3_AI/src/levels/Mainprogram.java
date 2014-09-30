@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.PriorityQueue;
+import java.util.Queue;
 import java.util.concurrent.TimeUnit;
 
 import javax.swing.JFrame;
@@ -11,20 +12,23 @@ import javax.swing.JFrame;
 public class Mainprogram {
 
 	public static void main(String[] args) throws FileNotFoundException, IOException {
+		
+		String typeOfSearch = "A*";
 
 		// Read and create board from textfile
-		ArrayList<String> lines = ReadBoardTXT.readBoard("/levels/board-1-1.txt");
-		Board board = new Board(lines);
+		ArrayList<String> lines = ReadBoardTXT.readBoard("/levels/board-2-4.txt");
+		Board board = new Board(lines, typeOfSearch);
 		
 		// Create graphics
 		BoardGraphics bg = createBoardGraphics(board.getGridTiles());
 	
 		// Initialize the lists
 	    GridTile currentTile;
-	    PriorityQueue<GridTile> open = board.getOpen();
+	    Queue<GridTile> open = board.getOpen();
 	    ArrayList<GridTile> closed = board.getClosed();
 
 	    // Algorithm start
+	    int it = 0;
 	    open.add(board.getStartTile());
 	    
 	    board.getStartTile().setCurrentG(0);
@@ -55,6 +59,7 @@ public class Mainprogram {
 	    	
 	    	// Process neighbouring nodes except parent of the current tile
 	    	for (GridTile tile : succ) {
+	    		it++;
 	    		// If tile is the end, we're done
 	    		if (board.isSolution(tile)) {
 	    			tile.setParent(currentTile);
@@ -96,6 +101,7 @@ public class Mainprogram {
 	    	t = t.getParent();
 	    	bg.repaint();
 	    }
+	    System.out.println(it);
 	    
 	}
 	
