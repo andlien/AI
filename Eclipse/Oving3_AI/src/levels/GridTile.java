@@ -8,7 +8,7 @@ public class GridTile implements Comparable<GridTile> {
 	private Symbol oldSymbol; //The orignal symbol of the tile, the background
 	private int h; // heuristics, distance to goal
 	private GridTile parent = null;
-	private int currentG = Integer.MAX_VALUE; //The current G value. Initially asssign as inifity
+	private int currentG = Integer.MAX_VALUE; //The current G value. Initially asssign to inifity
 	
 	public int getH() {
 		return h;
@@ -35,7 +35,7 @@ public class GridTile implements Comparable<GridTile> {
 	}
 	
 	public void setSymbol(Symbol symbol) {
-		if(oldSymbol == null) oldSymbol = this.symbol; // If the symbol is changed, for instance to CHECKED from GRASS, oldSymbol is assigned GRASS
+		if(oldSymbol == null) oldSymbol = this.symbol; // If the symbol is changed, oldSymbol is assiged the orignal symbol. For instance to CHECKED from GRASS, oldSymbol is assigned GRASS
 		this.symbol = symbol;
 	}
 	

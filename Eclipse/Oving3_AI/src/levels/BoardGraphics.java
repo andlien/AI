@@ -1,5 +1,6 @@
 package levels;
 
+import java.awt.Font;
 import java.awt.Graphics;
 
 import javax.swing.JComponent;
@@ -16,14 +17,28 @@ class BoardGraphics extends JComponent {
 	private final int sre = 10; //Small Rectangel edges
 	private final int pixelBetweenTiles = 0;
 	private final boolean allowSmallerBoxes = true;
+	private String adresse;
+	private String algorithm;
+	private String iteration;
 	
 	
-	 public BoardGraphics(GridTile[][] gridTiles) {
+	 public BoardGraphics(GridTile[][] gridTiles,String adresse, String algorithm) {
 		this.gridTiles = gridTiles;
+		this.adresse = adresse;
+		this.algorithm = algorithm;
+	}
+	 
+	public void setIterations(int iter){
+		iteration = "" + iter;
 	}
 
 	 //The board is repainted from the mainprogram class at a given intervall
 	public void paint(Graphics g) {
+		g.setFont(new Font("TimesRoman", Font.PLAIN, 20)); 
+		g.drawString("Algorithm: " + algorithm, 30, (gridTiles.length +1)* re);
+		g.drawString("Board: " + adresse, 30, (gridTiles.length +2)* re);
+		
+		
 		    for (int y = 0; y < gridTiles.length; y++) {
 				for (int x = 0; x < gridTiles[0].length; x++) {
 					GridTile tile = gridTiles[y][x]; 
@@ -36,7 +51,10 @@ class BoardGraphics extends JComponent {
 					if(oldSym != null){
 						g.setColor(oldSym.getColor());//The color is saved at the symbol enum class.
 						g.fillRect((re+pixelBetweenTiles)*x,(re+pixelBetweenTiles)*y,re,re);
+						
 					}
+					
+
 					
 					g.setColor(sym.getColor());
 					
