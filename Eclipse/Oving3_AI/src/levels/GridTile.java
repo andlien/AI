@@ -35,7 +35,7 @@ public class GridTile implements Comparable<GridTile> {
 	}
 	
 	public void setSymbol(Symbol symbol) {
-		if(oldSymbol == null) oldSymbol = this.symbol;
+		if(oldSymbol == null) oldSymbol = this.symbol; // If the symbol is changed, for instance to CHECKED from GRASS, oldSymbol is assigned GRASS
 		this.symbol = symbol;
 	}
 	
