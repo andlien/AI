@@ -5,10 +5,10 @@ import javax.management.RuntimeErrorException;
 public class GridTile implements Comparable<GridTile> {
 
 	private Symbol symbol;
-	private Symbol oldSymbol;
-	private int h;
+	private Symbol oldSymbol; //The orignal symbol of the tile, the background
+	private int h; // heuristics, distance to goal
 	private GridTile parent = null;
-	private int currentG = Integer.MAX_VALUE;
+	private int currentG = Integer.MAX_VALUE; //The current G value. Initially asssign as inifity
 	
 	public int getH() {
 		return h;

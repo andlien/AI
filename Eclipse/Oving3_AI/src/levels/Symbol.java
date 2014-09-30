@@ -2,8 +2,12 @@ package levels;
 
 import java.awt.Color;
 
+//The enum-class used to save the symbol and the weight for each of tiles
+//The color of the tile is also saved here
 public enum Symbol {
-	NONE (Color.WHITE, 1,false),
+	// Tilecolor, weight, rectangle size
+	//
+	NONE (new  Color(184,184,184,250), 1,false),
 	WALL (Color.GRAY, -1,false),
 	CHCEKED (Color.GRAY.darker(), -1,true),
 	CLOSED (Color.BLACK, -1,true),
@@ -16,9 +20,14 @@ public enum Symbol {
 	ROADS (Color.ORANGE.darker(), 1,false),
 	SHORTEST (Color.YELLOW, -1,true);
 	
-	private final Color color;
-	private final int cost;
-	private final boolean small;
+	private final Color color;// Color of the tile
+	
+	private final int cost; // Weight of the tile. The cost of tiles with cost = -1 are never used as they are either ignored, i.e walls, 
+							// or always drawed over other tiles, i.e CHCEKED, CLOSED
+	
+	private final boolean small; //Size of tile when the board is drawn. 
+	//Tiles like CLOSED and SHORTEST are always drawn on top of other tiles and are therefore small
+	// 
 	
 	private Symbol(Color color, int cost, boolean small) {
 		this.color = color;
@@ -61,7 +70,7 @@ public enum Symbol {
  			return ROADS;
 
 		default:
-			throw new RuntimeException("WOOT");
+			throw new RuntimeException("ERROR: Symbol not found");
 		}
 	}
 }
