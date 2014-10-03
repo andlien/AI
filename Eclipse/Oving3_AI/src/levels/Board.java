@@ -28,6 +28,7 @@ public class Board {
 			for (int j = 0; j < line.length() ; j++) {
 				gridTiles[i][j] = new GridTile( line.charAt(j));
 				
+				//The start- and goal-location has to be saved for later
 				if(line.charAt(j) == 'A'){
 					startTileX = j;
 					startTileY = i;
@@ -55,6 +56,7 @@ public class Board {
 	    
 	}
 	
+	//Iterates over the tile-list and calculates the H value for each tile
 	private void setHInAllTiles(){
 	    for (int y = 0; y < gridTiles.length; y++) {
 	    	
@@ -70,6 +72,7 @@ public class Board {
 	}
 	
 	
+	//The manhatten distance to the the end tile
 	private int manhattenDistanceToEndTile(int x, int y){
 		if (!this.searchType.equals("A*"))
 			return 0;
@@ -103,6 +106,8 @@ public class Board {
 		return tile.equals(endTile);
 	}
 	
+	//Find all the surrounding tile to a given tile, max 4 tiles.
+	//Ignores wall, of course
 	public ArrayList<GridTile> getSurroundingTiles(GridTile tile) {
 		ArrayList<GridTile> tiles = new ArrayList<GridTile>();
 		for (int y = 0; y < gridTiles.length; y++) {

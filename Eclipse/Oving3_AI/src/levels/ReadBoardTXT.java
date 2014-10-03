@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 public class ReadBoardTXT {
 
-	//This class 
+	//This class simply reads the given .txt file and returns a string arraylist with each line
 	
 	public static ArrayList<String> readBoard(String adresse) throws FileNotFoundException, IOException{
 		ArrayList<String> lines = new ArrayList<String>();

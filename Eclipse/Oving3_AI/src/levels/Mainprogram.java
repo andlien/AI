@@ -125,7 +125,6 @@ public class Mainprogram {
 		
 		JFrame window = new JFrame();
 		BoardGraphics c = new BoardGraphics(gridTiles, algorithm, adresse);
-		//c.setLines(lines);
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		window.setBounds(30, 30, 1300, 900);
 		window.getContentPane().add(c);
