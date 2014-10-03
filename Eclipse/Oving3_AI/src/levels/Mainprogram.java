@@ -67,6 +67,8 @@ public class Mainprogram {
 	    		it++;
 	    		bg.setIterations(it);
 	    		// If tile is the end, we're done
+	    		// This check can be inside the for-loop since the cost of moving to 
+	    		// the endnode is constant no matter the cost of the current node
 	    		if (board.isSolution(tile)) {
 	    			tile.setParent(currentTile);
 	    			done = true;
