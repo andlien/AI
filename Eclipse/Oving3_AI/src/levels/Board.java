@@ -128,6 +128,7 @@ public class Board {
 		return tiles;
 	}
 	
+	// Updates cost recursively
 	public void propagateBetterPath(GridTile tile) {
 		ArrayList<GridTile> possibleKids = getSurroundingTiles(tile);
 		for (GridTile kid : possibleKids) {
