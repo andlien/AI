@@ -17,8 +17,19 @@ public class State {
 		return eggCarton;
 	}
 	
-	public boolean equals(State i) {
-		return eggCarton == i.getEggCarton();
+	@Override
+	public boolean equals(Object i) {
+		return eggCarton == ((State) i).getEggCarton();
+	}
+	
+	public void printState() {
+		for (int i = 0; i < eggCarton.length; i++) {
+			String line = "";
+			for (int j = 0; j < eggCarton[i].length; j++) {
+				line += eggCarton[i][j] + " ";
+			}
+			System.out.println(line);
+		}
 	}
 	
 }
