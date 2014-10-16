@@ -61,10 +61,10 @@ public class State {
 		// Iterates over each number once
 		for (int i = 0; i < y; i++) {
 			for (int j = 0; j < x; j++) {
-				if (eggCarton[y][x] == 1) {
+				if (eggCarton[i][j] == 1) {
 					horSum[i] ++;
 					vertSum[j] ++;
-					downDiagSum[7-j+i] ++;
+					downDiagSum[(int) (Math.ceil((y+x)/2)-j+i-1)] ++;
 					upDiagSum[i+j] ++;
 				}
 			}
