@@ -27,6 +27,11 @@ public class State {
 		return cloneEggCarton;
 	}
 	
+	public float getCost(){
+		//TODO
+		return 100;
+	}
+	
 	@Override
 	public boolean equals(Object i) {
 		return eggCarton == ((State) i).getEggCarton();

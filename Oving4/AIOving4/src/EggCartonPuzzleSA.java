@@ -3,13 +3,15 @@ import java.util.Random;
 
 
 public class EggCartonPuzzleSA {
+	
+	private static final int size = 5;
+	private static final int numberOfEggsInEachRow = 2;
 
 	public static void main(String[] args) {
 		
 		
-		int size = 8;
+		
 		int[][] eggCarton = new int[size][size];
-		int numberOfEggsInEachRow = 3;
 		
 		Random randomGenerator = new Random();
 		
@@ -29,12 +31,56 @@ public class EggCartonPuzzleSA {
 		
 		State startState = new State(eggCarton);
 		startState.printState();
+		State answer = eggCartonSimulatedAnnealing(startState, 20, 1);
+		answer.printState();
 		
-		generateNeighbors(startState,numberOfEggsInEachRow);
+		
+		
 		
 		//findColumnsWithMoreEggsThenAllowed(eggCarton,numberOfEggsInEachRow);
 		//findColumnsWithLessEggsThenAllowed(eggCarton,numberOfEggsInEachRow);
 
+	}
+	
+	public static State eggCartonSimulatedAnnealing (State startState, float t_max, float dt){
+		float t = t_max;
+		State currentState = startState;
+		float targetCost = 0;
+		
+		int iterations = 0;
+		
+		while(t > 0){
+			
+			if(currentState.getCost() <= targetCost) return currentState;
+			float currentStateCost = currentState.getCost();
+			
+			State neighbor = generateNeighbors(currentState);
+			float neighborCost = neighbor.getCost();
+			
+			float q = (neighborCost - currentStateCost) / currentStateCost;
+			float p = Math.max(1, (float) Math.exp(-q/t));
+			
+			Random randomGenerator = new Random();
+			float x = randomGenerator.nextFloat();
+			
+			if(currentStateCost > neighborCost){
+				currentState = neighbor;
+				System.out.println(iterations + ". exploting");
+			}
+			
+			if(x > p){
+				currentState = neighbor;
+				System.out.println(iterations + ". exploring");
+			}
+			
+			iterations ++;
+			t -= dt;
+			
+			
+			
+		}
+		
+		return currentState;
 	}
 	
 	private static ArrayList<Integer> getArrayTo(int to){
@@ -62,7 +108,7 @@ public class EggCartonPuzzleSA {
 	}
 	
 	
-	public static State generateNeighbors(State state, int numberOfEggsInEachRow){
+	public static State generateNeighbors(State state){
 		int[][] eggCarton = state.getCloneEggCarton();
 		
 		ArrayList<Integer> troubleColumns = findColumnsWithMoreEggsThenAllowed(eggCarton,numberOfEggsInEachRow);
