@@ -17,6 +17,16 @@ public class State {
 		return eggCarton;
 	}
 	
+	public int[][] getCloneEggCarton() {
+		int[][] cloneEggCarton = new int[eggCarton.length][eggCarton[0].length];
+		for (int i = 0; i < eggCarton.length; i++) {
+			for (int j = 0; j < eggCarton[0].length; j++) {
+				cloneEggCarton[i][j] = eggCarton[i][j];
+			}
+		}
+		return cloneEggCarton;
+	}
+	
 	@Override
 	public boolean equals(Object i) {
 		return eggCarton == ((State) i).getEggCarton();
