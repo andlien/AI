@@ -4,7 +4,7 @@ import java.util.ArrayList;
 public class State {
 	private int[][] eggCarton;
 	private ArrayList<State> neighbours;
-	private int conflictRatio;
+	private float conflictRatio;
 	
 	public State(int[][] carton, int max) {
 		this.eggCarton = carton;
@@ -47,6 +47,7 @@ public class State {
 			}
 			System.out.println(line);
 		}
+		System.out.println(conflictRatio);
 	}
 	
 	private void calculateObjectiveFunction(int k) {
@@ -71,17 +72,21 @@ public class State {
 		}
 		
 		conflictRatio = 0;
+		int pos = 0;
 		for (int i = 0; i < horSum.length; i++) {
-			if (horSum[i] > k) conflictRatio ++;
+			pos++;
+			if (horSum[i] > k) conflictRatio += 1;
 		}
 		for (int i = 0; i < vertSum.length; i++) {
-			if (vertSum[i] > k) conflictRatio ++;
+			pos++;
+			if (vertSum[i] > k) conflictRatio += 1;
 		}
 		for (int i = 0; i < downDiagSum.length; i++) {
-			if (downDiagSum[i] > k) conflictRatio ++;
-			if (upDiagSum[i] > k) conflictRatio ++;
+			pos+=2;
+			if (downDiagSum[i] > k) conflictRatio += 1;
+			if (upDiagSum[i] > k) conflictRatio += 1;
 		}
 		
-		conflictRatio /= (y*k);
+		conflictRatio /= pos;
 	}
 }
