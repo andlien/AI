@@ -4,9 +4,11 @@ import java.util.ArrayList;
 public class State {
 	private int[][] eggCarton;
 	private ArrayList<State> neighbours;
+	private int conflictRatio;
 	
-	public State(int[][] carton) {
+	public State(int[][] carton, int max) {
 		this.eggCarton = carton;
+		calculateObjectiveFunction(max);
 	}
 	
 	public ArrayList<State> getNeighbours() {
@@ -28,8 +30,8 @@ public class State {
 	}
 	
 	public float getCost(){
-		//TODO
-		return 100;
+		return conflictRatio;
+
 	}
 	
 	@Override
@@ -47,4 +49,39 @@ public class State {
 		}
 	}
 	
+	private void calculateObjectiveFunction(int k) {
+		int y = eggCarton.length;
+		int x = eggCarton[0].length;
+		int[] horSum = new int[y];
+		int[] vertSum = new int[x];
+		int[] downDiagSum = new int[x+y-1];
+		int[] upDiagSum = new int[x+y-1];
+		
+		// Want to only execute moves that reduce the number of "conflicts"
+		// Iterates over each number once
+		for (int i = 0; i < y; i++) {
+			for (int j = 0; j < x; j++) {
+				if (eggCarton[y][x] == 1) {
+					horSum[i] ++;
+					vertSum[j] ++;
+					downDiagSum[7-j+i] ++;
+					upDiagSum[i+j] ++;
+				}
+			}
+		}
+		
+		conflictRatio = 0;
+		for (int i = 0; i < horSum.length; i++) {
+			if (horSum[i] > k) conflictRatio ++;
+		}
+		for (int i = 0; i < vertSum.length; i++) {
+			if (vertSum[i] > k) conflictRatio ++;
+		}
+		for (int i = 0; i < downDiagSum.length; i++) {
+			if (downDiagSum[i] > k) conflictRatio ++;
+			if (upDiagSum[i] > k) conflictRatio ++;
+		}
+		
+		conflictRatio /= (y*k);
+	}
 }

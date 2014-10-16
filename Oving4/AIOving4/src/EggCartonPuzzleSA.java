@@ -29,7 +29,7 @@ public class EggCartonPuzzleSA {
 			}
 		}
 		
-		State startState = new State(eggCarton);
+		State startState = new State(eggCarton, numberOfEggsInEachRow);
 		startState.printState();
 		State answer = eggCartonSimulatedAnnealing(startState, 20, 1);
 		answer.printState();
@@ -167,7 +167,7 @@ public class EggCartonPuzzleSA {
 		System.out.println("-");
 		state.printState();
 		
-		return new State(eggCarton);
+		return new State(eggCarton,numberOfEggsInEachRow);
 	}
 	
 	private static ArrayList<Integer> findColumnsWithMoreEggsThenAllowed(int[][] eggCarton, int allowdEggs){
