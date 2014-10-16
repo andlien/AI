@@ -3,87 +3,102 @@ import java.util.Random;
 
 public class Sa {
 	
-	public static void main(String[] args) {
-		int lengde = 20;
-		int[] tall = new int[lengde];
-		for (int i = 0; i < tall.length; i++) {
-			tall[i] = i * 2;
-		}
-		System.out.println(Arrays.toString(tall));
-		Random randomGenerator = new Random();
-		int randomIndex = randomGenerator.nextInt(lengde);
-		System.out.println(randomIndex);
+	
+	//En generell Simulated annealing algoritme for å finne det høyeste tallet i en gitt liste
+	public static float simulatedAnnealing (float[] tall, float t_max, float dt, int numberOfNeighbors ){
 		
-		float t_max = 200;
+		Random randomGenerator = new Random();
+		int randomIndex = randomGenerator.nextInt(tall.length);
+		
+		// Set the temperature, T, to it’s starting value: Tmax
 		float t = t_max;
+		
 		float p = randomIndex;
 		
-		
 		while(t > 0){
+			
+			//Evaluate P with an objective function, F. This yields the value F(P).
 			float f_of_p = tall[(int) p];
 			
-			if(f_of_p > (lengde-2)*2){
-				System.out.println("Svar: " + p);
-				break;
-			}
+			// Generate n neighbors of P in the search space: (P1, P2, ..., Pn).
+			int[] neighbors = generateNeighbors(numberOfNeighbors, tall.length);
 			
-			int[] naboer = generateNeighbors();
-			float p_max = getBestNabo(naboer, tall);
-			float f_of_p_max = tall[(int) p_max];
+			//Evaluate each neighbor, yielding (F(P1), F(P2), ..., F(Pn)).
+			float[] f_neighbors = objectFunction(neighbors, tall);
 			
-			//System.out.println("f_of_p_max: " + f_of_p_max);
-			//System.out.println("f_of_p: " + f_of_p);
+			//Let Pmax be the neighbor with the highest evaluation
+			int p_max = getPMax(f_neighbors);
+			float f_of_p_max = tall[p_max];
+			
 			
 			float q = (f_of_p_max - f_of_p) / f_of_p;
 			float p_temp = (float) Math.exp(-q/t);
-			float pp = Math.min(1, p_temp);
+			float pp = Math.max(1, p_temp);
 			
-			float x = randomGenerator.nextFloat();
-			//System.out.println("x: " + x);
-			//System.out.println("q: " + q);
-			System.out.println("p: " + pp);
+			//Generate x, a random real number in the closed range [0,1].
+			float x = randomGenerator.nextFloat();		
 			
+			//Velger den indeksen med høyest verdi
+			//Exploiting
+			if(f_of_p_max > f_of_p){
+				f_of_p = f_of_p_max;
+				p = p_max;
+			}
 			
-			
+			//Velger en tilfeldig nabo
+			//Exploring
 			if(x > pp){
-				if(f_of_p < f_of_p_max) p = p_max;
-				//System.out.println("Max selected");
+				int randomP = randomGenerator.nextInt(neighbors.length);
+				p = neighbors[randomP];
 			}
-			else{
-				int randomP = randomGenerator.nextInt(naboer.length);
-				p = naboer[randomP];
-				//System.out.println("Random selected");
-			}
-			
-			System.out.println(" ");
-			t-=20;
+
+			t-= dt;
 		}
 		
-		System.out.println("Timout svar: index: " + p + ", value: " + tall[(int)p]);
+		return p;
 
 	}
-	static int getBestNabo(int[] naboer, int[] tall){
-		int p_max = naboer[0];
+	//Ønsker å finne det høyeste tallet i listen
+	// I dette generelle eksmeplet er det kun verdien i seg selv som avgjør
+	//Jo høyere tall, jo bedre
+	static float[] objectFunction(int[] neighbors, float[] tall){
+		float[] f_neighbors = new float[neighbors.length];
 		
-		for (int i = 0; i < naboer.length; i++) {
+		for (int i = 0; i < neighbors.length; i++) {
+			f_neighbors[i] = tall[neighbors[i]];
+		}
+		
+		return f_neighbors;
+	}
+	
+	// Finner indeksen til det den høyeste verdien blandt naboene
+	static int getPMax(float[] f_neighbors){
+		float f_max = f_neighbors[0]; //Høyeste verdi funnet
+		int p_max = 0; // Indeksen til naboen med høyest verdi
+		
+		for (int i = 0; i < f_neighbors.length; i++) {
 			
-			if(p_max < tall[i]) p_max = naboer[i];
+			if(f_max < f_neighbors[i]){
+				f_max = f_neighbors[i];
+				p_max = i;
+			}
 		}
 		
 		return p_max;
 	}
 	
-	static int[] generateNeighbors(){
-		int[] naboer = new int[4];
+	//Generer et gitt antall med naboer
+	static int[] generateNeighbors(int numberOfNeighbors, int number){
+		int[] neighbors = new int[numberOfNeighbors];
 		Random randomGenerator = new Random();
 		
 		
-		for (int i = 0; i < naboer.length; i++) {
-			int randomInt = randomGenerator.nextInt(20);
-			naboer[i] = randomInt;
+		for (int i = 0; i < neighbors.length; i++) {
+			int randomInt = randomGenerator.nextInt(number);
+			neighbors[i] = randomInt;
 		}
 		
-		return naboer;
+		return neighbors;
 	}
 
 }
