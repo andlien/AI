@@ -1,0 +1,64 @@
+import java.util.Arrays;
+import java.util.Random;
+
+public class Sa {
+	
+	public static void main(String[] args) {
+		int lengde = 20;
+		int[] tall = new int[lengde];
+		for (int i = 0; i < tall.length; i++) {
+			tall[i] = i * 2;
+		}
+		System.out.println(Arrays.toString(tall));
+		Random randomGenerator = new Random();
+		int randomIndex = randomGenerator.nextInt(lengde);
+		System.out.println(randomIndex);
+		
+		int t_max = 10;
+		int t = t_max;
+		int p = randomIndex;
+		
+		
+		while(t > 0){
+			if(t > lengde*2) System.out.println("Svar: " + p);
+			int f_of_p = tall[p];
+			
+			int[] naboer = generateNeighbors();
+			int p_max = getBestNabo(naboer, tall);
+			int f_of_p_max = tall[p_max];
+			
+			float q = (f_of_p_max - p_max) / p_max;
+			float p_temp = (float) Math.exp(-q/t);
+			Math.min(1, p_temp);
+			
+			int x = randomGenerator.nextInt(1);
+			
+			t--;
+		}
+
+	}
+	static int getBestNabo(int[] naboer, int[] tall){
+		int p_max = naboer[0];
+		
+		for (int i = 0; i < naboer.length; i++) {
+			
+			if(p_max < tall[i]) p_max = naboer[i];
+		}
+		
+		return p_max;
+	}
+	
+	static int[] generateNeighbors(){
+		int[] naboer = new int[4];
+		Random randomGenerator = new Random();
+		
+		
+		for (int i = 0; i < naboer.length; i++) {
+			int randomInt = randomGenerator.nextInt(20);
+			naboer[i] = randomInt;
+		}
+		
+		return naboer;
+	}
+
+}
