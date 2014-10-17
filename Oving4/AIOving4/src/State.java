@@ -47,7 +47,7 @@ public class State {
 			}
 			System.out.println(line);
 		}
-		System.out.println(conflictRatio);
+		//System.out.println(conflictRatio);
 	}
 	
 	private void calculateObjectiveFunction(int k) {
