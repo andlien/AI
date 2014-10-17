@@ -47,7 +47,6 @@ public class State {
 			}
 			System.out.println(line);
 		}
-		//System.out.println(conflictRatio);
 	}
 	
 	private void calculateObjectiveFunction(int k) {
@@ -59,10 +58,11 @@ public class State {
 		int[] upDiagSum = new int[x+y-1];
 		
 		// Want to only execute moves that reduce the number of "conflicts"
-		// Iterates over each number once
+		// Iterates over each position once
 		for (int i = 0; i < y; i++) {
 			for (int j = 0; j < x; j++) {
 				if (eggCarton[i][j] == 1) {
+					// Calculates correct index-position and adds to sum
 					horSum[i] ++;
 					vertSum[j] ++;
 					downDiagSum[(int) (Math.ceil((y+x)/2)-j+i-1)] ++;
@@ -72,21 +72,18 @@ public class State {
 		}
 		
 		conflictRatio = 0;
-		int pos = 0;
-		for (int i = 0; i < horSum.length; i++) {
-			pos++;
+		// Add 1 to conflicts if sum is more than k
+		for (int i = 0; i < y; i++) {
 			if (horSum[i] > k) conflictRatio += 1;
 		}
-		for (int i = 0; i < vertSum.length; i++) {
-			pos++;
+		for (int i = 0; i < x; i++) {
 			if (vertSum[i] > k) conflictRatio += 1;
 		}
-		for (int i = 0; i < downDiagSum.length; i++) {
-			pos+=2;
+		for (int i = 0; i < x+y-1; i++) {
 			if (downDiagSum[i] > k) conflictRatio += 1;
 			if (upDiagSum[i] > k) conflictRatio += 1;
 		}
 		
-		conflictRatio /= pos;
+		conflictRatio /= ((3*x) + (3*y) - 2);
 	}
 }

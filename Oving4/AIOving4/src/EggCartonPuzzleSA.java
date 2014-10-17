@@ -4,8 +4,8 @@ import java.util.Random;
 
 public class EggCartonPuzzleSA {
 	
-	private static final int size = 10;
-	private static final int numberOfEggsInEachRow = 3;
+	private static final int size = 8;
+	private static final int numberOfEggsInEachRow = 1;
 
 	public static void main(String[] args) {
 
