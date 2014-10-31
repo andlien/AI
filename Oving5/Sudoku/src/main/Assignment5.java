@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Scanner;
 
+import main.Assignment5.CSP.Pair;
+
 public class Assignment5 {
 	public static interface ValuePairFilter {
 		public boolean filter(String x, String y);
@@ -216,8 +218,44 @@ public class Assignment5 {
 		 * arcs that should be visited.
 		 */
 		public boolean inference(VariablesToDomainsMapping assignment, ArrayList<Pair<String>> queue) {
-			// TODO: IMPLEMENT THIS
-			return false;
+			for (int i = 0; i < this.variables.size(); i++) {
+				String string = this.variables.get(i);
+				//System.out.println(string + ": " + australia.domains.get(string));
+				ArrayList<String[]> worklist = new ArrayList<String[]>();
+				
+				for (int i2 = 0; i2 < this.variables.size(); i2++) {
+					String naboStreng = this.variables.get(i2);
+					ArrayList<Pair<String>> nabo = this.constraints.get(string).get(naboStreng);
+					if(nabo != null){
+						String[] strings = new String[2];
+						strings[1] = string;
+						strings[0] = naboStreng;
+						worklist.add(strings);
+					}
+				}
+				
+				while(worklist.size() != 0){
+					String[] strings = worklist.remove(0);
+					String x1 = strings[0];
+					String y1 = strings[1];
+					if(revise(domains, x1, y1) ){
+						if(domains.get(x1).size() == 0) return false;
+						
+						for (int i2 = 0; i2 < this.variables.size(); i2++) {
+							String naboStreng = this.variables.get(i2);
+							if(y1 == naboStreng) continue;
+							String[] newNabours = new String[2];
+							strings[1] = string;
+							strings[0] = naboStreng;
+							worklist.add(strings);
+						}
+						
+					}
+				}
+
+				
+			}
+			return true;
 		}
 
 		/**
@@ -230,8 +268,41 @@ public class Assignment5 {
 		 * 'assignment'.
 		 */
 		public boolean revise(VariablesToDomainsMapping assignment, String i, String j) {
-			// TODO: IMPLEMENT THIS
-			return false;
+			System.out.println("revise (): i=" + i + " and j=" + j );
+			boolean revised = false;
+			for (int i2 = 0; i2 < assignment.get(i).size(); i2++) {
+				String colorI = assignment.get(i).get(i2);
+				//System.out.println("Color: " + colorI);
+				
+				boolean domainChanged = false;
+				
+				for (int j2 = 0; j2 < assignment.get(j).size(); j2++) {
+					String colorJ = assignment.get(j).get(j2);
+					//System.out.println("	Color: " + colorJ);
+					
+					
+					for (int k = 0; k < constraints.get(i).get(j).size(); k++) {
+						Pair pair = constraints.get(i).get(j).get(k);
+						//System.out.println(" 		Constraint: " + constraints.get(i).get(j).get(k));
+						if(colorI == pair.x && colorJ == pair.y){
+							//System.out.println("			Match");
+							domainChanged = true;
+						}
+					}
+					
+				}
+				
+				//if(domainChanged) System.out.println("Match found. Domain unchanged");
+				if(!domainChanged){
+					System.out.println("Match not found. Deleting " + colorI + " from " + i);
+					assignment.get(i).remove(i2);
+					System.out.println("Updated domain: " + assignment.get(i));
+					System.out.println(" ");
+					revised = true;
+				}
+				
+			}
+			return revised;
 		}
 	}
 
