@@ -3,6 +3,7 @@ package main;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Scanner;
@@ -196,8 +197,43 @@ public class Assignment5 {
 		 * that took place in previous iterations of the loop.
 		 */
 		public VariablesToDomainsMapping backtrack(VariablesToDomainsMapping assignment) {
-			// TODO: IMPLEMENT THIS
-			return assignment;
+			String nextVar = selectUnassignedVariable(assignment);
+			
+//			If assignment is complete
+			if (nextVar.equals(""))
+				return assignment;
+			
+			VariablesToDomainsMapping temp;			
+//			for each value in domain
+			for (int i = 0; i < assignment.get(nextVar).size(); i++) {
+				temp = deepCopyAssignment(assignment);
+				boolean consistent = false;
+				
+//				Check if value is consistent with temp
+//				for each arc
+				for (Pair<String> conflictPair : getAllNeighboringArcs(nextVar)) {
+//					Get all possible values that doesn't conflict directly
+					ArrayList<Pair<String>> possible = this.constraints.get(nextVar).get(conflictPair.x);
+					for (int j = 0; j < possible.size(); j++) {
+						if (possible.get(j).x.equals(temp.get(i))) {
+							consistent = true;
+							break;
+						}
+					}
+				}
+				if (consistent) {
+					temp.put(nextVar, new ArrayList<String>(Arrays.asList(temp.get(nextVar).get(i))));
+					
+//					Utfør AC-3 og forward-propagate
+					if (inference(temp, new ArrayList<Pair<String>>())) {
+						VariablesToDomainsMapping result = backtrack(temp);
+						if (result != null)
+							return result;
+					}
+				}
+				
+			}
+			return null;
 		}
 
 		/**
@@ -207,7 +243,10 @@ public class Assignment5 {
 		 * values has a length greater than one.
 		 */
 		public String selectUnassignedVariable(VariablesToDomainsMapping assignment) {
-			// TODO: IMPLEMENT THIS
+			for (String var : assignment.keySet()) {
+				if (assignment.get(var).size() > 1)
+					return var;
+			}
 			return "";
 		}
 
@@ -280,7 +319,8 @@ public class Assignment5 {
 					String colorJ = assignment.get(j).get(j2);
 					//System.out.println("	Color: " + colorJ);
 					
-					
+					if (constraints.get(i).get(j) == null)
+						continue;
 					for (int k = 0; k < constraints.get(i).get(j).size(); k++) {
 						Pair pair = constraints.get(i).get(j).get(k);
 						//System.out.println(" 		Constraint: " + constraints.get(i).get(j).get(k));
@@ -408,6 +448,10 @@ public class Assignment5 {
 	 * method CSP.backtrackingSearch(), into a human readable representation.
 	 */
 	public static void printSudokuSolution(VariablesToDomainsMapping assignment) {
+		if (assignment == null) {
+			System.err.println("Klarte ikke løse brettet!");
+			return;
+		}
 		for (int row = 0; row < 9; row++) {
 			for (int col = 0; col < 9; col++) {
 				System.out.print(assignment.get(row + "-" + col).get(0) + " ");
