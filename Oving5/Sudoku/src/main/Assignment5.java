@@ -195,7 +195,9 @@ public class Assignment5 {
 		 * slate and not see any traces of the old assignments and inferences
 		 * that took place in previous iterations of the loop.
 		 */
+		
 		public VariablesToDomainsMapping backtrack(VariablesToDomainsMapping assignment) {
+			Hei.teller ++;
 			String nextVar = selectUnassignedVariable(assignment);
 
 			// If assignment is complete
@@ -221,6 +223,7 @@ public class Assignment5 {
 						return result;
 				}
 			}
+			Hei.FailureTeller ++;
 			return null;
 		}
 

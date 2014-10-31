@@ -12,11 +12,21 @@ public class Hei {
 	
 	static HashMap<String, HashMap<String, ArrayList<Pair<String>>>> constraints;
 	
+	static int teller = 0;
+	static int FailureTeller = 0;
+	
 	
 	public static void main(String[] args) {
 		
-		CSP sudoko = Assignment5.createSudokuCSP("src/main/veryhard.txt");
+		System.out.println("");
+		CSP sudoko = Assignment5.createSudokuCSP("src/main/easy.txt");
 		Assignment5.printSudokuSolution(sudoko.backtrackingSearch());
+		System.out.println("");
+		System.out.println("Level:  easy.txt");
+		System.out.println("Number of times your BACKTRACK method was called: " + teller);
+		System.out.println("Number of times your BACKTRACK method failed: " + FailureTeller);
+		
+		
 		
 	}
 }
