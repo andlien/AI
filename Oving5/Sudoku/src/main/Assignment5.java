@@ -169,7 +169,6 @@ public class Assignment5 {
 			// Run AC-3 on all constraints in the CSP, to weed out all of the
 			// values that are not arc-consistent to begin with
 			this.inference(assignment, this.getAllArcs());
-			System.out.println("Hei");
 			// Call backtrack with the partial assignment 'assignment'
 			return this.backtrack(assignment);
 		}
@@ -198,40 +197,29 @@ public class Assignment5 {
 		 */
 		public VariablesToDomainsMapping backtrack(VariablesToDomainsMapping assignment) {
 			String nextVar = selectUnassignedVariable(assignment);
-			
-//			If assignment is complete
+
+			// If assignment is complete
 			if (nextVar.equals(""))
 				return assignment;
-			
-			VariablesToDomainsMapping temp;			
-//			for each value in domain
+
+			// temp is the deepCopy of assignment
+			// assignment itself is never changed
+			VariablesToDomainsMapping temp;	
+
+			// for each value in domain of nextVar
 			for (int i = 0; i < assignment.get(nextVar).size(); i++) {
 				temp = deepCopyAssignment(assignment);
-				boolean consistent = false;
+
+				// set domain of nextVar as the current element
+				temp.put(nextVar, new ArrayList<String>(Arrays.asList(temp.get(nextVar).get(i))));
 				
-//				Check if value is consistent with temp
-//				for each arc
-				for (Pair<String> conflictPair : getAllNeighboringArcs(nextVar)) {
-//					Get all possible values that doesn't conflict directly
-					ArrayList<Pair<String>> possible = this.constraints.get(nextVar).get(conflictPair.x);
-					for (int j = 0; j < possible.size(); j++) {
-						if (possible.get(j).x.equals(temp.get(i))) {
-							consistent = true;
-							break;
-						}
-					}
+				// Test if this created an inconsistency and propagate
+				if (inference(temp, getAllArcs())) {
+					// continue search in a deeper recursion
+					VariablesToDomainsMapping result = backtrack(temp);
+					if (result != null)
+						return result;
 				}
-				if (consistent) {
-					temp.put(nextVar, new ArrayList<String>(Arrays.asList(temp.get(nextVar).get(i))));
-					
-//					Utf�r AC-3 og forward-propagate
-					if (inference(temp, new ArrayList<Pair<String>>())) {
-						VariablesToDomainsMapping result = backtrack(temp);
-						if (result != null)
-							return result;
-					}
-				}
-				
 			}
 			return null;
 		}
@@ -259,21 +247,8 @@ public class Assignment5 {
 		public boolean inference(VariablesToDomainsMapping assignment, ArrayList<Pair<String>> queue) {
 			for (int i = 0; i < this.variables.size(); i++) {
 				String string = this.variables.get(i);
-				//System.out.println(string + ": " + australia.domains.get(string));
-				ArrayList<String[]> worklist = new ArrayList<String[]>();
 				
-				/*
-				for (int i2 = 0; i2 < this.variables.size(); i2++) {
-					String naboStreng = this.variables.get(i2);
-					ArrayList<Pair<String>> nabo = this.constraints.get(string).get(naboStreng);
-					if(nabo != null){
-						String[] strings = new String[2];
-						strings[1] = string;
-						strings[0] = naboStreng;
-						worklist.add(strings);
-					}
-				}
-				*/
+				ArrayList<String[]> worklist = new ArrayList<String[]>();
 				
 				while(queue.size() != 0){
 					Pair<String> pair = queue.remove(0);
@@ -281,13 +256,11 @@ public class Assignment5 {
 					String y1 = pair.x;
 					if(revise(assignment, y1, x1) ){
 						if(assignment.get(x1).size() == 0){
-							System.out.println("FALSE FALSE");
 							return false;
 						}
 						ArrayList<Pair<String>> newNab = getAllNeighboringArcs(y1);
 						
 						for (int i2 = 0; i2 < newNab.size(); i2++) {
-							//if()
 							queue.add(newNab.get(i2));
 
 						}
@@ -310,37 +283,28 @@ public class Assignment5 {
 		 * 'assignment'.
 		 */
 		public boolean revise(VariablesToDomainsMapping assignment, String i, String j) {
-			System.out.println("revise (): i=" + i + " and j=" + j );
 			boolean revised = false;
 			for (int i2 = 0; i2 < assignment.get(i).size(); i2++) {
 				String colorI = assignment.get(i).get(i2);
-				//System.out.println("Color: " + colorI);
 				
 				boolean domainChanged = false;
 				
 				for (int j2 = 0; j2 < assignment.get(j).size(); j2++) {
 					String colorJ = assignment.get(j).get(j2);
-					//System.out.println("	Color: " + colorJ);
 					
 					if (constraints.get(i).get(j) == null)
 						continue;
 					for (int k = 0; k < constraints.get(i).get(j).size(); k++) {
 						Pair pair = constraints.get(i).get(j).get(k);
-						//System.out.println(" 		Constraint: " + constraints.get(i).get(j).get(k));
 						if(colorI == pair.x && colorJ == pair.y){
-							//System.out.println("			Match");
 							domainChanged = true;
 						}
 					}
 					
 				}
 				
-				//if(domainChanged) System.out.println("Match found. Domain unchanged");
 				if(!domainChanged){
-					System.out.println("Match not found. Deleting " + colorI + " from " + i);
 					assignment.get(i).remove(i2);
-					System.out.println("Updated domain: " + assignment.get(i));
-					System.out.println(" ");
 					revised = true;
 				}
 				
