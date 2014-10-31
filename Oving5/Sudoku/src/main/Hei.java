@@ -23,6 +23,9 @@ public class Hei {
 		// TODO Auto-generated method stub
 		//System.out.println("Jeg fungerer!");
 		CSP sudoko = Assignment5.createSudokuCSP("src/main/easy.txt");
+		sudoko.backtrackingSearch();
+		/*
+		
 		System.out.println("variables: " + sudoko.variables);
 		System.out.println("domains: " + sudoko.domains);
 		//System.out.println("constraints: " + sudoko.constraints);
@@ -61,7 +64,7 @@ public class Hei {
 			}
 			
 		}
-		
+		*/
 		/*
 		
 		variables = new ArrayList<ArrayList<Integer>>();
