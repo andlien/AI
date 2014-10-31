@@ -169,7 +169,7 @@ public class Assignment5 {
 			// Run AC-3 on all constraints in the CSP, to weed out all of the
 			// values that are not arc-consistent to begin with
 			this.inference(assignment, this.getAllArcs());
-
+			System.out.println("Hei");
 			// Call backtrack with the partial assignment 'assignment'
 			return this.backtrack(assignment);
 		}
@@ -224,7 +224,7 @@ public class Assignment5 {
 				if (consistent) {
 					temp.put(nextVar, new ArrayList<String>(Arrays.asList(temp.get(nextVar).get(i))));
 					
-//					Utfør AC-3 og forward-propagate
+//					Utfï¿½r AC-3 og forward-propagate
 					if (inference(temp, new ArrayList<Pair<String>>())) {
 						VariablesToDomainsMapping result = backtrack(temp);
 						if (result != null)
@@ -262,6 +262,7 @@ public class Assignment5 {
 				//System.out.println(string + ": " + australia.domains.get(string));
 				ArrayList<String[]> worklist = new ArrayList<String[]>();
 				
+				/*
 				for (int i2 = 0; i2 < this.variables.size(); i2++) {
 					String naboStreng = this.variables.get(i2);
 					ArrayList<Pair<String>> nabo = this.constraints.get(string).get(naboStreng);
@@ -272,21 +273,23 @@ public class Assignment5 {
 						worklist.add(strings);
 					}
 				}
+				*/
 				
-				while(worklist.size() != 0){
-					String[] strings = worklist.remove(0);
-					String x1 = strings[0];
-					String y1 = strings[1];
-					if(revise(domains, x1, y1) ){
-						if(domains.get(x1).size() == 0) return false;
+				while(queue.size() != 0){
+					Pair<String> pair = queue.remove(0);
+					String x1 = pair.y;
+					String y1 = pair.x;
+					if(revise(assignment, y1, x1) ){
+						if(assignment.get(x1).size() == 0){
+							System.out.println("FALSE FALSE");
+							return false;
+						}
+						ArrayList<Pair<String>> newNab = getAllNeighboringArcs(y1);
 						
-						for (int i2 = 0; i2 < this.variables.size(); i2++) {
-							String naboStreng = this.variables.get(i2);
-							if(y1 == naboStreng) continue;
-							String[] newNabours = new String[2];
-							strings[1] = string;
-							strings[0] = naboStreng;
-							worklist.add(strings);
+						for (int i2 = 0; i2 < newNab.size(); i2++) {
+							//if()
+							queue.add(newNab.get(i2));
+
 						}
 						
 					}
@@ -449,7 +452,7 @@ public class Assignment5 {
 	 */
 	public static void printSudokuSolution(VariablesToDomainsMapping assignment) {
 		if (assignment == null) {
-			System.err.println("Klarte ikke løse brettet!");
+			System.err.println("Klarte ikke lï¿½se brettet!");
 			return;
 		}
 		for (int row = 0; row < 9; row++) {

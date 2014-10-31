@@ -22,7 +22,7 @@ public class Hei {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		//System.out.println("Jeg fungerer!");
-		CSP sudoko = Assignment5.createSudokuCSP("src/main/easy.txt");
+		CSP sudoko = Assignment5.createSudokuCSP("src/main/veryhard.txt");
 		Assignment5.printSudokuSolution(sudoko.backtrackingSearch());
 		/*
 		
