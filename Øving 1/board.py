@@ -1,8 +1,6 @@
 from graphics import *
 from node import *
 
-
-
 height = 9
 width = 9
 size = 40
@@ -53,8 +51,8 @@ def createObstacle(startX,startY,owidht,oheight):
     head2.draw(win) 
 
 def createObstacle2(startX,startY,widht,height):
-    for x in xrange(0,widht):
-        for y in xrange(0,height):
+    for x in range(0,widht):
+        for y in range(0,height):
             node = nodes[startX + x][startY + y]
             node.isObstacle = True
             #drawBox(node)
@@ -89,13 +87,13 @@ def drawBox(node):
 
 
 def getNodeColor(node):
-    if(node.isGoal):
+    if node.isGoal:
         return "red"
     elif node.isStart:
         return "green"
     elif node.isShortestPath:
         return "orange"
-    elif node.isTravedersd:
+    elif node.isTraversed:
         return "dark blue"
     elif node.isObserved:
         return "grey"
@@ -105,8 +103,8 @@ def getNodeColor(node):
         return "white"
 
 def setHInAllNodes():
-    for x in xrange(0,height):
-        for y in xrange(0,width):
+    for x in range(0,height):
+        for y in range(0,width):
             node = nodes[x][y]
             node.h = manhattenDistToGoalNode(node.x,node.y)
 
@@ -123,17 +121,18 @@ def manhattenDistToGoalNode(x,y):
 #Ignores wall, of course
 def getSurroundingTiles(node):
     surroundingTiles = []
-    for y in xrange(0,len(nodes)):
-        for x in xrange(0,len(nodes[0])):
-            if(nodes[y][x] == node):
-                if (x > 0 and not nodes[y][x-1].isObstacle):
-                    surroundingTiles.append(nodes[y][x-1])
-                if (x < len(nodes[0]) - 1 and not nodes[y][x+1].isObstacle):
-                    surroundingTiles.append(nodes[y][x+1])               
-                if (y > 0 and not nodes[y-1][x].isObstacle):
-                    surroundingTiles.append(nodes[y-1][x])
-                if (y < len(nodes) - 1 and not nodes[y+1][x].isObstacle):
-                    surroundingTiles.append(nodes[y+1][x])
+
+    x = node.x
+    y = node.y
+
+    if x > 0 and not nodes[x-1][y].isObstacle:
+        surroundingTiles.append(nodes[x-1][y])
+    if x < len(nodes) - 1 and not nodes[x+1][y].isObstacle:
+        surroundingTiles.append(nodes[x+1][y])
+    if y > 0 and not nodes[x][y-1].isObstacle:
+        surroundingTiles.append(nodes[x][y-1])
+    if y < len(nodes) - 1 and not nodes[x][y+1].isObstacle:
+        surroundingTiles.append(nodes[x][y+1])
 
     if node.parent in surroundingTiles:
         surroundingTiles.remove(node.parent)
@@ -142,7 +141,7 @@ def getSurroundingTiles(node):
 def propagateBetterPath(node):
     possibleKids = getSurroundingTiles(node)
     for kid in possibleKids:
-        if tile == kid.parent:
+        if node == kid.parent:
             kid.g = kid.parent.g + 1
             propagateBetterPath(kid)
 
@@ -196,9 +195,9 @@ def main():
 
 def createBoard():
 
-    for x in xrange(0,height):
+    for x in range(0,height):
         colume = []
-        for y in xrange(0,width):
+        for y in range(0,width):
             node = Node(x, y)
 
             colume.append(node)

@@ -11,7 +11,7 @@ class Node:
         self.isGoal = False
         self.isStart = False
         self.isObserved = False
-        self.isTravedersd = False
+        self.isTraversed = False
         self.parent = None
         self.isShortestPath = False
 

@@ -1,7 +1,5 @@
 from board import *
 
-
-
 def createDemo():
 	setDimensions(6,6)
 	createBoard()
