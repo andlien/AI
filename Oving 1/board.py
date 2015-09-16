@@ -37,7 +37,7 @@ def getStartNode():
 def getGoalNode():
     return goalNode
 
-def createObstacle(startX,startY,owidht,oheight):
+def createObstacle2(startX,startY,owidht,oheight):
     createObstacle2(startX,startY,owidht,oheight)
     head2 = Rectangle(Point(startX*size +5,height*size - startY*size +5), Point( startX*size + owidht*size+5,
     height*size - startY*size - oheight*size+5)) # set center and radius
@@ -50,12 +50,12 @@ def createObstacle(startX,startY,owidht,oheight):
 
     head2.draw(win) 
 
-def createObstacle2(startX,startY,widht,height):
+def createObstacle(startX,startY,widht,height):
     for x in range(0,widht):
         for y in range(0,height):
             node = nodes[startX + x][startY + y]
             node.isObstacle = True
-            #drawBox(node)
+            drawBox(node)
 
 
 def createStart(startX,startY):
@@ -79,11 +79,16 @@ def createGoal(startX,startY):
 def drawBox(node):
     head2 = Rectangle(Point(node.x*size +5,height*size - node.y*size - size+5), Point( node.x*size + size+5,height*size - node.y*size +5)) # set center and radius
     head2.setFill(getNodeColor(node))
-
     #head2.setOutline("black")
     head2.setOutline(getNodeColor(node))
-    
     head2.draw(win) 
+
+def drawShortestPathNode(node):
+    head2 = Rectangle(Point(node.x*size +5,height*size - node.y*size - size+5), Point( node.x*size + size+5,height*size - node.y*size +5)) # set center and radius
+    head2.setFill("dark red")
+    head2.setOutline("red")
+    #head2.setOutline(getNodeColor(node))
+    head2.draw(win)
 
 
 def getNodeColor(node):
@@ -92,21 +97,22 @@ def getNodeColor(node):
     elif node.isStart:
         return "green"
     elif node.isShortestPath:
-        return "orange"
-    elif node.isTraversed:
-        return "dark blue"
-    elif node.isObserved:
-        return "grey"
-    elif node.isObstacle:
         return "dark red"
+    elif node.isTraversed:
+        return "grey"
+    elif node.isObserved:
+        return "dark grey"
+    elif node.isObstacle:
+        return "black"
     else:
-        return "white"
+        return "light grey"
 
 def setHInAllNodes():
     for x in range(0,height):
         for y in range(0,width):
             node = nodes[x][y]
-            node.h = manhattenDistToGoalNode(node.x,node.y)
+            #node.h = manhattenDistToGoalNode(node.x,node.y)
+            node.h = euclideanDistToGoalNode(node.x,node.y)
 
 
 
@@ -116,6 +122,13 @@ def manhattenDistToGoalNode(x,y):
     xDist = abs(x - goalNode.x)
     yDist = abs(y - goalNode.y)
     return xDist + yDist
+
+def euclideanDistToGoalNode(x,y):
+    #if searchType  != "A*":
+    #    return 0
+    xDist = (x + goalNode.x) **2
+    yDist = (y + goalNode.y) **2
+    return (xDist + yDist) ** 0.5
 
 #Find all the surrounding tile to a given tile, max 4 tiles.
 #Ignores wall, of course
@@ -191,7 +204,11 @@ def main():
 
     win.close()
 
-
+def redrawBoard():
+    for x in range(0,height):
+        for y in range(0,width):
+            node = nodes[x][y]
+            drawBox(node)
 
 def createBoard():
 
@@ -199,6 +216,7 @@ def createBoard():
         colume = []
         for y in range(0,width):
             node = Node(x, y)
+            drawBox(node)
 
             colume.append(node)
         nodes.append(colume)

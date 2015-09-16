@@ -1,4 +1,5 @@
 from examples import *
+from time import sleep
 
 def aStarAlgorithm(getNeighbours):
     open = []
@@ -6,7 +7,7 @@ def aStarAlgorithm(getNeighbours):
 
     #createBoard()
     #createDemo()
-    createExample4()
+    createExample2()
     setHInAllNodes()
 
     startNode = getStartNode()
@@ -14,15 +15,30 @@ def aStarAlgorithm(getNeighbours):
 
     open.append(startNode)
 
+    redrawCounter = 0
+
     while True:
+
+
         if len(open) == 0:
             print("No goal found")
             return
 
         currentTile = pop(open) #open.pop()
+
+        if redrawCounter % 10 == 0:
+
+            paintBestPathFromcurrentNode(currentTile)
+            sleep(0.005)
+            dedrawBestPathFromcurrentNode(currentTile)
+
+        redrawCounter +=1
+
         closed.append(currentTile)
         currentTile.isTraversed = True
         drawBox(currentTile)
+        #redrawBoard()
+        #
 
         if currentTile.isGoal:
             break
@@ -65,6 +81,21 @@ def paintBestPath():
     t = getGoalNode()
     while t.parent is not None:
         t.isShortestPath = True
+        #drawBox(t)
+        drawShortestPathNode(t)
+        t = t.parent
+
+def paintBestPathFromcurrentNode(currentNode):
+    t = currentNode
+    while t.parent is not None:
+        t.isShortestPath = True
+        drawShortestPathNode(t)
+        t = t.parent
+
+def dedrawBestPathFromcurrentNode(currentNode):
+    t = currentNode
+    while t.parent is not None:
+        t.isShortestPath = False
         drawBox(t)
         t = t.parent
 
