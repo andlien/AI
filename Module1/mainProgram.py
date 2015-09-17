@@ -27,9 +27,8 @@ def aStarAlgorithm(getNeighbours):
         currentTile = pop(open) #open.pop()
 
         if redrawCounter % 10 == 0:
-
             paintBestPathFromcurrentNode(currentTile)
-            sleep(0.005)
+            #sleep(0.005)
             dedrawBestPathFromcurrentNode(currentTile)
 
         redrawCounter +=1
@@ -88,14 +87,12 @@ def paintBestPath():
 def paintBestPathFromcurrentNode(currentNode):
     t = currentNode
     while t.parent is not None:
-        t.isShortestPath = True
         drawShortestPathNode(t)
         t = t.parent
 
 def dedrawBestPathFromcurrentNode(currentNode):
     t = currentNode
     while t.parent is not None:
-        t.isShortestPath = False
         drawBox(t)
         t = t.parent
 

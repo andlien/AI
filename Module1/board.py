@@ -1,6 +1,9 @@
 from graphics import *
 from node import *
 
+
+
+
 height = 9
 width = 9
 size = 40
