@@ -14,6 +14,8 @@ values = ( firstLine.split( ) )
 numberOfVertices = int(values[0])
 numberOfEdges = int(values[1])
 
+numberOfColors = 4
+
 print("numberOfVertices: " + str(numberOfVertices))
 print("numberOfEdges: " + str(numberOfEdges))
 
@@ -22,12 +24,14 @@ setDimensions(numberOfVertices)
 
 for line in range(0,numberOfVertices):
         vertLine = f.readline()
-        print (vertLine)
+        #print (vertLine)
         values = ( vertLine.split( ) )
         index = int(values[0])
         x = float(values[1])
         y = float(values[2])
         vert = Vertex(index,x,y)
+
+        vert.domain = range(0, numberOfColors)
         vertices.append(vert)
         #drawVertex(vert)
 
@@ -38,7 +42,7 @@ print ("Created " + str(line) + " vertices")
 
 for line in range(0,numberOfEdges):
         vertLine = f.readline()
-        print (vertLine)
+        #print (vertLine)
         values = ( vertLine.split( ) )
         index1 = int(values[0])
         index2 = int(values[1])
@@ -47,7 +51,7 @@ for line in range(0,numberOfEdges):
         vertices[index2].connectedTo.append(vertices[index1])
 
         drawEdge( vertices[index1], vertices[index2])
-print ("Created " + str(line) + " vertices")
+print ("Created " + str(line) + " edges")
 
 
 for vert in vertices:

@@ -4,3 +4,5 @@ class Vertex:
         self.y = y
         self.index = index
         self.connectedTo = []
+        self.domain = []
+        self.currentValue = None

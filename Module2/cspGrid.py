@@ -1,4 +1,5 @@
 from graphics import *
+from random import randint
 from cspVertex import *
 
 
@@ -69,8 +70,10 @@ def drawEdge(vertex1,vertex2):
     else:
          head2 = Line(Point(vertex1.x*size + 200 , vertex1.y*size+ 200 ), Point(vertex2.x*size + 200  , vertex2.y*size+ 200 ))
 
-    head2.setFill("red")
-    #head2.setOutline("black")
-    head2.setOutline("grey")
+
+
+    color = 90 + randint(1, 100) #Varies the color on edges to make them easier to distinguish
+
+    head2.setOutline(color_rgb(color, color, color))
     head2.setWidth(1)
     head2.draw(win)
