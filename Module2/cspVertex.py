@@ -3,6 +3,6 @@ class Vertex:
         self.x = x
         self.y = y
         self.index = index
-        self.connectedTo = []
+        #self.connectedTo = []
         self.domain = []
         self.currentValue = None
