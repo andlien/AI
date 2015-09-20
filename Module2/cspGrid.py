@@ -46,7 +46,7 @@ def setDimensions(numberOfVertices):
 
 
 
-def drawVertex(vertex):
+def drawVertex(vertex, fancyBorder):
     #head2 = Rectangle(Point(node.x*size +5,height*size - node.y*size - size+5), Point( node.x*size + size+5,height*size - node.y*size +5)) # set center and radius
     #head2 = Circle(Point(vertex.x*size, vertex.y*size), 5)
 
@@ -54,7 +54,16 @@ def drawVertex(vertex):
          head2 = Circle(Point(vertex.x*size + 25 + height/2 ,width/2 - vertex.y*size), 5)
     else:
          head2 = Circle(Point(vertex.x*size + 200  , vertex.y*size + 200), 5)
-    head2.setFill("white")
+
+    if vertex.isColored():
+        head2.setFill(vertex.getColor())
+    else:
+        head2.setFill("white")
+
+    if fancyBorder:
+        head2.setOutline("black")
+    else:
+        head2.setOutline("grey")
     #head2.setOutline("black")
     head2.setOutline("grey")
     head2.draw(win)
