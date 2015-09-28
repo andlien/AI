@@ -15,6 +15,7 @@ class State:
         self.lastModifiedVertex = None
         self.parent = None
 
+
     def getUniqeID(self):
         id = ""
         for vert in self.vertices:

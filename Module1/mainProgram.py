@@ -1,5 +1,6 @@
 from Module1.examples import *
 from time import sleep
+from Module2.cspGrid import getWindow
 
 def aStarAlgorithm(getNeighbours, h_func, initialState, paintSolution):
     open = []
@@ -19,23 +20,13 @@ def aStarAlgorithm(getNeighbours, h_func, initialState, paintSolution):
             return
 
         currentTile = pop(open) #open.pop()
-        # print("open has", len(open))
-        # print("closed has", len(closed))
 
-
-        if redrawCounter % 100 == 0:
-            paintSolution(currentTile)
-        #     paintBestPathFromcurrentNode(currentTile)
-        #     #sleep(0.005)
-        #     dedrawBestPathFromcurrentNode(currentTile)
-
-        redrawCounter +=1
-
+        paintSolution(currentTile)
+        for v in currentTile.vertices:
+            print(v.index, v.domain)
+        getWindow().getMouse()
 
         closed.append(currentTile)
-        # currentTile.isTraversed = True
-        # drawBox(currentTile.x, currentTile.y, "grey")
-        #redrawBoard()
 
         if currentTile.isGoal():
             paintSolution(currentTile)
