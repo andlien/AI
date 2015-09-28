@@ -22,9 +22,6 @@ def aStarAlgorithm(getNeighbours, h_func, initialState, paintSolution):
         currentTile = pop(open) #open.pop()
 
         paintSolution(currentTile)
-        for v in currentTile.vertices:
-            print(v.index, v.domain)
-        getWindow().getMouse()
 
         closed.append(currentTile)
 

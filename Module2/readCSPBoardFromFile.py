@@ -5,8 +5,8 @@ from Module1.mainProgram import aStarAlgorithm
 from random import randint
 
 def mGenVerticesAndConstraints():
-    f = open('graph-color-1.txt', 'r')
-    # f = open('spiral-500-4-color1.txt', 'r')
+    # f = open('graph-color-1.txt', 'r')
+    f = open('spiral-500-4-color1.txt', 'r')
     # f = open('rand-100-6-color1.txt', 'r')
     # f = open('graph-test.txt', 'r')
 
@@ -18,7 +18,7 @@ def mGenVerticesAndConstraints():
     numberOfVertices = int(values[0])
     numberOfEdges = int(values[1])
 
-    numberOfColors = 3
+    numberOfColors = 4
 
     constraintsTemplate = []
 
@@ -49,7 +49,7 @@ def mGenVerticesAndConstraints():
 
         constraints.append({})
 
-        vert.domain = list(range(1, numberOfColors+1))
+        vert.domain = [str(i) for i in range(1, numberOfColors+1)]
         vertices.append(vert)
         #drawVertex(vert)
 
@@ -89,13 +89,13 @@ def revise(constraints, vertex1,vertex2):
         domainChanged = False
         for d2 in vertex2.domain:
             for const in constraints[vertex1.index][vertex2.index]:
-                if d1 == int(const[0]) and d2 == int(const[1]):
+                if d1 == const[0] and d2 == const[1]:
                     domainChanged = True
 
         if not domainChanged:
-            print("Doamin to " +str(vertex1.index) +  str(vertex1.domain) + ". Removing: " + str(d1))
+            # print("Doamin to " +str(vertex1.index) +  str(vertex1.domain) + ". Removing: " + str(d1))
             vertex1.domain.remove(d1)
-            print("Doamin to " +str(vertex1.index)+  str(vertex1.domain))
+            # print("Doamin to " +str(vertex1.index)+  str(vertex1.domain))
             revised = True
 
 
@@ -129,25 +129,23 @@ def generateSuccesorStates(oldState):
     newStates = []
 
     # modulo numberOfColors
-    nextColor = (oldState.g % 3) + 1
+    nextColor = str((oldState.g % 4) + 1)
 
     for vertex in oldState.vertices:
-        if not vertex.isColored():
-            for color in vertex.domain:
-                index = vertex.index
-                state = State(oldState.vertices)
-                #Assumption
-                state.vertices[index].domain = [color]
-                state.lastModifiedVertex = state.vertices[index]
-                newStates.append(state)
+        if not vertex.isColored() and nextColor in vertex.domain:
+            # for color in vertex.domain:
+            #     index = vertex.index
+            #     state = State(oldState.vertices)
+            #     #Assumption
+            #     state.vertices[index].domain = [color]
+            #     state.lastModifiedVertex = state.vertices[index]
+            #     newStates.append(state)
             # Produce new state by copying parent state
-            # if len(vertex.domain) == 0:
-            #     continue
-            # state = State(oldState.vertices)
-            # # Assumption
-            # state.vertices[vertex.index].domain = [vertex.domain[0]]#[nextColor]
-            # state.lastModifiedVertex = state.vertices[vertex.index]
-            # newStates.append(state)
+            state = State(oldState.vertices)
+            # Assumption
+            state.vertices[vertex.index].domain = [nextColor]
+            state.lastModifiedVertex = state.vertices[vertex.index]
+            newStates.append(state)
 
     return newStates
 
