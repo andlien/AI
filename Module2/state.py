@@ -1,17 +1,19 @@
 __author__ = 'Simen'
-from cspVertex import *
+from Module2.cspVertex import *
 class State:
     def __init__(self, oldVertices):
+        self.g = -1
+        self.h = float("inf")
         self.vertices = []
         for v in oldVertices:
             vert = Vertex(v.index,v.x,v.y)
-            vert.domain = []
             for d in v.domain:
                 vert.domain.append(d)
 
             self.vertices.append(vert)
 
         self.lastModifiedVertex = None
+        self.parent = None
 
     def getUniqeID(self):
         id = ""
@@ -23,9 +25,9 @@ class State:
 
         return id
 
-    def isFinished(self):
+    def isGoal(self):
         for vert in self.vertices:
-            if len(vert.domain) > 1:
+            if len(vert.domain) != 1:
                 return False
         return True
 

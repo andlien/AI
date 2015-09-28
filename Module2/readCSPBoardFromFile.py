@@ -1,66 +1,63 @@
-from cspVertex import *
-from cspGrid import *
-from state import *
+from Module2.state import *
+from Module2.cspVertex import *
+from Module2.cspGrid import *
+from Module1.mainProgram import aStarAlgorithm
 from random import randint
 
-f = open('graph-color-1.txt', 'r')
-#f = open('spiral-500-4-color1.txt', 'r')
-#f = open('rand-100-6-color1.txt', 'r')
+def mGenVerticesAndConstraints():
+    f = open('graph-color-1.txt', 'r')
+    # f = open('spiral-500-4-color1.txt', 'r')
+    # f = open('rand-100-6-color1.txt', 'r')
 
+    print (f)
 
-print (f)
+    firstLine = f.readline()
+    values = firstLine.split()
 
-firstLine = f.readline()
-values = ( firstLine.split( ) )
+    numberOfVertices = int(values[0])
+    numberOfEdges = int(values[1])
 
-numberOfVertices = int(values[0])
-numberOfEdges = int(values[1])
+    numberOfColors = 4
 
-numberOfColors = 4
+    constraintsTemplate = []
 
-constraintsTemplate = []
-
-for x in range (1, numberOfColors + 1):
+    for x in range (1, numberOfColors + 1):
         for y in range (1, numberOfColors + 1):
-                if x == y:
-                        continue
-                temp = []
-                temp.append(str(x))
-                temp.append(str(y))
-                constraintsTemplate.append(temp)
+            if x == y:
+                continue
+            temp = (str(x), str(y))
+            constraintsTemplate.append(temp)
 
-print(constraintsTemplate)
+    print(constraintsTemplate)
 
-print("numberOfVertices: " + str(numberOfVertices))
-print("numberOfEdges: " + str(numberOfEdges))
+    print("numberOfVertices: " + str(numberOfVertices))
+    print("numberOfEdges: " + str(numberOfEdges))
 
-vertices = []
-setDimensions(numberOfVertices)
-contraints = []
+    vertices = []
+    setDimensions(numberOfVertices)
+    constraints = []
 
-for line in range(0,numberOfVertices):
+    for line in range(0,numberOfVertices):
         vertLine = f.readline()
-        print (vertLine)
-        values = ( vertLine.split( ) )
+        print(vertLine)
+        values = vertLine.split()
         index = int(values[0])
         x = float(values[1])
         y = float(values[2])
         vert = Vertex(index,x,y)
 
-        contraints.append({})
+        constraints.append({})
 
-        vert.domain = []
-        for number in range(1, numberOfColors+1):
-                vert.domain.append(str(number))
+        vert.domain = list(range(1, numberOfColors+1))
         vertices.append(vert)
         #drawVertex(vert)
 
 
-print ("Created " + str(line) + " vertices")
+    print ("Created " + str(line) + " vertices")
 
-#NV+2 to NV+2+NE-1
+    #NV+2 to NV+2+NE-1
 
-for line in range(0,numberOfEdges):
+    for line in range(0,numberOfEdges):
         vertLine = f.readline()
         print (vertLine)
         values = ( vertLine.split( ) )
@@ -68,122 +65,157 @@ for line in range(0,numberOfEdges):
         index2 = int(values[1])
 
 
-        contraints[index1][index2] = constraintsTemplate
-        contraints[index2][index1] = constraintsTemplate
+        constraints[index1][index2] = constraintsTemplate
+        constraints[index2][index1] = constraintsTemplate
 
         drawEdge( vertices[index1], vertices[index2])
-print ("Created " + str(line) + " edges")
+    print ("Created " + str(line) + " edges")
 
-print( str(contraints) )
+    print( str(constraints) )
 
-for vert in vertices:
-         drawVertex(vert,False)
+    for vert in vertices:
+        drawVertex(vert,False)
 
-#Initialization
-queue = []
-for vertex in contraints:
+    return vertices, constraints
+
+def revise(constraints, vertex1,vertex2):
+    revised = False
+
+    if constraints[vertex1.index][vertex2.index] is None:
+        return False
+
+    for d1 in vertex1.domain:
+        domainChanged = False
+        for d2 in vertex2.domain:
+            for const in constraints[vertex1.index][vertex2.index]:
+                if d1 == const[0] and d2 == const[1]:
+                    domainChanged = True
+
+        if not domainChanged:
+            # print("Doamin to " +str(vertex1.index) +  str(vertex1.domain) + ". Removing: " + str(d1))
+            vertex1.domain.remove(d1)
+            # print("Doamin to " +str(vertex1.index)+  str(vertex1.domain))
+            revised = True
+
+
+
+    return revised
+
+#Initialize
+def mGACInitialize(vertices, constraints):
+    queue = []
+    for vertex in constraints:
         for connectedVertex in vertex:
-                if connectedVertex not in queue:
-                        queue.append(vertices[connectedVertex])
-
-
-
-
-def revise(vertex1,vertex2):
-        revised = False
-
-        if contraints[vertex1.index][vertex2.index] is None:
-                return False
-
-        for d1 in vertex1.domain:
-                domainChanged = False
-                for d2 in vertex2.domain:
-                        for const in contraints[vertex1.index][vertex2.index]:
-                                if d1 == const[0] and d2 == const[1]:
-                                        domainChanged = True
-
-                if not domainChanged:
-                        print("Doamin to " +str(vertex1.index) +  str(vertex1.domain) + ". Removing: " + d1)
-                        vertex1.domain.remove(d1)
-                        print("Doamin to " +str(vertex1.index)+  str(vertex1.domain))
-                        revised = True
-
-
-
-        return revised
+            if connectedVertex not in queue:
+                queue.append(vertices[connectedVertex])
+    return queue
 
 #The Domain-Filtering Loop
-def domainFiltering(queue, stateVertices):
-        while len(queue) >= 1:
-                todoReviseVertex = queue.pop()
-                #queue.remove(todoReviseVertex)
-                for const in contraints[todoReviseVertex.index]:
-                        neighbour = stateVertices[const]
-                        change = revise(todoReviseVertex,neighbour)
-                        if change:
-                                for v in contraints[todoReviseVertex.index]:
-                                        if v not in queue:
-                                                queue.append(stateVertices[v])
+def domainFiltering(queue, stateVertices, contraints):
+    while len(queue) >= 1:
+        todoReviseVertex = queue.pop()
+        #queue.remove(todoReviseVertex)
+        for const in contraints[todoReviseVertex.index]:
+            neighbour = stateVertices[const]
+            change = revise(constraints, todoReviseVertex,neighbour)
+            if change:
+                for v in contraints[todoReviseVertex.index]:
+                    if v not in queue:
+                        queue.append(stateVertices[v])
 
 
+def generateSuccesorStates(oldState):
+    newStates = []
+
+    # modulo numberOfColors
+    nextColor = (oldState.g % 4) + 1
+
+    for vertex in oldState.vertices:
+        if not vertex.isColored():
+            # for color in vertex.domain:
+            #     index = vertex.index
+            #     state = State(vertices)
+            #     #Assumption
+            #     state.vertices[index].domain = [color]
+            #     state.lastModifiedVertex = state.vertices[index]
+            #     newStates.append(state)
+            # Produce new state by copying parent state
+            state = State(oldState.vertices)
+            # Assumption
+            state.vertices[vertex.index].domain = [nextColor]
+            state.lastModifiedVertex = state.vertices[vertex.index]
+            newStates.append(state)
+
+    return newStates
 
 
+# currentState = State(vertices)
+# getWindow().getMouse()
+# while not currentState.isFinished():
+#     #for tall in range(0,100000):
+#
+#     #vert = vertices[tall]
+#     #print("Doamin to " + str(tall) + " is " + str(vert.domain))
+#
+#
+#     #color = vert.domain[0]
+#     #vert.domain = [color]
+#     newStates = generateSuccesorStates(currentState.vertices)
+#     print("Lengden: " + str(len(newStates)))
+#
+#     if len(newStates) == 0:
+#         print("breaking")
+#         currentState = State(vertices)
+#         continue
+#
+#     currentState = newStates[randint(0,len(newStates)-1)]
+#
+#     for hei in currentState.vertices:
+#         drawVertex(hei,False)
+#
+#     vert = currentState.lastModifiedVertex
 
-def generateSuccesorStates(vertices):
-        newStates = []
 
-        for vertex in vertices:
-                if not vertex.isColored():
-                        for color in vertex.domain:
-                                index = vertex.index
-                                state = State(vertices)
-                                state.vertices[index].domain = [color]
-                                state.lastModifiedVertex = state.vertices[index]
-                                newStates.append(state)
+def mRerun(currentState, constraints):
+    #Rerun
+    queue = []
+    for connectedVertex in constraints[currentState.lastModifiedVertex.index]:
+        if connectedVertex not in queue and not currentState.vertices[connectedVertex].isColored():
+            queue.append(currentState.vertices[connectedVertex])
+
+    domainFiltering(queue,currentState.vertices, constraints)
 
 
-        return newStates
+def aStarGAC(variables, constraints, GAC_init, GAC_domain_filter, GAC_gen_new_states, GAC_rerun):
 
-domainFiltering(queue,vertices)
+    def AStar_generate_successors(currentState):
+        mNewStates = GAC_gen_new_states(currentState)
+        for state in mNewStates:
+            GAC_rerun(state, constraints)
+            if state.isError():
+                mNewStates.remove(state)
+        # print("Generated", len(mNewStates), "new states!")
 
-currentState = State(vertices)
-getWindow().getMouse()
-while not currentState.isFinished():
-#for tall in range(0,100000):
+        return mNewStates
 
-        #vert = vertices[tall]
-        #print("Doamin to " + str(tall) + " is " + str(vert.domain))
+    queue = GAC_init(variables, constraints)
+    GAC_domain_filter(queue,variables, constraints)
+    currentState = State(variables)
+    currentState.g = 0
+    aStarAlgorithm(AStar_generate_successors, aStarH, currentState, paintSol)
 
+def aStarH(node):
+    summen = 0
+    for v in node.vertices:
+        if not v.isColored():
+            summen += len(v.domain)
+    return summen
 
-        #color = vert.domain[0]
-        #vert.domain = [color]
-        newStates = generateSuccesorStates(currentState.vertices)
-        print("Lengden: " + str(len(newStates)))
+def paintSol(state):
+    for vertex in state.vertices:
+        drawVertex(vertex, False)
 
-        if len(newStates) == 0:
-                print("breaking")
-                currentState = State(vertices)
-                continue
+vertices, constraints = mGenVerticesAndConstraints()
 
-        currentState = newStates[randint(0,len(newStates)-1)]
-
-        for hei in currentState.vertices:
-                drawVertex(hei,False)
-
-        vert = currentState.lastModifiedVertex
-
-#Rerun
-        queue = []
-        for connectedVertex in contraints[vert.index]:
-                if connectedVertex not in queue and not currentState.vertices[connectedVertex].isColored():
-                        queue.append(currentState.vertices[connectedVertex])
-
-        domainFiltering(queue,currentState.vertices)
-
-        if currentState.isError():
-                currentState = State(vertices)
-
-        print("- ")
-
-print("Done?")
+aStarGAC(vertices, constraints, mGACInitialize, domainFiltering, generateSuccesorStates, mRerun)
 getWindow().getMouse()

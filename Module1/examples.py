@@ -1,4 +1,4 @@
-from board import *
+from Module1.board import *
 
 def createDemo():
 	setDimensions(6,6)
