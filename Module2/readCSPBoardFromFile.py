@@ -1,83 +1,6 @@
 from Module2.state import *
-from Module2.cspVertex import *
 from Module2.cspGrid import *
-from Module1.mainProgram import aStarAlgorithm
-from random import randint
-
-def mGenVerticesAndConstraints():
-    # f = open('graph-color-1.txt', 'r')
-    f = open('spiral-500-4-color1.txt', 'r')
-    # f = open('rand-100-6-color1.txt', 'r')
-    # f = open('graph-test.txt', 'r')
-
-    print (f)
-
-    firstLine = f.readline()
-    values = firstLine.split()
-
-    numberOfVertices = int(values[0])
-    numberOfEdges = int(values[1])
-
-    numberOfColors = 4
-
-    constraintsTemplate = []
-
-    for x in range (1, numberOfColors + 1):
-        for y in range (1, numberOfColors + 1):
-            if x == y:
-                continue
-            temp = (str(x), str(y))
-            constraintsTemplate.append(temp)
-
-    print(constraintsTemplate)
-
-    print("numberOfVertices: " + str(numberOfVertices))
-    print("numberOfEdges: " + str(numberOfEdges))
-
-    vertices = []
-    setDimensions(numberOfVertices)
-    constraints = []
-
-    for line in range(0,numberOfVertices):
-        vertLine = f.readline()
-        print(vertLine)
-        values = vertLine.split()
-        index = int(values[0])
-        x = float(values[1])
-        y = float(values[2])
-        vert = Vertex(index,x,y)
-
-        constraints.append({})
-
-        vert.domain = [str(i) for i in range(1, numberOfColors+1)]
-        vertices.append(vert)
-        #drawVertex(vert)
-
-
-    print ("Created " + str(line) + " vertices")
-
-    #NV+2 to NV+2+NE-1
-
-    for line in range(0,numberOfEdges):
-        vertLine = f.readline()
-        print (vertLine)
-        values = ( vertLine.split( ) )
-        index1 = int(values[0])
-        index2 = int(values[1])
-
-
-        constraints[index1][index2] = constraintsTemplate
-        constraints[index2][index1] = constraintsTemplate
-
-        drawEdge( vertices[index1], vertices[index2])
-    print ("Created " + str(line) + " edges")
-
-    print( str(constraints) )
-
-    for vert in vertices:
-        drawVertex(vert,False)
-
-    return vertices, constraints
+from Module2.aStarGacProgram import aStarGAC
 
 def revise(constraints, vertex1,vertex2):
     revised = False
@@ -129,7 +52,7 @@ def generateSuccesorStates(oldState):
     newStates = []
 
     # modulo numberOfColors
-    nextColor = str((oldState.g % 4) + 1)
+    nextColor = str((oldState.g % 6) + 1)
 
     for vertex in oldState.vertices:
         if not vertex.isColored() and nextColor in vertex.domain:
@@ -150,33 +73,6 @@ def generateSuccesorStates(oldState):
     return newStates
 
 
-# currentState = State(vertices)
-# getWindow().getMouse()
-# while not currentState.isFinished():
-#     #for tall in range(0,100000):
-#
-#     #vert = vertices[tall]
-#     #print("Doamin to " + str(tall) + " is " + str(vert.domain))
-#
-#
-#     #color = vert.domain[0]
-#     #vert.domain = [color]
-#     newStates = generateSuccesorStates(currentState.vertices)
-#     print("Lengden: " + str(len(newStates)))
-#
-#     if len(newStates) == 0:
-#         print("breaking")
-#         currentState = State(vertices)
-#         continue
-#
-#     currentState = newStates[randint(0,len(newStates)-1)]
-#
-#     for hei in currentState.vertices:
-#         drawVertex(hei,False)
-#
-#     vert = currentState.lastModifiedVertex
-
-
 def mRerun(currentState, constraints):
     #Rerun
     queue = []
@@ -185,23 +81,6 @@ def mRerun(currentState, constraints):
             queue.append(currentState.vertices[connectedVertex])
 
     domainFiltering(queue,currentState.vertices, constraints)
-
-
-def aStarGAC(variables, constraints, GAC_init, GAC_domain_filter, GAC_gen_new_states, GAC_rerun):
-
-    def AStar_generate_successors(currentState):
-        mNewStates = GAC_gen_new_states(currentState)
-        for state in mNewStates:
-            GAC_rerun(state, constraints)
-            if state.isError():
-                mNewStates.remove(state)
-
-        return mNewStates
-
-    queue = GAC_init(variables, constraints)
-    GAC_domain_filter(queue,variables, constraints)
-    currentState = State(variables)
-    aStarAlgorithm(AStar_generate_successors, aStarH, currentState, paintSol)
 
 def aStarH(node):
     summen = 0
@@ -214,7 +93,78 @@ def paintSol(state):
     for vertex in state.vertices:
         drawVertex(vertex, False)
 
-vertices, constraints = mGenVerticesAndConstraints()
+# f = open('graph-color-1.txt', 'r')
+# f = open('spiral-500-4-color1.txt', 'r')
+f = open('rand-100-6-color1.txt', 'r')
+# f = open('graph-test.txt', 'r')
 
-aStarGAC(vertices, constraints, mGACInitialize, domainFiltering, generateSuccesorStates, mRerun)
+print (f)
+
+firstLine = f.readline()
+values = firstLine.split()
+
+numberOfVertices = int(values[0])
+numberOfEdges = int(values[1])
+
+numberOfColors = 6
+
+constraintsTemplate = []
+
+for x in range (1, numberOfColors + 1):
+    for y in range (1, numberOfColors + 1):
+        if x == y:
+            continue
+        temp = (str(x), str(y))
+        constraintsTemplate.append(temp)
+
+print(constraintsTemplate)
+
+print("numberOfVertices: " + str(numberOfVertices))
+print("numberOfEdges: " + str(numberOfEdges))
+
+vertices = []
+setDimensions(numberOfVertices)
+constraints = []
+
+for line in range(0,numberOfVertices):
+    vertLine = f.readline()
+    print(vertLine)
+    values = vertLine.split()
+    index = int(values[0])
+    x = float(values[1])
+    y = float(values[2])
+    vert = Vertex(index,x,y)
+
+    constraints.append({})
+
+    vert.domain = [str(i) for i in range(1, numberOfColors+1)]
+    vertices.append(vert)
+    #drawVertex(vert)
+
+
+print ("Created " + str(line) + " vertices")
+
+#NV+2 to NV+2+NE-1
+
+for line in range(0,numberOfEdges):
+    vertLine = f.readline()
+    print (vertLine)
+    values = ( vertLine.split( ) )
+    index1 = int(values[0])
+    index2 = int(values[1])
+
+
+    constraints[index1][index2] = constraintsTemplate
+    constraints[index2][index1] = constraintsTemplate
+
+    drawEdge( vertices[index1], vertices[index2])
+print ("Created " + str(line) + " edges")
+
+print( str(constraints) )
+
+for vert in vertices:
+    drawVertex(vert,False)
+
+
+aStarGAC(vertices, constraints, mGACInitialize, domainFiltering, generateSuccesorStates, mRerun, aStarH, paintSol)
 getWindow().getMouse()

@@ -134,12 +134,7 @@ def getSurroundingTiles(node):
         surroundingTiles.remove(node.parent)
     return surroundingTiles
 
-def propagateBetterPath(node):
-    possibleKids = getSurroundingTiles(node)
-    for kid in possibleKids:
-        if node == kid.parent:
-            kid.g = kid.parent.g + 1
-            propagateBetterPath(kid)
+
 
 # def main():
 #     win = GraphWin('A*', height*size+5, width*size+5) # give title and dimensions
