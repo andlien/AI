@@ -2,6 +2,8 @@ from Module2.state import *
 from Module2.cspGrid import *
 from Module2.aStarGacProgram import aStarGAC
 
+numberOfColors = 4
+
 def revise(constraints, vertex1,vertex2):
     revised = False
 
@@ -44,7 +46,7 @@ def domainFiltering(queue, stateVertices, contraints):
             change = revise(constraints, todoReviseVertex,neighbour)
             if change:
                 for v in contraints[todoReviseVertex.index]:
-                    if v not in queue:
+                    if stateVertices[v] not in queue:
                         queue.append(stateVertices[v])
 
 
@@ -52,7 +54,7 @@ def generateSuccesorStates(oldState):
     newStates = []
 
     # modulo numberOfColors
-    nextColor = str((oldState.g % 6) + 1)
+    nextColor = str((oldState.g % numberOfColors) + 1)
 
     for vertex in oldState.vertices:
         if not vertex.isColored() and nextColor in vertex.domain:
@@ -94,8 +96,8 @@ def paintSol(state):
         drawVertex(vertex, False)
 
 # f = open('graph-color-1.txt', 'r')
-# f = open('spiral-500-4-color1.txt', 'r')
-f = open('rand-100-6-color1.txt', 'r')
+f = open('spiral-500-4-color1.txt', 'r')
+# f = open('rand-100-6-color1.txt', 'r')
 # f = open('graph-test.txt', 'r')
 
 print (f)
@@ -105,8 +107,6 @@ values = firstLine.split()
 
 numberOfVertices = int(values[0])
 numberOfEdges = int(values[1])
-
-numberOfColors = 6
 
 constraintsTemplate = []
 
