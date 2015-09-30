@@ -7,6 +7,7 @@ class State:
         self.vertices = []
         for v in oldVertices:
             vert = Vertex(v.index,v.x,v.y)
+
             for d in v.domain:
                 vert.domain.append(d)
 
@@ -27,6 +28,9 @@ class State:
         return id
 
     def isGoal(self):
+        if self.isError():
+            return False
+
         for vert in self.vertices:
             if len(vert.domain) != 1:
                 return False

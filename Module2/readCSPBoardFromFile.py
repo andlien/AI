@@ -37,38 +37,64 @@ def mGACInitialize(vertices, constraints):
 #The Domain-Filtering Loop
 def domainFiltering(queue, stateVertices, contraints):
     while len(queue) >= 1:
-        todoReviseVertex = queue.pop()
+        todoReviseVertex = queue.pop(0)
         #queue.remove(todoReviseVertex)
         for const in contraints[todoReviseVertex.index]:
             neighbour = stateVertices[const]
             change = revise(constraints, todoReviseVertex,neighbour)
             if change:
                 for v in contraints[todoReviseVertex.index]:
-                    if v not in queue:
+                    if stateVertices[v] not in queue:
                         queue.append(stateVertices[v])
 
 
-def generateSuccesorStates(oldState):
+teller = 0
+
+def generateSuccesorStates(oldState, constraints):
     newStates = []
 
+
+
+
     # modulo numberOfColors
-    nextColor = str((oldState.g % 6) + 1)
+    nextColor = str((oldState.g %4) + 1)
+
+    bestValue = 10
+    bestVariable = None
 
     for vertex in oldState.vertices:
-        if not vertex.isColored() and nextColor in vertex.domain:
-            # for color in vertex.domain:
-            #     index = vertex.index
-            #     state = State(oldState.vertices)
-            #     #Assumption
-            #     state.vertices[index].domain = [color]
-            #     state.lastModifiedVertex = state.vertices[index]
-            #     newStates.append(state)
-            # Produce new state by copying parent state
-            state = State(oldState.vertices)
-            # Assumption
-            state.vertices[vertex.index].domain = [nextColor]
-            state.lastModifiedVertex = state.vertices[vertex.index]
-            newStates.append(state)
+        if not vertex.isColored():
+            if(bestValue > len(vertex.domain)):
+                bestVariable = vertex
+                bestValue = len(vertex.domain)
+
+
+
+    for color in bestVariable.domain:
+        #print("Domain : ", vertex.domain,". Next color is: ", [nextColor])
+        #print("Domain: ", vertex.domain,". Next color is: ", [nextColor])
+        # for color in vertex.domain:
+        #     index = vertex.index
+        #     state = State(oldState.vertices)
+        #     #Assumption
+        #     state.vertices[index].domain = [color]
+        #     state.lastModifiedVertex = state.vertices[index]
+        #     newStates.append(state)
+        # Produce new state by copying parent state
+        state = State(oldState.vertices)
+        # Assumption
+        state.vertices[bestVariable.index].domain = [color]
+        state.lastModifiedVertex = state.vertices[bestVariable.index]
+        newStates.append(state)
+        #
+        # mRerun(state,constraints)
+        # if not state.isError():
+        #
+        #     #break
+        #     if len(newStates) > 0:
+        #         return newStates
+
+
 
     return newStates
 
@@ -93,10 +119,11 @@ def paintSol(state):
     for vertex in state.vertices:
         drawVertex(vertex, False)
 
-# f = open('graph-color-1.txt', 'r')
-# f = open('spiral-500-4-color1.txt', 'r')
+
+#f = open('graph-color-1.txt', 'r')
+#f = open('spiral-500-4-color1.txt', 'r')
 f = open('rand-100-6-color1.txt', 'r')
-# f = open('graph-test.txt', 'r')
+#f = open('graph-test.txt', 'r')
 
 print (f)
 
@@ -137,7 +164,9 @@ for line in range(0,numberOfVertices):
 
     constraints.append({})
 
-    vert.domain = [str(i) for i in range(1, numberOfColors+1)]
+    vert.domain = []#[str(i) for i in range(1, numberOfColors+1)]
+    for number in range(1, numberOfColors+1):
+        vert.domain.append(str(number))
     vertices.append(vert)
     #drawVertex(vert)
 

@@ -41,8 +41,8 @@ def aStarAlgorithm(getNeighbours, h_func, initialState, paintSolution):
         currentTile = pop(open) #open.pop()
 
         redrawCounter += 1
-        if redrawCounter % 100 == 0:
-            paintSolution(currentTile)
+        #if redrawCounter % 10 == 0:
+        paintSolution(currentTile)
         print(currentTile.h)
 
         closed.append(currentTile)
