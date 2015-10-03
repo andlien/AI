@@ -5,7 +5,7 @@ class nonoState:
     def __init__(self, oldVertices):
         self.vertices = []
         for v in oldVertices:
-            vert = Variable(v.index,v.coord,v.rowOrColumn)
+            vert = Variable(v.index,v.coord)
             vert.domain = []
             for d in v.domain:
                 vert.domain.append(d.copy())

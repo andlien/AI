@@ -2,10 +2,9 @@ __author__ = 'Simen'
 
 
 class Variable:
-    def __init__(self,index,coord,rowOrColumn):
+    def __init__(self,index,coord):
         self.domain = []
         self.coord = coord
-        self.rowOrColumn = rowOrColumn #1 is row, 2 is column
         self.index = index
 
 

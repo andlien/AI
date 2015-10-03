@@ -1,12 +1,22 @@
 __author__ = 'Simen'
 from Module2.cspVertex import *
+from Module3.Variable import *
+
 class State:
-    def __init__(self, oldVertices):
+    def __init__(self, oldVertices, moduleNr):
         self.g = -1
         self.h = float("inf")
+        self.moduleNr = moduleNr
         self.vertices = []
         for v in oldVertices:
-            vert = Vertex(v.index,v.x,v.y)
+            vert = None
+            if moduleNr == 2:
+                vert = Vertex(v.index,v.x,v.y)
+            elif moduleNr == 3:
+                vert = Variable(v.index,v.coord)
+            else:
+                print("Unkown module!")
+
 
             for d in v.domain:
                 vert.domain.append(d)

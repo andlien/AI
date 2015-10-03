@@ -2,12 +2,13 @@ from Variable import *
 from nonogramGraphics import *
 from nonoState import *
 from random import randint
+from Module2.aStarGacProgram import *
 
 #f = open('nono-rabbit.txt', 'r')
-#f = open('nono-sailboat.txt4', 'r')
+f = open('nono-sailboat.txt', 'r')
 #f = open('nono-camel.txt', 'r')
 #f = open('nono-heart-1.txt', 'r')
-f = open('test2.txt', 'r')
+#f = open('test2.txt', 'r')
 #f = open('nono-cat.txt', 'r')
 
 #f = open('nono-telephone.txt', 'r')
@@ -92,7 +93,7 @@ def createDomainRecursive(currentDomain,remaningPlaces, restrictions, returnList
 
 
 #setDimensions(numberOfVertices)
-contraints = []
+constraints = []
 
 for line in range(0,numberOfRows):
         vertLine = f.readline()
@@ -105,9 +106,9 @@ for line in range(0,numberOfRows):
 
         coord =  numberOfRows - line -1
 
-        row = Variable(index,coord,1)
+        row = Variable(index,coord)
 
-        contraints.append({})
+        constraints.append({})
 
         domene = []
         tempDomain = []
@@ -118,7 +119,7 @@ for line in range(0,numberOfRows):
         #print(domene)
         rowsAndColumns.append(row)
         for column in range(0,numberOfColumns):
-            contraints[index][column + numberOfRows] = [[0,0], [1,1]]
+            constraints[index][column + numberOfRows] = [[0,0], [1,1]]
 
 print("Created all rows")
 
@@ -131,9 +132,9 @@ for line2 in range(0,numberOfColumns):
         index = line2 + numberOfRows
 
         coord = line2
-        row = Variable(index,coord,2)
+        row = Variable(index,coord)
 
-        contraints.append({})
+        constraints.append({})
 
         domene = []
         tempDomain = []
@@ -142,7 +143,7 @@ for line2 in range(0,numberOfColumns):
         row.domain = domene
         rowsAndColumns.append(row)
         for row in range(0,numberOfRows):
-            contraints[index][row] = [[0,0], [1,1]]
+            constraints[index][row] = [[0,0], [1,1]]
 
 
 # if d2[var1.coord] == d1[var2.coord]:
@@ -153,10 +154,10 @@ print("")
 #for c in contraints:
     #print(c)
 
-def drawState(state):
+def drawNonoGramState(state):
     for var in range(0,numberOfRows):
         row = state.vertices[var]
-        if row.isAssumed or True:
+        if row.isAssumed:
             for val in range(0,len(row.domain[0])):
                 drawBox(val,var, row.domain[0][val])
 
@@ -171,218 +172,141 @@ def drawState(state):
 
 
 #Initialization
-queue = []
+#queue = []
 
 
-for line in range(0,numberOfRows + numberOfColumns):
-        queue.append(rowsAndColumns[line])
+#for line in range(0,numberOfRows + numberOfColumns):
+#        queue.append(rowsAndColumns[line])
 
-def revise(vertex1,vertex2):
+def nonoGramRevise(constraints, vertex1,vertex2):
+
         revised = False
-        toBeRemoved = []
-        index = 0
-
-        #print("vertex1.index: " + str(vertex1.index))
-        #print("vertex.domain lengde: " +str(vertex1.index)+ " - " + str(len(vertex1.domain)))
-        if contraints[vertex1.index][vertex2.index] is None:
-                print("Breaking revise")
+        if constraints[vertex1.index][vertex2.index] is None:
                 return False
 
         for d1 in vertex1.domain:
-
-
                 domainChanged = False
-                #print("Var witj index " + str(vertex1.index))
-                #print("Comparing element: " + str(vertex2.coord) + "(its value is "+ str(d1[vertex2.coord]) + ") in row: " + str(d1))
                 for d2 in vertex2.domain:
-                        for const in contraints[vertex1.index][vertex2.index]:
-
-                        #print("d1[" + str(vertex2.coord) + "/" + str(len(d1)-1) + "]. D2[" + str( vertex1.coord) + "/"+ str(len(d2)-1) +"]")
-                        #print("Comparing: " + str(d1[vertex2.coord]) + " with " + str(d2[vertex1.coord]))
-                        #if d1[vertex2.coord] ==  d2[vertex1.coord]:
+                        for const in constraints[vertex1.index][vertex2.index]:
                                 if d1[vertex2.coord] == const[0] and d2[vertex1.coord] == const[1]:
-                                #print("ITs equal")
                                     domainChanged = True
-                                        #print("Puh, found a valid domain")
-                        #else:
-                            #print("Matching " + str(vertex1.coord) + " with " + str(vertex2.coord))
-                            #print("Mismatch ///////////////////////////////////////////////////////")
-                            #print(d1)
-                            #print(d2)
-                            #print("End ///////////////////////////////////////////////////////")
 
                 if not domainChanged:
-
-                        #print("Doamin to " +str(vertex1.index) +  str(vertex1.domain) + ". Removing: " + d1)
-                        #print("removing a domain from " + str(vertex1.index) + ". Is " + str(vertex1.rowOrColumn))
-
-                        #print("Domain before: " + str(vertex1.domain))
-                        #print("Domain to be removed: " + str(d1) + " from " + str(vertex1.index))
-
-                        #vertex1.domain.remove(d1)
-                        vertex1.domain.pop(index)
-                        if index not in toBeRemoved:
-                            toBeRemoved.append(d1)
-                        if len(vertex1.domain) == 0:
-                            print("Lengden av domenet er 0!!!!!!!!!!!")
-                            return
-
-
-                       #print("Domain after: " + str(vertex1.domain))
-                        #print("Doamin to " +str(vertex1.index)+  str(vertex1.domain))
-                        #print("vertex.domain lengde: " + str(len(vertex1.domain)) + " for vertex " + str(vertex1.index) + " fordi den krasjer med " + str(vertex2.index))
+                        vertex1.domain.remove(d1)
                         revised = True
-                        #getWindow().getMouse()
-                index = index +1
-                #print("-")
-
-        # for i in toBeRemoved:
-        #     print("Popping domain with index " + str(i) + ". Domain lenght is " + str(len(vertex1.domain)))
-        #     vertex1.domain.remove(i)
-        #     if len(vertex1.domain) == 0:
-        #             print("Lengden av domenet er 0!!!!!!!!!!!")
 
         return revised
 
 #The Domain-Filtering Loop
-def domainFiltering(queue, stateVertices):
-
-        while len(queue) >= 1:
-
-                todoReviseVertex = queue.pop(0)
-                for const in contraints[todoReviseVertex.index]:
-                        neighbour = stateVertices[const]
-
-                        change = revise(todoReviseVertex,neighbour)
-                        if change:
-                                for v5 in contraints[todoReviseVertex.index]:
-                                        if stateVertices[v5] not in queue:
-                                                queue.append(stateVertices[v5])
-                                        #else:
-                                            #print(" hei hei he hei ih ihasd asdad a sd ")
-
-
-
-def generateSuccesorStates(vertices):
-        newStates = []
-
-        for vertex in vertices:
-                if not vertex.isAssumed():
-                        for color in vertex.domain:
-                                index = vertex.index
-                                state = nonoState(vertices)
-                                state.vertices[index].domain = [color]
-                                state.lastModifiedVertex = state.vertices[index]
-                                newStates.append(state)
-
-
-        return newStates
-
-
-
-
-
-
-
-# contraints = []
-# contraints.append({})
-# contraints.append({})
-# contraints[0][1] = [[0,0], [1,1]]
-# contraints[1][0] = [[0,0], [1,1]]
+# def domainFiltering(queue, stateVertices):
 #
-# print("row")
-# row = Variable(0,2,1)
-# domene = []
-# tempDomain = []
-# hei(tempDomain,10-1,[2,1,3],domene)
-# row.domain = list(reversed(domene))
+#         while len(queue) >= 1:
 #
-# print(row.domain)
-# print("Lenge: " + str(len(row.domain)))
+#                 todoReviseVertex = queue.pop(0)
+#                 for const in contraints[todoReviseVertex.index]:
+#                         neighbour = stateVertices[const]
+#
+#                         change = revise(todoReviseVertex,neighbour)
+#                         if change:
+#                                 for v5 in contraints[todoReviseVertex.index]:
+#                                         if stateVertices[v5] not in queue:
+#                                                 queue.append(stateVertices[v5])
+#                                         #else:
+#                                             #print(" hei hei he hei ih ihasd asdad a sd ")
 #
 #
-# print("Column")
-# column = Variable(1,6,2)
-# domene = []
-# tempDomain = []
-# hei(tempDomain,10-1,[3,4],domene)
-# column.domain = list(reversed(domene))
 #
-# print(column.domain)
-# print("Lenge: " + str(len(column.domain)))
+# def generateSuccesorStates(vertices):
+#         newStates = []
+#
+#         for vertex in vertices:
+#                 if not vertex.isAssumed():
+#                         for color in vertex.domain:
+#                                 index = vertex.index
+#                                 state = nonoState(vertices)
+#                                 state.vertices[index].domain = [color]
+#                                 state.lastModifiedVertex = state.vertices[index]
+#                                 newStates.append(state)
 #
 #
-# domainFiltering([row],[row,column])
-print("Running init")
-print("")
-#getWindow().getMouse()
-domainFiltering(queue,rowsAndColumns)
-
-print("Init done")
-#getWindow().getMouse()
-currentState = nonoState(rowsAndColumns)
-
-
-#getWindow().getMouse()
-
-
-drawState(currentState)
-
-if currentState.isFinished():
-    print("Solution found. No need for A*")
-else:
-    print("Done with init, but no solution yet. Running A*")
-while not currentState.isFinished():
-#for tall in range(0,100000):
-
-        #vert = vertices[tall]
-        #print("Doamin to " + str(tall) + " is " + str(vert.domain))
-
-
-        #color = vert.domain[0]
-        #vert.domain = [color]
-        newStates = generateSuccesorStates(currentState.vertices)
-        print("Lengden: " + str(len(newStates)))
-
-        #getWindow().getMouse()
-        if len(newStates) == 0:
-                print("breaking")
-                currentState = nonoState(rowsAndColumns)
-                getWindow().getMouse()
-                continue
-        currentState = newStates[randint(0,len(newStates)-1)]
-        canContinue = False
-
-        drawState(currentState)
-        vert = currentState.lastModifiedVertex
-        queue = []
-        for connectedVertex in contraints[vert.index]:
-                if connectedVertex not in queue and not currentState.vertices[connectedVertex].isAssumed():
-                        queue.append(currentState.vertices[connectedVertex])
+#         return newStates
 
 
 
+aStarGAC(3, rowsAndColumns, constraints, drawNonoGramState, nonoGramRevise)
+
+# print("Running init")
+# print("")
+# #getWindow().getMouse()
+# domainFiltering(queue,rowsAndColumns)
+#
+# print("Init done")
+# #getWindow().getMouse()
+# currentState = nonoState(rowsAndColumns)
+#
+#
+# #getWindow().getMouse()
+#
+#
+# drawState(currentState)
+#
+# if currentState.isFinished():
+#     print("Solution found. No need for A*")
+# else:
+#     print("Done with init, but no solution yet. Running A*")
+# while not currentState.isFinished():
+# #for tall in range(0,100000):
+#
+#         #vert = vertices[tall]
+#         #print("Doamin to " + str(tall) + " is " + str(vert.domain))
+#
+#
+#         #color = vert.domain[0]
+#         #vert.domain = [color]
+#         newStates = generateSuccesorStates(currentState.vertices)
+#         print("Lengden: " + str(len(newStates)))
+#
+#         #getWindow().getMouse()
+#         if len(newStates) == 0:
+#                 print("breaking")
+#                 currentState = nonoState(rowsAndColumns)
+#                 getWindow().getMouse()
+#                 continue
+#         currentState = newStates[randint(0,len(newStates)-1)]
+#         canContinue = False
+#
+#         drawState(currentState)
+#         vert = currentState.lastModifiedVertex
+#         queue = []
+#         for connectedVertex in contraints[vert.index]:
+#                 if connectedVertex not in queue and not currentState.vertices[connectedVertex].isAssumed():
+#                         queue.append(currentState.vertices[connectedVertex])
+#
+#
+#
+#
+#
+#
+# #         domainFiltering(queue,currentState.vertices)
+# #
+#
+# #Rerun
+#
+#
+#
+#
+#         if currentState.isError():
+#                 currentState = nonoState(rowsAndColumns)
+#                 print("Going back a level")
+#         elif currentState.isFinished():
+#             print("Am i finished now?")
+#             #getWindow().getMouse()
+#
+#
+#         print("- ")
 
 
 
-        domainFiltering(queue,currentState.vertices)
 
-
-#Rerun
-
-
-
-
-        if currentState.isError():
-                currentState = nonoState(rowsAndColumns)
-                print("Going back a level")
-        elif currentState.isFinished():
-            print("Am i finished now?")
-            #getWindow().getMouse()
-
-
-        print("- ")
-
-drawState(currentState)
 
 getWindow().getMouse()

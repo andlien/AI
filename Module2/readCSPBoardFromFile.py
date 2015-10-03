@@ -2,125 +2,17 @@ from Module2.state import *
 from Module2.cspGrid import *
 from Module2.aStarGacProgram import aStarGAC
 
-numberOfColors = 6
+numberOfColors = 4
 
-def revise(constraints, vertex1,vertex2):
-    revised = False
-
-    if constraints[vertex1.index][vertex2.index] is None:
-        return False
-
-    for d1 in vertex1.domain:
-        domainChanged = False
-        for d2 in vertex2.domain:
-            for const in constraints[vertex1.index][vertex2.index]:
-                if d1 == const[0] and d2 == const[1]:
-                    domainChanged = True
-
-        if not domainChanged:
-            # print("Doamin to " +str(vertex1.index) +  str(vertex1.domain) + ". Removing: " + str(d1))
-            vertex1.domain.remove(d1)
-            # print("Doamin to " +str(vertex1.index)+  str(vertex1.domain))
-            revised = True
+lastState = []
 
 
 
-    return revised
-
-#Initialize
-def mGACInitialize(vertices, constraints):
-    queue = []
-    for vertex in constraints:
-        for connectedVertex in vertex:
-            if connectedVertex not in queue:
-                queue.append(vertices[connectedVertex])
-    return queue
-
-#The Domain-Filtering Loop
-def domainFiltering(queue, stateVertices, contraints):
-    while len(queue) >= 1:
-        todoReviseVertex = queue.pop(0)
-        #queue.remove(todoReviseVertex)
-        for const in contraints[todoReviseVertex.index]:
-            neighbour = stateVertices[const]
-            change = revise(constraints, todoReviseVertex,neighbour)
-            if change:
-                for v in contraints[todoReviseVertex.index]:
-                    if stateVertices[v] not in queue:
-                        queue.append(stateVertices[v])
 
 
-teller = 0
-
-def generateSuccesorStates(oldState, constraints):
-    newStates = []
-
-    bestValue = 10
-    bestVariable = None
-
-
-    for vertex in oldState.vertices:
-        if not vertex.isColored():
-            if(bestValue > len(vertex.domain)):
-                bestVariable = vertex
-                bestValue = len(vertex.domain)
-
-
-
-    for color in bestVariable.domain:
-        #print("Domain : ", vertex.domain,". Next color is: ", [nextColor])
-        #print("Domain: ", vertex.domain,". Next color is: ", [nextColor])
-        # for color in vertex.domain:
-        #     index = vertex.index
-        #     state = State(oldState.vertices)
-        #     #Assumption
-        #     state.vertices[index].domain = [color]
-        #     state.lastModifiedVertex = state.vertices[index]
-        #     newStates.append(state)
-        # Produce new state by copying parent state
-        state = State(oldState.vertices)
-        # Assumption
-        state.vertices[bestVariable.index].domain = [color]
-        state.lastModifiedVertex = state.vertices[bestVariable.index]
-        newStates.append(state)
-        #
-        # mRerun(state,constraints)
-        # if not state.isError():
-        #
-        #     #break
-        #     if len(newStates) > 0:
-        #         return newStates
-
-
-
-    return newStates
-
-
-def mRerun(currentState, constraints):
-    #Rerun
-    queue = []
-    for connectedVertex in constraints[currentState.lastModifiedVertex.index]:
-        if connectedVertex not in queue and not currentState.vertices[connectedVertex].isColored():
-            queue.append(currentState.vertices[connectedVertex])
-
-    domainFiltering(queue,currentState.vertices, constraints)
-
-def aStarH(node):
-    summen = 0
-    for v in node.vertices:
-        if not v.isColored():
-            summen += len(v.domain)
-    return summen
-
-def paintSol(state):
-    for vertex in state.vertices:
-        drawVertex(vertex, False)
-
-
-
-f = open('graph-color-1.txt', 'r')
-#f = open('spiral-500-4-color1.txt', 'r')
-f = open('rand-100-6-color1.txt', 'r')
+#f = open('graph-color-1.txt', 'r')
+f = open('spiral-500-4-color1.txt', 'r')
+#f = open('rand-100-6-color1.txt', 'r')
 # f = open('graph-test.txt', 'r')
 
 
@@ -152,7 +44,7 @@ constraints = []
 
 for line in range(0,numberOfVertices):
     vertLine = f.readline()
-    print(vertLine)
+    #print(vertLine)
     values = vertLine.split()
     index = int(values[0])
     x = float(values[1])
@@ -188,9 +80,28 @@ print ("Created " + str(line) + " edges")
 
 print( str(constraints) )
 
+lastState = []
+
 for vert in vertices:
+    lastState.append("notSet")
     drawVertex(vert,False)
 
+print("lastState: " , lastState)
 
-aStarGAC(vertices, constraints, mGACInitialize, domainFiltering, generateSuccesorStates, mRerun, aStarH, paintSol)
+def paintBoard(state):
+    global lastState
+    #newState = []
+
+
+    for tall in range(0,len(state.vertices)):
+        vertex = state.vertices[tall]
+        if vertex.isColored():
+            if str(lastState[tall]) == str(vertex.getColor()):
+                continue
+            else:
+                drawVertex(vertex, False)
+                lastState[tall] = vertex.getColor()
+
+
+aStarGAC(2,vertices, constraints, paintBoard)
 getWindow().getMouse()
