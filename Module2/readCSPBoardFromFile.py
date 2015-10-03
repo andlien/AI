@@ -83,7 +83,7 @@ print( str(constraints) )
 lastState = []
 
 for vert in vertices:
-    lastState.append("notSet")
+    lastState.append("noValue")
     drawVertex(vert,False)
 
 print("lastState: " , lastState)
@@ -101,6 +101,12 @@ def paintBoard(state):
             else:
                 drawVertex(vertex, False)
                 lastState[tall] = vertex.getColor()
+
+        else:
+            if not lastState[tall] == "noValue":
+                drawVertex(vertex, False)
+                print("Ja, det skjer!")
+            lastState[tall] = "noValue"
 
 
 aStarGAC(2,vertices, constraints, paintBoard)
