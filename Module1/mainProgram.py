@@ -1,93 +1,19 @@
-from examples import *
+from Module1.examples import *
 from time import sleep
+from Module2.cspGrid import getWindow
+from Module1.aStarProgram import aStarAlgorithm
 
-def aStarAlgorithm(getNeighbours):
-    open = []
-    closed = []
-
-    #createBoard()
-    #createDemo()
-    createExample2()
-    setHInAllNodes()
-
-    startNode = getStartNode()
-    startNode.g = 0
-
-    open.append(startNode)
-
-    redrawCounter = 0
-
-    while True:
-
-
-        if len(open) == 0:
-            print("No goal found")
-            return
-
-        currentTile = pop(open) #open.pop()
-
-        if redrawCounter % 10 == 0:
-            paintBestPathFromcurrentNode(currentTile)
-            #sleep(0.005)
-            dedrawBestPathFromcurrentNode(currentTile)
-
-        redrawCounter +=1
-
-        closed.append(currentTile)
-        currentTile.isTraversed = True
-        drawBox(currentTile)
-        #redrawBoard()
-        #
-
-        if currentTile.isGoal:
-            break
-
-        succ = getNeighbours(currentTile)
-
-        for node in succ:
-
-            #First time node is visited
-            if node not in open and node not in closed:
-                node.parent = currentTile
-                node.isObserved = True
-                node.g = currentTile.g + 1
-                open.append(node)
-                drawBox(node)
-            elif currentTile.g + 1 < node.g:
-                node.parent = currentTile
-                # node.g = currentTile.g + actual_path_cost
-                node.g = currentTile.g + 1
-                if node in closed:
-                    propagateBetterPath(node)
-
-    paintBestPath()
-
-
-def pop(open):
-    bestNode = None
-    bestCost = float("inf")
-
-    for node in open:
-        cost = node.g + node.h
-        if cost < bestCost:
-            bestNode = node
-            bestCost = cost
-
-    open.remove(bestNode)
-    return bestNode
-
-def paintBestPath():
-    t = getGoalNode()
+def paintBestPath(t):
     while t.parent is not None:
         t.isShortestPath = True
         #drawBox(t)
-        drawShortestPathNode(t)
+        drawShortestPathNode(t.x, t.y)
         t = t.parent
 
 def paintBestPathFromcurrentNode(currentNode):
     t = currentNode
     while t.parent is not None:
-        drawShortestPathNode(t)
+        drawShortestPathNode(t.x, t.y)
         t = t.parent
 
 def dedrawBestPathFromcurrentNode(currentNode):
@@ -97,7 +23,9 @@ def dedrawBestPathFromcurrentNode(currentNode):
         t = t.parent
 
 
-aStarAlgorithm(getSurroundingTiles)
-getWindow().getMouse()
+createExample2()
+aStarAlgorithm(getSurroundingTiles, manhattenDistToGoalNode, Node.startNode, paintBestPath)
+# getWindow().getMouse()
 #win.getMouse()
+
 

@@ -1,6 +1,6 @@
 from graphics import *
 from random import randint
-from cspVertex import *
+from Module2.cspVertex import *
 
 
 height = 9
@@ -8,7 +8,6 @@ width = 9
 size = 1
 
 isCentreInTheMidle = False
-
 
 def getWindow():
     return win
