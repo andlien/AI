@@ -6,8 +6,8 @@ from random import randint
 #f = open('nono-rabbit.txt', 'r')
 #f = open('nono-sailboat.txt4', 'r')
 #f = open('nono-camel.txt', 'r')
-f = open('nono-heart-1.txt', 'r')
-#f = open('test.txt', 'r')
+#f = open('nono-heart-1.txt', 'r')
+f = open('test2.txt', 'r')
 #f = open('nono-cat.txt', 'r')
 
 #f = open('nono-telephone.txt', 'r')

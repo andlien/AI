@@ -24,6 +24,12 @@ class Vertex:
         elif colorKey == 5:
             return "orange"
         elif colorKey == 6:
-            return "grey"
+            return "dark blue"
         elif colorKey == 7:
+            return "light blue"
+        elif colorKey == 8:
+            return "dark red"
+        elif colorKey == 9:
+            return "pink"
+        elif colorKey == 10:
             return "black"
