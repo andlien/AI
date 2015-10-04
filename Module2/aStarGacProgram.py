@@ -85,7 +85,7 @@ def generateSuccesorStates(oldState,moduleNr):
 
     for vertex in oldState.vertices:
         if not vertex.isAssumed():
-            if(bestValue > len(vertex.domain)):
+            if bestValue > len(vertex.domain):
                 bestVariable = vertex
                 bestValue = len(vertex.domain)
 
@@ -128,6 +128,7 @@ def revise(constraints, vertex1,vertex2):
             for const in constraints[vertex1.index][vertex2.index]:
                 if d1 == const[0] and d2 == const[1]:
                     domainChanged = True
+                    break
 
         if not domainChanged:
             # print("Doamin to " +str(vertex1.index) +  str(vertex1.domain) + ". Removing: " + str(d1))

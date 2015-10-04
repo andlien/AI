@@ -1,6 +1,6 @@
-from Variable import *
-from nonogramGraphics import *
-from nonoState import *
+from Module3.Variable import *
+from Module3.nonogramGraphics import *
+from Module3.nonoState import *
 from random import randint
 from Module2.aStarGacProgram import *
 
