@@ -10,6 +10,3 @@ class Variable:
 
     def isAssumed(self):
         return len(self.domain) == 1
-
-    def getRowOrColumn(self):
-        return self.rowOrColumn
