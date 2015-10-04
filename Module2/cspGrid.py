@@ -7,6 +7,9 @@ height = 9
 width = 9
 size = 1
 
+redrawCounter = 0
+runningStrings = ["Running   ","Running.  ","Running.. ","Running...","Running...."]
+
 isCentreInTheMidle = False
 
 def getWindow():
@@ -45,9 +48,11 @@ def setDimensions(numberOfVertices):
 
 
 
+
 def drawVertex(vertex, fancyBorder):
     #head2 = Rectangle(Point(node.x*size +5,height*size - node.y*size - size+5), Point( node.x*size + size+5,height*size - node.y*size +5)) # set center and radius
     #head2 = Circle(Point(vertex.x*size, vertex.y*size), 5)
+
 
     if isCentreInTheMidle:
          head2 = Circle(Point(vertex.x*size + 25 + height/2 ,width/2 - vertex.y*size), 5)
@@ -85,3 +90,17 @@ def drawEdge(vertex1,vertex2):
     head2.setOutline(color_rgb(color, color, color))
     head2.setWidth(1)
     head2.draw(win)
+
+
+def drawInfoText(generated, expandend,solutionPath):
+    label = Text(Point(110, 30), 'Nodes generated: ' + str(generated))
+    label.setSize(20)
+    label.draw(win)
+
+    label = Text(Point(110, 60), 'Nodes expanded: ' + str(expandend))
+    label.setSize(20)
+    label.draw(win)
+
+    label = Text(Point(140, 90), 'Nodes in solutions path: ' + str(solutionPath))
+    label.setSize(20)
+    label.draw(win)
