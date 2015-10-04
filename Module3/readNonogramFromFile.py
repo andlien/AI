@@ -116,7 +116,7 @@ def nonoGramRevise(constraints, vertex1,vertex2):
 
 
 
-def startModule3():
+while True:
 
     while True:
         prompt = input("Please type in the path to your file and press 'Enter': ")
@@ -202,7 +202,3 @@ def startModule3():
     aStarGAC(3, rowsAndColumns, constraints, drawNonoGramState, nonoGramRevise)
     getWindow().getMouse()
     getWindow().close()
-    startModule3()
-
-
-startModule3()
