@@ -1,5 +1,5 @@
 __author__ = 'Anders'
-def aStarAlgorithm(getNeighbours, h_func, initialState, paintSolution):
+def aStarAlgorithm(getNeighbours, h_func, initialState, paint, pop=None):
 
     def propagateBetterPath(node):
         possibleKids = getNeighbours(node)
@@ -8,19 +8,8 @@ def aStarAlgorithm(getNeighbours, h_func, initialState, paintSolution):
                 kid.g = kid.parent.g + 1
                 propagateBetterPath(kid)
 
-    def pop(open):
-        bestNode = None
-        bestCost = float("inf")
-
-        for node in open:
-            cost = node.h + node.g
-            if cost < bestCost:
-                bestNode = node
-                bestCost = cost
-
-        open.remove(bestNode)
-        # print("Bestnode has f=", bestCost)
-        return bestNode
+    if pop is None:
+        pop = standardPop
 
     open = []
     closed = []
@@ -48,13 +37,13 @@ def aStarAlgorithm(getNeighbours, h_func, initialState, paintSolution):
 
         redrawCounter += 1
         #if redrawCounter % 10 == 0:
-        paintSolution(currentTile)
-        #print(currentTile.h)
+        paint(currentTile)
 
         closed.append(currentTile)
 
         if currentTile.isGoal():
-            paintSolution(currentTile)
+            print("GOAAAAAL")
+
             numberOfNodesInSolutionPath = 1
             t = currentTile
             while t.parent is not None:
@@ -91,3 +80,16 @@ def aStarAlgorithm(getNeighbours, h_func, initialState, paintSolution):
                 if kid in closed:
                     propagateBetterPath(kid)
 
+def standardPop(open):
+    bestNode = None
+    bestCost = float("inf")
+
+    for node in open:
+        cost = node.h + node.g
+        if cost < bestCost:
+            bestNode = node
+            bestCost = cost
+
+    open.remove(bestNode)
+    # print("Bestnode has f=", bestCost)
+    return bestNode

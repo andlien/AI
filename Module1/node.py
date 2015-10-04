@@ -1,6 +1,5 @@
 class Node:
     startNode = None
-    goalNode = None
 
     goalX = -1
     goalY = -1
