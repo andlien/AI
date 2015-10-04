@@ -148,12 +148,15 @@ while True:
     constraints = []
 
     for line in range(0,numberOfRows):
-            vertLine = f.readline()
+            # vertLine = f.readline()
+            #
+            # values = ( vertLine.split( ) )
+            # intValues = []
+            # for v in range(0,len(values)):
+            #     intValues.append(int(values[v]))
 
-            values = ( vertLine.split( ) )
-            intValues = []
-            for v in range(0,len(values)):
-                intValues.append(int(values[v]))
+            intValues = [int(i) for i in f.readline().split()]
+
             index = line
 
             coord =  numberOfRows - line -1
@@ -176,11 +179,12 @@ while True:
     print("Created all rows")
 
     for line2 in range(0,numberOfColumns):
-            vertLine = f.readline()
-            values = ( vertLine.split( ) )
-            intValues = []
-            for v in range(0,len(values)):
-                intValues.append(int(values[v]))
+            # vertLine = f.readline()
+            # values = ( vertLine.split( ) )
+            # intValues = []
+            # for v in range(0,len(values)):
+            #     intValues.append(int(values[v]))
+            intValues = [int(i) for i in f.readline().split()]
             index = line2 + numberOfRows
 
             coord = line2
@@ -199,7 +203,8 @@ while True:
 
     print("Created all columns")
     print("")
+    f.close()
 
-    aStarGAC(3, rowsAndColumns, constraints, drawNonoGramState, nonoGramRevise)
+    aStarGAC(3, rowsAndColumns, constraints, drawNonoGramState, GAC_Revise=nonoGramRevise)
     getWindow().getMouse()
     getWindow().close()

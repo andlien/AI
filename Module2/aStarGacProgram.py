@@ -3,65 +3,44 @@ from Module1.aStarProgram import aStarAlgorithm
 from Module2.state import State
 
 
+def aStarGAC(moduleNr,
+             variables,
+             constraints,
+             paintProgress,
+             GAC_Initialize = None,
+             GAC_Domain_Filter = None,
+             GAC_Revise = None,
+             GAC_Rerun = None,
+             GAC_Generate_Successors=None):
 
-# def aStarGAC(moduleNr,variables, constraints, GAC_init, GAC_domain_filter, GAC_gen_new_states, GAC_rerun, aStarH, paintProgress):
-#     def AStar_generate_successors(currentState):
-#         mNewStates = GAC_gen_new_states(currentState,constraints,moduleNr)
-#         #return mNewStates
-#         returnStates = []
-#
-#
-#         for state in mNewStates:
-#             GAC_rerun(state, constraints)
-#             if not state.isError():
-#                 #mNewStates.remove(state)
-#                 returnStates.append(state)
-#
-#         return returnStates#mNewStates
-#
-#     queue = GAC_init(variables, constraints)
-#     GAC_domain_filter(queue,variables, constraints)
-#     currentState = State(variables)
-#     aStarAlgorithm(AStar_generate_successors, aStarH, currentState, paintProgress)
-#
-#
-# def aStarGAC(moduleNr,variables, constraints,paintProgress):
-#     def AStar_generate_successors(currentState):
-#         mNewStates = generateSuccesorStates(currentState,moduleNr)
-#         returnStates = []
-#
-#         for state in mNewStates:
-#             rerun(state, constraints, revise)
-#             if not state.isError():
-#                 #mNewStates.remove(state)
-#                 returnStates.append(state)
-#
-#         return returnStates#mNewStates
-#
-#     queue = GACInitialize(variables, constraints)
-#     domainFiltering(queue,variables, constraints,revise)
-#     currentState = State(variables)
-#     aStarAlgorithm(AStar_generate_successors, aStarGetH, currentState, paintProgress)
-
-def aStarGAC(moduleNr,variables, constraints, paintProgress, GAC_Revise = None):
-
+    # If custom functions are not defined, go default
     if GAC_Revise is None:
         GAC_Revise = revise
+    if GAC_Initialize is None:
+        GAC_Initialize = mGACInit
+    if GAC_Domain_Filter is None:
+        GAC_Domain_Filter = domainFiltering
+    if GAC_Rerun is None:
+        GAC_Rerun = rerun
+    if GAC_Generate_Successors is None:
+        GAC_Generate_Successors = generateSuccesorStates
 
+    # The function that generates neighbours/successors in A*
+    # Generates states, and revises them as far as possible
     def AStar_generate_successors(currentState):
-        mNewStates = generateSuccesorStates(currentState,moduleNr)
+        mNewStates = GAC_Generate_Successors(currentState,moduleNr)
         returnStates = []
 
         for state in mNewStates:
-            rerun(state, constraints,GAC_Revise)
+            GAC_Rerun(state, constraints,GAC_Revise)
             if not state.isError():
                 returnStates.append(state)
 
         return returnStates
 
 
-    queue = GACInitialize(variables, constraints)
-    domainFiltering(queue,variables, constraints,GAC_Revise)
+    queue = GAC_Initialize(variables, constraints)
+    GAC_Domain_Filter(queue,variables, constraints,GAC_Revise)
     currentState = State(variables,moduleNr)
     print(" ")
     print("Init done")
@@ -148,7 +127,7 @@ def revise(constraints, vertex1,vertex2):
     return revised
 
 #Initialize
-def GACInitialize(vertices, constraints):
+def mGACInit(vertices, constraints):
     queue = []
     for vertex in constraints:
         for connectedVertex in vertex:
@@ -157,7 +136,7 @@ def GACInitialize(vertices, constraints):
     return queue
 
 def getNumberOfUnsatisfiedConstraints(stateVertices, constraints, GAC_Revise):
-    queue = GACInitialize(stateVertices, constraints)
+    queue = mGACInit(stateVertices, constraints)
     counter = 0
     while len(queue) >= 1:
         todoReviseVertex = queue.pop(0)

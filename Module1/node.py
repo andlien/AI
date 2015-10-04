@@ -1,4 +1,6 @@
 class Node:
+
+    # "static" variables to keep track of start and goal
     startNode = None
 
     goalX = -1
@@ -10,15 +12,7 @@ class Node:
 
         self.h = float("inf")
         self.g = -1
-
-
-        self.isObstacle = False
-        self.isGoala = False
-        self.isStart = False
-        self.isObserved = False
-        self.isTraversed = False
         self.parent = None
-        self.isShortestPath = False
 
     def __eq__(self, other):
         if isinstance(other, self.__class__):

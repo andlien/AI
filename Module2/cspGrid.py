@@ -8,7 +8,6 @@ width = 9
 size = 1
 
 redrawCounter = 0
-runningStrings = ["Running   ","Running.  ","Running.. ","Running...","Running...."]
 
 isCentreInTheMidle = False
 
@@ -39,11 +38,9 @@ def setDimensions(numberOfVertices):
         height = 900
         isCentreInTheMidle = False
 
-
-
     numberOfNodes = height * width
 
-    win = GraphWin('A*', height+5, width+5)
+    win = GraphWin('A*-GAC', height+5, width+5)
 
 
 
