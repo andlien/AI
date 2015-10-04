@@ -13,7 +13,7 @@ def aStarAlgorithm(getNeighbours, h_func, initialState, paintSolution):
         bestCost = float("inf")
 
         for node in open:
-            cost = node.h
+            cost = node.h + node.g
             if cost < bestCost:
                 bestNode = node
                 bestCost = cost

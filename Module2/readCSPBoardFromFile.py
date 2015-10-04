@@ -6,17 +6,11 @@ numberOfColors = 4
 
 lastState = []
 
-
-
-
-
-f = open('graph-color-1.txt', 'r')
-#f = open('spiral-500-4-color1.txt', 'r')
-#f = open('rand-100-6-color1.txt', 'r')
+# f = open('graph-color-1.txt', 'r')
+f = open('spiral-500-4-color1.txt', 'r')
+# f = open('rand-100-6-color1.txt', 'r')
 # f = open('graph-test.txt', 'r')
 
-
-#print (f)
 
 firstLine = f.readline()
 values = firstLine.split()
@@ -80,10 +74,10 @@ print ("Created " + str(line) + " edges")
 
 
 
-lastState = []
+f.close()
 
 for vert in vertices:
-    lastState.append("noValue")
+    lastState.append(None)
     drawVertex(vert,False)
 
 
@@ -102,9 +96,9 @@ def paintBoard(state):
                 lastState[tall] = vertex.getColor()
 
         else:
-            if not lastState[tall] == "noValue":
+            if not lastState[tall] is None:
                 drawVertex(vertex, False)
-            lastState[tall] = "noValue"
+
 
 
 def paintStatus(generated, expandend,solutionPath):
