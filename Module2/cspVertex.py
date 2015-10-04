@@ -6,7 +6,7 @@ class Vertex:
         #self.connectedTo = []
         self.domain = []
 
-    def isColored(self):
+    def isAssumed(self):
         return len(self.domain) == 1
 
     # def __eq__(self, other):

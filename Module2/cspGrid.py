@@ -54,7 +54,7 @@ def drawVertex(vertex, fancyBorder):
     else:
          head2 = Circle(Point(vertex.x*size + 200  , vertex.y*size + 200), 5)
 
-    if vertex.isColored():
+    if vertex.isAssumed():
         head2.setFill(vertex.getColor())
     else:
         head2.setFill("white")

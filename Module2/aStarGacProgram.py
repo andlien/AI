@@ -68,6 +68,8 @@ def aStarGAC(moduleNr,variables, constraints, paintProgress,GAC_Revise = None):
     if currentState.isGoal():
         print("Solution found. No need for A*")
         paintProgress(currentState)
+    elif currentState.isError():
+        print("No solutiion found. Aborting")
     else:
         print("Done with init, but no solution yet. Running A*")
         aStarAlgorithm(AStar_generate_successors, aStarGetH, currentState, paintProgress)
@@ -82,7 +84,7 @@ def generateSuccesorStates(oldState,moduleNr):
 
 
     for vertex in oldState.vertices:
-        if not vertex.isColored():
+        if not vertex.isAssumed():
             if(bestValue > len(vertex.domain)):
                 bestVariable = vertex
                 bestValue = len(vertex.domain)
@@ -100,7 +102,7 @@ def rerun(currentState, constraints,GAC_Revise):
     #Rerun
     queue = []
     for connectedVertex in constraints[currentState.lastModifiedVertex.index]:
-        if connectedVertex not in queue and not currentState.vertices[connectedVertex].isColored():
+        if connectedVertex not in queue and not currentState.vertices[connectedVertex].isAssumed():
             queue.append(currentState.vertices[connectedVertex])
 
     domainFiltering(queue,currentState.vertices, constraints,GAC_Revise)
@@ -108,7 +110,7 @@ def rerun(currentState, constraints,GAC_Revise):
 def aStarGetH(node):
     sum = 0
     for v in node.vertices:
-        if not v.isColored():
+        if not v.isAssumed():
             sum += len(v.domain)
     return sum
 

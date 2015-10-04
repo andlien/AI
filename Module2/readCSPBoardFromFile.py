@@ -10,8 +10,8 @@ lastState = []
 
 
 
-#f = open('graph-color-1.txt', 'r')
-f = open('spiral-500-4-color1.txt', 'r')
+f = open('graph-color-1.txt', 'r')
+#f = open('spiral-500-4-color1.txt', 'r')
 #f = open('rand-100-6-color1.txt', 'r')
 # f = open('graph-test.txt', 'r')
 
@@ -95,7 +95,7 @@ def paintBoard(state):
 
     for tall in range(0,len(state.vertices)):
         vertex = state.vertices[tall]
-        if vertex.isColored():
+        if vertex.isAssumed():
             if str(lastState[tall]) == str(vertex.getColor()):
                 continue
             else:

@@ -5,7 +5,7 @@ from random import randint
 from Module2.aStarGacProgram import *
 
 #f = open('nono-rabbit.txt', 'r')
-f = open('nono-sailboat.txt', 'r')
+# #f = open('nono-sailboat.txt', 'r')
 #f = open('nono-camel.txt', 'r')
 #f = open('nono-heart-1.txt', 'r')
 #f = open('test2.txt', 'r')
@@ -34,32 +34,10 @@ f = open('nono-sailboat.txt', 'r')
 #
 #
 #
-# while True:
-#     prompt = input("Please type in the path to your file and press 'Enter': ")
-#     try:
-#         f = open(prompt + ".txt", 'r')
-#     except FileNotFoundError:
-#         print("Wrong file or file path")
-#     else:
-#         break
+
 
 #print (f)
 
-firstLine = f.readline()
-values = ( firstLine.split( ) )
-
-numberOfColumns= int(values[0])
-numberOfRows= int(values[1])
-print("")
-print("numberOfRows: " + str(numberOfRows))
-print("numberOfColumns: " + str(numberOfColumns))
-print("")
-
-rowsAndColumns = []
-rows = []
-columns = []
-
-setDimensions( numberOfColumns, numberOfRows )
 
 def createDomainRecursive(currentDomain,remaningPlaces, restrictions, returnList):
     for i in range(0,2): #Block can either be blank(0) or filled with the next block
@@ -92,70 +70,8 @@ def createDomainRecursive(currentDomain,remaningPlaces, restrictions, returnList
 
 
 
-#setDimensions(numberOfVertices)
-constraints = []
-
-for line in range(0,numberOfRows):
-        vertLine = f.readline()
-
-        values = ( vertLine.split( ) )
-        intValues = []
-        for v in range(0,len(values)):
-            intValues.append(int(values[v]))
-        index = line
-
-        coord =  numberOfRows - line -1
-
-        row = Variable(index,coord)
-
-        constraints.append({})
-
-        domene = []
-        tempDomain = []
-
-        createDomainRecursive(tempDomain,numberOfColumns-1,intValues,domene)
-
-        row.domain = domene
-        #print(domene)
-        rowsAndColumns.append(row)
-        for column in range(0,numberOfColumns):
-            constraints[index][column + numberOfRows] = [[0,0], [1,1]]
-
-print("Created all rows")
-
-for line2 in range(0,numberOfColumns):
-        vertLine = f.readline()
-        values = ( vertLine.split( ) )
-        intValues = []
-        for v in range(0,len(values)):
-            intValues.append(int(values[v]))
-        index = line2 + numberOfRows
-
-        coord = line2
-        row = Variable(index,coord)
-
-        constraints.append({})
-
-        domene = []
-        tempDomain = []
-
-        createDomainRecursive(tempDomain,numberOfRows-1,intValues,domene)
-        row.domain = domene
-        rowsAndColumns.append(row)
-        for row in range(0,numberOfRows):
-            constraints[index][row] = [[0,0], [1,1]]
-
-
-# if d2[var1.coord] == d1[var2.coord]:
-
-print("Created all columns")
-print("")
-
-#for c in contraints:
-    #print(c)
-
 def drawNonoGramState(state):
-    for var in range(0,numberOfRows):
+    for var in range(0,len(state.vertices)):
         row = state.vertices[var]
         if row.isAssumed:
             for val in range(0,len(row.domain[0])):
@@ -197,116 +113,96 @@ def nonoGramRevise(constraints, vertex1,vertex2):
 
         return revised
 
-#The Domain-Filtering Loop
-# def domainFiltering(queue, stateVertices):
-#
-#         while len(queue) >= 1:
-#
-#                 todoReviseVertex = queue.pop(0)
-#                 for const in contraints[todoReviseVertex.index]:
-#                         neighbour = stateVertices[const]
-#
-#                         change = revise(todoReviseVertex,neighbour)
-#                         if change:
-#                                 for v5 in contraints[todoReviseVertex.index]:
-#                                         if stateVertices[v5] not in queue:
-#                                                 queue.append(stateVertices[v5])
-#                                         #else:
-#                                             #print(" hei hei he hei ih ihasd asdad a sd ")
-#
-#
-#
-# def generateSuccesorStates(vertices):
-#         newStates = []
-#
-#         for vertex in vertices:
-#                 if not vertex.isAssumed():
-#                         for color in vertex.domain:
-#                                 index = vertex.index
-#                                 state = nonoState(vertices)
-#                                 state.vertices[index].domain = [color]
-#                                 state.lastModifiedVertex = state.vertices[index]
-#                                 newStates.append(state)
-#
-#
-#         return newStates
 
 
 
-aStarGAC(3, rowsAndColumns, constraints, drawNonoGramState, nonoGramRevise)
+def startModule3():
 
-# print("Running init")
-# print("")
-# #getWindow().getMouse()
-# domainFiltering(queue,rowsAndColumns)
-#
-# print("Init done")
-# #getWindow().getMouse()
-# currentState = nonoState(rowsAndColumns)
-#
-#
-# #getWindow().getMouse()
-#
-#
-# drawState(currentState)
-#
-# if currentState.isFinished():
-#     print("Solution found. No need for A*")
-# else:
-#     print("Done with init, but no solution yet. Running A*")
-# while not currentState.isFinished():
-# #for tall in range(0,100000):
-#
-#         #vert = vertices[tall]
-#         #print("Doamin to " + str(tall) + " is " + str(vert.domain))
-#
-#
-#         #color = vert.domain[0]
-#         #vert.domain = [color]
-#         newStates = generateSuccesorStates(currentState.vertices)
-#         print("Lengden: " + str(len(newStates)))
-#
-#         #getWindow().getMouse()
-#         if len(newStates) == 0:
-#                 print("breaking")
-#                 currentState = nonoState(rowsAndColumns)
-#                 getWindow().getMouse()
-#                 continue
-#         currentState = newStates[randint(0,len(newStates)-1)]
-#         canContinue = False
-#
-#         drawState(currentState)
-#         vert = currentState.lastModifiedVertex
-#         queue = []
-#         for connectedVertex in contraints[vert.index]:
-#                 if connectedVertex not in queue and not currentState.vertices[connectedVertex].isAssumed():
-#                         queue.append(currentState.vertices[connectedVertex])
-#
-#
-#
-#
-#
-#
-# #         domainFiltering(queue,currentState.vertices)
-# #
-#
-# #Rerun
-#
-#
-#
-#
-#         if currentState.isError():
-#                 currentState = nonoState(rowsAndColumns)
-#                 print("Going back a level")
-#         elif currentState.isFinished():
-#             print("Am i finished now?")
-#             #getWindow().getMouse()
-#
-#
-#         print("- ")
+    while True:
+        prompt = input("Please type in the path to your file and press 'Enter': ")
+        try:
+            f = open(prompt + ".txt", 'r')
+        except FileNotFoundError:
+            print("Wrong file or file path")
+        else:
+            break
 
 
+    firstLine = f.readline()
+    values = ( firstLine.split( ) )
+
+    numberOfColumns= int(values[0])
+    numberOfRows= int(values[1])
+    print("")
+    print("numberOfRows: " + str(numberOfRows))
+    print("numberOfColumns: " + str(numberOfColumns))
+    print("")
+
+    rowsAndColumns = []
+    rows = []
+    columns = []
+
+    setDimensions( numberOfColumns, numberOfRows )
+
+    constraints = []
+
+    for line in range(0,numberOfRows):
+            vertLine = f.readline()
+
+            values = ( vertLine.split( ) )
+            intValues = []
+            for v in range(0,len(values)):
+                intValues.append(int(values[v]))
+            index = line
+
+            coord =  numberOfRows - line -1
+
+            row = Variable(index,coord)
+
+            constraints.append({})
+
+            domene = []
+            tempDomain = []
+
+            createDomainRecursive(tempDomain,numberOfColumns-1,intValues,domene)
+
+            row.domain = domene
+            #print(domene)
+            rowsAndColumns.append(row)
+            for column in range(0,numberOfColumns):
+                constraints[index][column + numberOfRows] = [[0,0], [1,1]]
+
+    print("Created all rows")
+
+    for line2 in range(0,numberOfColumns):
+            vertLine = f.readline()
+            values = ( vertLine.split( ) )
+            intValues = []
+            for v in range(0,len(values)):
+                intValues.append(int(values[v]))
+            index = line2 + numberOfRows
+
+            coord = line2
+            row = Variable(index,coord)
+
+            constraints.append({})
+
+            domene = []
+            tempDomain = []
+
+            createDomainRecursive(tempDomain,numberOfRows-1,intValues,domene)
+            row.domain = domene
+            rowsAndColumns.append(row)
+            for row in range(0,numberOfRows):
+                constraints[index][row] = [[0,0], [1,1]]
+
+    print("Created all columns")
+    print("")
+
+    aStarGAC(3, rowsAndColumns, constraints, drawNonoGramState, nonoGramRevise)
+    getWindow().getMouse()
+    getWindow().close()
+    startModule3()
 
 
-
-getWindow().getMouse()
+startModule3()
