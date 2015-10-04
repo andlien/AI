@@ -114,7 +114,8 @@ def nonoGramRevise(constraints, vertex1,vertex2):
         return revised
 
 
-
+def paintStatus(generated, expandend,solutionPath):
+    drawInfoText(generated, expandend,solutionPath)
 
 while True:
 

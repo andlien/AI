@@ -51,3 +51,10 @@ class State:
             if len(vert.domain) == 0:
                 return True
         return False
+
+    def getNumberOfVariablesNotAssigned(self):
+        sum = 0
+        for vert in self.vertices:
+            if len(vert.domain) > 1:
+                sum = sum + 1
+        return sum

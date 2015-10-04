@@ -43,7 +43,7 @@ from Module2.state import State
 #     currentState = State(variables)
 #     aStarAlgorithm(AStar_generate_successors, aStarGetH, currentState, paintProgress)
 
-def aStarGAC(moduleNr,variables, constraints, paintProgress,GAC_Revise = None):
+def aStarGAC(moduleNr,variables, constraints, paintProgress, GAC_Revise = None):
 
     if GAC_Revise is None:
         GAC_Revise = revise
@@ -63,17 +63,24 @@ def aStarGAC(moduleNr,variables, constraints, paintProgress,GAC_Revise = None):
     queue = GACInitialize(variables, constraints)
     domainFiltering(queue,variables, constraints,GAC_Revise)
     currentState = State(variables,moduleNr)
+    print(" ")
     print("Init done")
 
     if currentState.isGoal():
         print("Solution found. No need for A*")
         paintProgress(currentState)
+        print("Total number of search nodes generated: ", 0)
+        print("Total number of search nodes expanded: ", 0)
+        print("Total number of search nodes on the path from the root to the solution state.: ", 0)
     elif currentState.isError():
         print("No solutiion found. Aborting")
     else:
         print("Done with init, but no solution yet. Running A*")
-        aStarAlgorithm(AStar_generate_successors, aStarGetH, currentState, paintProgress)
+        currentState = aStarAlgorithm(AStar_generate_successors, aStarGetH, currentState, paintProgress)
 
+    print("Total number of variables that are not assigned: ", currentState.getNumberOfVariablesNotAssigned(), "/", len(currentState.vertices))
+    print("Total number of unsatisfied constraints in the solution: ", getNumberOfUnsatisfiedConstraints(currentState.vertices, constraints,GAC_Revise))
+    print("")
 
 
 def generateSuccesorStates(oldState,moduleNr):
@@ -148,6 +155,22 @@ def GACInitialize(vertices, constraints):
             if vertices[connectedVertex] not in queue:
                 queue.append(vertices[connectedVertex])
     return queue
+
+def getNumberOfUnsatisfiedConstraints(stateVertices, constraints, GAC_Revise):
+    queue = GACInitialize(stateVertices, constraints)
+    counter = 0
+    while len(queue) >= 1:
+        todoReviseVertex = queue.pop(0)
+        #queue.remove(todoReviseVertex)
+        for const in constraints[todoReviseVertex.index]:
+            neighbour = stateVertices[const]
+            change = GAC_Revise(constraints, todoReviseVertex,neighbour)
+            if change:
+                counter = counter + 1
+
+    return counter
+
+
 
 #The Domain-Filtering Loop
 def domainFiltering(queue, stateVertices, constraints, GAC_Revise):

@@ -27,7 +27,7 @@ for x in range (1, numberOfColors + 1):
         temp = (str(x), str(y))
         constraintsTemplate.append(temp)
 
-print(constraintsTemplate)
+#print(constraintsTemplate)
 
 print("numberOfVertices: " + str(numberOfVertices))
 print("numberOfEdges: " + str(numberOfEdges))
@@ -60,7 +60,7 @@ print ("Created " + str(line) + " vertices")
 
 for line in range(0,numberOfEdges):
     vertLine = f.readline()
-    print (vertLine)
+    #print (vertLine)
     values = ( vertLine.split( ) )
     index1 = int(values[0])
     index2 = int(values[1])
@@ -72,7 +72,7 @@ for line in range(0,numberOfEdges):
     drawEdge( vertices[index1], vertices[index2])
 print ("Created " + str(line) + " edges")
 
-print( str(constraints) )
+
 
 f.close()
 
@@ -80,7 +80,6 @@ for vert in vertices:
     lastState.append(None)
     drawVertex(vert,False)
 
-print("lastState: " , lastState)
 
 def paintBoard(state):
     global lastState
@@ -99,9 +98,11 @@ def paintBoard(state):
         else:
             if not lastState[tall] is None:
                 drawVertex(vertex, False)
-                print("Ja, det skjer!")
-            lastState[tall] = None
 
+
+
+def paintStatus(generated, expandend,solutionPath):
+    drawInfoText(generated, expandend,solutionPath)
 
 aStarGAC(2,vertices, constraints, paintBoard)
 getWindow().getMouse()

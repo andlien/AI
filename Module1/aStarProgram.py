@@ -18,6 +18,11 @@ def aStarAlgorithm(getNeighbours, h_func, initialState, paint, pop=None):
     startNode.g = 0
     startNode.h = h_func(startNode)
 
+    numberOfNodesGenerated = 0
+    numberOfNodesExpanded = 0
+
+
+
     open.append(startNode)
 
     redrawCounter = 0
@@ -28,19 +33,34 @@ def aStarAlgorithm(getNeighbours, h_func, initialState, paint, pop=None):
             return
 
         currentTile = pop(open) #open.pop()
+        numberOfNodesExpanded = numberOfNodesExpanded + 1
 
         redrawCounter += 1
         #if redrawCounter % 10 == 0:
         paint(currentTile)
 
-
         closed.append(currentTile)
 
         if currentTile.isGoal():
             print("GOAAAAAL")
-            break
+
+            numberOfNodesInSolutionPath = 1
+            t = currentTile
+            while t.parent is not None:
+                numberOfNodesInSolutionPath = numberOfNodesInSolutionPath + 1
+                t = t.parent
+
+            print("")
+            print("A* finished")
+            print("Total number of search nodes generated: ", numberOfNodesGenerated)
+            print("Total number of search nodes expanded: ", numberOfNodesExpanded)
+            print("Total number of search nodes on the path from the root to the solution state.: ", numberOfNodesInSolutionPath)
+
+            return currentTile
 
         succ = getNeighbours(currentTile)
+        numberOfNodesGenerated = numberOfNodesGenerated + len(succ)
+
 
         for kid in succ:
             #First time node is visited
