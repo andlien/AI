@@ -1,7 +1,26 @@
 from Module2.cspGrid import *
 from Module2.aStarGacProgram import aStarGAC
+from time import sleep
 
+def paintBoard(state):
 
+    sleep(delaytime)
+    global lastState
+    #newState = []
+    for tall in range(0,len(state.vertices)):
+        vertex = state.vertices[tall]
+        if vertex.isAssumed():
+            if str(lastState[tall]) == str(vertex.getColor()):
+                continue
+            else:
+                drawVertex(vertex, False)
+                lastState[tall] = vertex.getColor()
+
+        else:
+            if not lastState[tall] is None:
+                drawVertex(vertex, False)
+
+possibleDelay = {"fast": 0, "slow": 0.4}
 #Code used to interpt input from the user
 while True:
 
@@ -27,6 +46,12 @@ while True:
             print("Not an integer! Try again: ")
         else:
             break
+
+    delaymode = input("Specify mode, one of [fast, slow]: ").lower()
+    while delaymode not in possibleDelay:
+        delaymode = input("Wrong input, specify one of [fast, slow]: ").lower()
+
+    delaytime = possibleDelay[delaymode]
 
     # First line is info about number of vertices and number of edges
     firstLine = f.readline().split()
@@ -92,22 +117,9 @@ while True:
 
     # Custom fuction to draw updated state
     # Only redrawn vertices when they change
-    def paintBoard(state):
-        global lastState
-        #newState = []
-        for tall in range(0,len(state.vertices)):
-            vertex = state.vertices[tall]
-            if vertex.isAssumed():
-                if str(lastState[tall]) == str(vertex.getColor()):
-                    continue
-                else:
-                    drawVertex(vertex, False)
-                    lastState[tall] = vertex.getColor()
 
-            else:
-                if not lastState[tall] is None:
-                    drawVertex(vertex, False)
 
     #Calling the A*GAC
     aStarGAC(2,vertices, paintBoard, constraints=constraints)
     getWindow().getMouse()
+    getWindow().close()
