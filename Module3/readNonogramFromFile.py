@@ -69,9 +69,6 @@ def nonoGramRevise(constraints, vertex1,vertex2):
 
         return revised
 
-#Not in use anymore
-#def paintStatus(generated, expandend,solutionPath):
-#    drawInfoText(generated, expandend,solutionPath)
 
 while True:
 
@@ -101,45 +98,45 @@ while True:
 
     constraints = []
 
+    #Create all the rows
     for line in range(0,numberOfRows):
 
             intValues = [int(i) for i in f.readline().split()]
-
             index = line
-
             coord =  numberOfRows - line -1
-
             row = Variable(index,coord)
 
-            constraints.append({})
 
+            #Domain
             domene = []
             tempDomain = []
-
             createDomainRecursive(tempDomain,numberOfColumns-1,intValues,domene)
-
             row.domain = domene
+
             rowsAndColumns.append(row)
+
+            #Constraints
+            constraints.append({})
             for column in range(0,numberOfColumns):
                 constraints[index][column + numberOfRows] = [[0,0], [1,1]]
 
     print("Created all rows")
-
+    #Create all the columns
     for line2 in range(0,numberOfColumns):
             intValues = [int(i) for i in f.readline().split()]
             index = line2 + numberOfRows
-
             coord = line2
-            row = Variable(index,coord)
+            column = Variable(index,coord)
 
-            constraints.append({})
-
+            #Domain
             domene = []
             tempDomain = []
-
             createDomainRecursive(tempDomain,numberOfRows-1,intValues,domene)
-            row.domain = domene
-            rowsAndColumns.append(row)
+            column.domain = domene
+            rowsAndColumns.append(column)
+
+            #Constraints
+            constraints.append({})
             for row in range(0,numberOfRows):
                 constraints[index][row] = [[0,0], [1,1]]
 

@@ -1,4 +1,3 @@
-__author__ = 'Anders'
 from Module1.aStarProgram import aStarAlgorithm
 from Module2.state import State
 
@@ -68,14 +67,14 @@ def generateSuccesorStates(oldState,moduleNr):
     bestValue = 10
     bestVariable = None
 
-
+    #Find the variable with the lowest lenght of the domain that is not assumed. Domain must be larger then 1
     for vertex in oldState.vertices:
         if not vertex.isAssumed():
             if bestValue > len(vertex.domain):
                 bestVariable = vertex
                 bestValue = len(vertex.domain)
 
-
+    #Create a new state for each element in the domain of the selected variable
     for color in bestVariable.domain:
         state = State(oldState.vertices,moduleNr)
         state.vertices[bestVariable.index].domain = [color]
@@ -93,6 +92,8 @@ def rerun(currentState, constraints,GAC_Revise):
 
     domainFiltering(queue,currentState.vertices, constraints,GAC_Revise)
 
+#Heuristic function
+# Returns the sum of the domain lenght of all the variables in the state
 def aStarGetH(node):
     sum = 0
     for v in node.vertices:
@@ -117,12 +118,8 @@ def revise(constraints, vertex1,vertex2):
                     break
 
         if not domainChanged:
-            # print("Doamin to " +str(vertex1.index) +  str(vertex1.domain) + ". Removing: " + str(d1))
             vertex1.domain.remove(d1)
-            # print("Doamin to " +str(vertex1.index)+  str(vertex1.domain))
             revised = True
-
-
 
     return revised
 
@@ -135,6 +132,7 @@ def mGACInit(vertices, constraints):
                 queue.append(vertices[connectedVertex])
     return queue
 
+# Called after the A*GAC is finished
 def getNumberOfUnsatisfiedConstraints(stateVertices, constraints, GAC_Revise):
     queue = mGACInit(stateVertices, constraints)
     counter = 0

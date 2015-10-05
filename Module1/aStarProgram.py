@@ -1,4 +1,3 @@
-__author__ = 'Anders'
 
 # A* algorithm, fairly similar to the psudocode
 def aStarAlgorithm(getNeighbours,

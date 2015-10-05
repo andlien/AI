@@ -1,4 +1,3 @@
-__author__ = 'Simen'
 from Module2.cspVertex import *
 from Module3.Variable import *
 

@@ -1,4 +1,3 @@
-from Module2.state import *
 from Module2.cspGrid import *
 from Module2.aStarGacProgram import aStarGAC
 

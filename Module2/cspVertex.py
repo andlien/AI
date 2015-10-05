@@ -1,22 +1,12 @@
 class Vertex:
     def __init__(self, index, x, y):
-        self.x = x
-        self.y = y
+        self.x = x # Only used for the GUI
+        self.y = y # Only used for the GUI
         self.index = index
-        #self.connectedTo = []
         self.domain = []
 
     def isAssumed(self):
         return len(self.domain) == 1
-
-    # def __eq__(self, other):
-    #     if isinstance(other, self.__class__):
-    #         return self.x == other.x and self.y == other.y
-    #     else:
-    #         return False
-    #
-    # def __ne__(self, other):
-    #     return not self.__eq__(other)
 
     def getColor(self):
         #print("IS colored: " + str(self.isColored()))
