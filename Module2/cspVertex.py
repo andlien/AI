@@ -9,7 +9,6 @@ class Vertex:
         return len(self.domain) == 1
 
     def getColor(self):
-        #print("IS colored: " + str(self.isColored()))
         colorKey = int(self.domain[0])
 
         if colorKey == 1:

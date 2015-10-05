@@ -108,11 +108,6 @@ while True:
                 if not lastState[tall] is None:
                     drawVertex(vertex, False)
 
-
-    #Not used anymore
-    #def paintStatus(generated, expandend,solutionPath):
-    #    drawInfoText(generated, expandend,solutionPath)
-
     #Calling the A*GAC
     aStarGAC(2,vertices, constraints, paintBoard)
     getWindow().getMouse()
