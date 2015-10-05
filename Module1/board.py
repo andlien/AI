@@ -80,6 +80,8 @@ def getSurroundingTiles(node):
 
 # Initializes board with only grey tiles
 def createBoard():
+    global obstacles
+    obstacles = []
     for x in range(0,height):
         for y in range(0,width):
             drawBox(x, y, "light grey")

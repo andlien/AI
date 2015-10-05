@@ -14,7 +14,7 @@ class State:
             elif moduleNr == 3:
                 vert = Variable(v.index,v.coord)
             else:
-                print("Unkown module!")
+                raise IndexError("Unkown module!")
 
 
             for d in v.domain:

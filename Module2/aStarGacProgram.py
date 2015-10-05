@@ -4,8 +4,8 @@ from Module2.state import State
 
 def aStarGAC(moduleNr,
              variables,
-             constraints,
              paintProgress,
+             constraints=None,
              GAC_Initialize = None,
              GAC_Domain_Filter = None,
              GAC_Revise = None,
@@ -23,6 +23,11 @@ def aStarGAC(moduleNr,
         GAC_Rerun = rerun
     if GAC_Generate_Successors is None:
         GAC_Generate_Successors = generateSuccesorStates
+
+    # if constrains are not supplied: get constraint input
+    if constraints is None:
+        constraints = inputConstraints()
+
 
     # The function that generates neighbours/successors in A*
     # Generates states, and revises them as far as possible
@@ -51,7 +56,7 @@ def aStarGAC(moduleNr,
         print("Total number of search nodes expanded: ", 0)
         print("Total number of search nodes on the path from the root to the solution state.: ", 0)
     elif currentState.isError():
-        print("No solutiion found. Aborting")
+        print("No solution found. Aborting")
     else:
         print("Done with init, but no solution yet. Running A*")
         currentState = aStarAlgorithm(AStar_generate_successors, aStarGetH, currentState, paintProgress)
@@ -161,3 +166,15 @@ def domainFiltering(queue, stateVertices, constraints, GAC_Revise):
                 for v in constraints[todoReviseVertex.index]:
                     if stateVertices[v] not in queue:
                         queue.append(stateVertices[v])
+
+def inputConstraints():
+    constraints = {}
+    a = input('write all allowed combinations of the form "variable1 variable2 value1 value2", write nothing to exit').split()
+    while a != '':
+        if constraints[a[0]] is None:
+            constraints[a[0]] = {}
+        if constraints[a[1]] is None:
+            constraints[a[1]] = {}
+        constraints[a[0]][a[1]] = (a[2], a[3])
+        constraints[a[1]][a[0]] = (a[3], a[2])
+    return a

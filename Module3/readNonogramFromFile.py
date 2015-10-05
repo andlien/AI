@@ -50,24 +50,24 @@ def drawNonoGramState(state):
 #Custom revise used for Nonograms. Almost identical to the normal revise
 def nonoGramRevise(constraints, vertex1,vertex2):
 
-        revised = False
-        if constraints[vertex1.index][vertex2.index] is None:
-                return False
+    revised = False
+    if constraints[vertex1.index][vertex2.index] is None:
+            return False
 
-        for d1 in vertex1.domain:
-                domainChanged = False
-                for d2 in vertex2.domain:
-                        for const in constraints[vertex1.index][vertex2.index]:
-                                # This line is the only change to the general Revise
-                                #Only comparing the intersection between the row and column, not the whole domain
-                                if d1[vertex2.coord] == const[0] and d2[vertex1.coord] == const[1]:
-                                    domainChanged = True
+    for d1 in vertex1.domain:
+            domainChanged = False
+            for d2 in vertex2.domain:
+                    for const in constraints[vertex1.index][vertex2.index]:
+                            # This line is the only change to the general Revise
+                            #Only comparing the intersection between the row and column, not the whole domain
+                            if d1[vertex2.coord] == const[0] and d2[vertex1.coord] == const[1]:
+                                domainChanged = True
 
-                if not domainChanged:
-                        vertex1.domain.remove(d1)
-                        revised = True
+            if not domainChanged:
+                    vertex1.domain.remove(d1)
+                    revised = True
 
-        return revised
+    return revised
 
 
 while True:
@@ -144,6 +144,6 @@ while True:
     print("")
     f.close()
 
-    aStarGAC(3, rowsAndColumns, constraints, drawNonoGramState, GAC_Revise=nonoGramRevise)
+    aStarGAC(3, rowsAndColumns, drawNonoGramState, constraints=constraints, GAC_Revise=nonoGramRevise)
     getWindow().getMouse()
     getWindow().close()
