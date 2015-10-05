@@ -45,7 +45,7 @@ def aStarAlgorithm(getNeighbours,
         currentTile = pop(open) #open.pop()
         numberOfNodesExpanded = numberOfNodesExpanded + 1
 
-        #paint(currentTile)
+        paint(currentTile)
 
         closed.append(currentTile)
 
