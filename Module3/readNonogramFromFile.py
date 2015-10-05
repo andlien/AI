@@ -4,41 +4,7 @@ from Module3.nonoState import *
 from random import randint
 from Module2.aStarGacProgram import *
 
-#f = open('nono-rabbit.txt', 'r')
-# #f = open('nono-sailboat.txt', 'r')
-#f = open('nono-camel.txt', 'r')
-#f = open('nono-heart-1.txt', 'r')
-#f = open('test2.txt', 'r')
-#f = open('nono-cat.txt', 'r')
-
-#f = open('nono-telephone.txt', 'r')
-#f = open('nono-chick.txt', 'r')
-
-
-# while True:
-#     prompt = input("Please type module number and press 'Enter': ")
-#
-#     if prompt == '1':
-#         print("Module 1 selected")
-#         break
-#
-#     elif prompt == '2':
-#         print("Module 2 selected")
-#         break
-#     elif prompt == '3':
-#         print("Module 1 selected")
-#         break
-#     else:
-#         print("Module number not valid. Try again")
-#
-#
-#
-#
-
-
-#print (f)
-
-
+#Custom function used to generate domain for a variable
 def createDomainRecursive(currentDomain,remaningPlaces, restrictions, returnList):
     for i in range(0,2): #Block can either be blank(0) or filled with the next block
         updatedDomain = currentDomain.copy()
@@ -69,7 +35,7 @@ def createDomainRecursive(currentDomain,remaningPlaces, restrictions, returnList
 
 
 
-
+# Custom function that draws the nonogram on the GUI
 def drawNonoGramState(state):
     for var in range(0,len(state.vertices)):
         row = state.vertices[var]
@@ -80,20 +46,8 @@ def drawNonoGramState(state):
 
 
 
-#drawState()
 
-
-
-
-
-
-#Initialization
-#queue = []
-
-
-#for line in range(0,numberOfRows + numberOfColumns):
-#        queue.append(rowsAndColumns[line])
-
+#Custom revise used for Nonograms. Almost identical to the normal revise
 def nonoGramRevise(constraints, vertex1,vertex2):
 
         revised = False
@@ -104,6 +58,8 @@ def nonoGramRevise(constraints, vertex1,vertex2):
                 domainChanged = False
                 for d2 in vertex2.domain:
                         for const in constraints[vertex1.index][vertex2.index]:
+                                # This line is the only change to the general Revise
+                                #Only comparing the intersection between the row and column, not the whole domain
                                 if d1[vertex2.coord] == const[0] and d2[vertex1.coord] == const[1]:
                                     domainChanged = True
 
@@ -113,9 +69,9 @@ def nonoGramRevise(constraints, vertex1,vertex2):
 
         return revised
 
-
-def paintStatus(generated, expandend,solutionPath):
-    drawInfoText(generated, expandend,solutionPath)
+#Not in use anymore
+#def paintStatus(generated, expandend,solutionPath):
+#    drawInfoText(generated, expandend,solutionPath)
 
 while True:
 
@@ -140,20 +96,12 @@ while True:
     print("")
 
     rowsAndColumns = []
-    rows = []
-    columns = []
 
-    setDimensions( numberOfColumns, numberOfRows )
+    setDimensions( numberOfColumns, numberOfRows ) # inits the GUI
 
     constraints = []
 
     for line in range(0,numberOfRows):
-            # vertLine = f.readline()
-            #
-            # values = ( vertLine.split( ) )
-            # intValues = []
-            # for v in range(0,len(values)):
-            #     intValues.append(int(values[v]))
 
             intValues = [int(i) for i in f.readline().split()]
 
@@ -171,7 +119,6 @@ while True:
             createDomainRecursive(tempDomain,numberOfColumns-1,intValues,domene)
 
             row.domain = domene
-            #print(domene)
             rowsAndColumns.append(row)
             for column in range(0,numberOfColumns):
                 constraints[index][column + numberOfRows] = [[0,0], [1,1]]
@@ -179,11 +126,6 @@ while True:
     print("Created all rows")
 
     for line2 in range(0,numberOfColumns):
-            # vertLine = f.readline()
-            # values = ( vertLine.split( ) )
-            # intValues = []
-            # for v in range(0,len(values)):
-            #     intValues.append(int(values[v]))
             intValues = [int(i) for i in f.readline().split()]
             index = line2 + numberOfRows
 

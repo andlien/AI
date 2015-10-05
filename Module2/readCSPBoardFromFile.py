@@ -2,6 +2,8 @@ from Module2.state import *
 from Module2.cspGrid import *
 from Module2.aStarGacProgram import aStarGAC
 
+
+#Code used to interpt input from the user
 while True:
 
     lastState = []
@@ -27,13 +29,16 @@ while True:
         else:
             break
 
+    # First line is info about number of vertices and number of edges
     firstLine = f.readline().split()
 
     numberOfVertices = int(firstLine[0])
     numberOfEdges = int(firstLine[1])
 
     constraintsTemplate = []
+    print("")
 
+    # Creates a tempplate of the contraints
     for x in range (1, numberOfColors + 1):
         for y in range (1, numberOfColors + 1):
             if x == y:
@@ -41,15 +46,17 @@ while True:
             temp = (str(x), str(y))
             constraintsTemplate.append(temp)
 
-    #print(constraintsTemplate)
+    print(constraintsTemplate)
+    print("")
 
     print("numberOfVertices: " + str(numberOfVertices))
     print("numberOfEdges: " + str(numberOfEdges))
 
     vertices = []
-    setDimensions(numberOfVertices)
+    setDimensions(numberOfVertices) # Inits the graphics
     constraints = []
 
+    # Creates all the vertices
     for line in range(0,numberOfVertices):
         vertLine = f.readline().split()
         index = int(vertLine[0])
@@ -57,9 +64,9 @@ while True:
         y = float(vertLine[2])
         vert = Vertex(index,x,y)
 
-        constraints.append({})
+        constraints.append({}) # Adds a location for this vertex in the constraints
 
-        vert.domain = [str(i) for i in range(1, numberOfColors+1)]
+        vert.domain = [str(i) for i in range(1, numberOfColors+1)] # Creates the domain
         vertices.append(vert)
 
     print ("Created " + str(line) + " vertices")
@@ -79,11 +86,13 @@ while True:
 
     f.close()
 
+    # Draws the vertices in the GUI
     for vert in vertices:
         lastState.append(None)
         drawVertex(vert,False)
 
-
+    # Custom fuction to draw updated state
+    # Only redrawn vertices when they change
     def paintBoard(state):
         global lastState
         #newState = []
@@ -101,9 +110,10 @@ while True:
                     drawVertex(vertex, False)
 
 
+    #Not used anymore
+    #def paintStatus(generated, expandend,solutionPath):
+    #    drawInfoText(generated, expandend,solutionPath)
 
-    def paintStatus(generated, expandend,solutionPath):
-        drawInfoText(generated, expandend,solutionPath)
-
+    #Calling the A*GAC
     aStarGAC(2,vertices, constraints, paintBoard)
     getWindow().getMouse()
