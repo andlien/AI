@@ -2,6 +2,8 @@ from Module2.cspGrid import *
 from Module2.aStarGacProgram import aStarGAC
 from time import sleep
 
+# Custom fuction to draw updated state
+# Only redrawn vertices when they change
 def paintBoard(state):
 
     sleep(delaytime)
@@ -114,10 +116,6 @@ while True:
     for vert in vertices:
         lastState.append(None)
         drawVertex(vert,False)
-
-    # Custom fuction to draw updated state
-    # Only redrawn vertices when they change
-
 
     #Calling the A*GAC
     aStarGAC(2,vertices, paintBoard, constraints=constraints)

@@ -1,6 +1,5 @@
 from Module3.Variable import *
 from Module3.nonogramGraphics import *
-from Module3.nonoState import *
 from random import randint
 from Module2.aStarGacProgram import *
 
@@ -32,6 +31,7 @@ def createDomainRecursive(currentDomain,remaningPlaces, restrictions, returnList
                 updatedDomain.append(0)
             if remaningPlaces > len(currentDomain): #Not done with the domain yet. We have to go deeper!
                 createDomainRecursive(updatedDomain,remaningPlaces,updatedRestrictions,returnList)
+
 
 
 
