@@ -30,7 +30,7 @@ def aStarAlgorithm(getNeighbours,
     startNode.h = h_func(startNode)
 
     # Counters to display at the end
-    numberOfNodesGenerated = 0
+    numberOfNodesGenerated = 1
     numberOfNodesExpanded = 0
 
     open.append(startNode)
@@ -45,7 +45,7 @@ def aStarAlgorithm(getNeighbours,
         currentTile = pop(open) #open.pop()
         numberOfNodesExpanded = numberOfNodesExpanded + 1
 
-        paint(currentTile)
+        #paint(currentTile)
 
         closed.append(currentTile)
 
@@ -66,7 +66,6 @@ def aStarAlgorithm(getNeighbours,
             return currentTile
 
         succ = getNeighbours(currentTile)
-        numberOfNodesGenerated = numberOfNodesGenerated + len(succ)
 
         for kid in succ:
             #First time node is visited
@@ -75,6 +74,7 @@ def aStarAlgorithm(getNeighbours,
                 kid.g = currentTile.g + arcCost(currentTile, kid)
                 kid.h = h_func(kid)
                 open.append(kid)
+                numberOfNodesGenerated += 1
 
             elif currentTile.g + arcCost(currentTile, kid) < kid.g:
                 kid.parent = currentTile
