@@ -109,5 +109,5 @@ while True:
                     drawVertex(vertex, False)
 
     #Calling the A*GAC
-    aStarGAC(2,vertices, constraints, paintBoard)
+    aStarGAC(2,vertices, paintBoard, constraints=constraints)
     getWindow().getMouse()

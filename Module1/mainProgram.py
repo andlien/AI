@@ -2,6 +2,7 @@ from Module1.board import *
 from time import sleep
 from Module1.aStarProgram import aStarAlgorithm
 
+delaytime = 0
 # Paints the board
 # While executing the search algorithm, the shortest path to the currently processed node is shown
 def paintBoard(t):
@@ -10,7 +11,7 @@ def paintBoard(t):
 
     newPaint = [None] * (width * height)
 
-    sleep(0.02)
+    sleep(delaytime)
 
     #Do not paint goalstate
     if t.isGoal():
@@ -47,13 +48,14 @@ def paintBoard(t):
 
 
 possibleModes = ["astar", "bfs", "dfs"]
+possibleDelay = {"fast": 0.02, "slow": 0.1}
 
 while True:
 
     # Get input from the user which mode to use
     mode = input("Specify mode, one of [Astar, BFS, DFS]: ").lower()
     while mode not in possibleModes:
-        mode = input("Wrong input, specify one of [Astar, BFS, DFS]: ")
+        mode = input("Wrong input, specify one of [Astar, BFS, DFS]: ").lower()
 
     # Get input from the user which file to use
     while True:
@@ -64,6 +66,12 @@ while True:
             print("Wrong file or file path")
         else:
             break
+
+    delaymode = input("Specify mode, one of [fast, slow]: ").lower()
+    while delaymode not in possibleDelay:
+        delaymode = input("Wrong input, specify one of [fast, slow]: ").lower()
+
+    delaytime = possibleDelay[delaymode]
 
     width, height = [int(i) for i in f.readline().split()]
     setDimensions(width, height)
@@ -85,7 +93,7 @@ while True:
     lastpaint = [None] * (width * height)
 
     mPop = None
-    mHfunc = euclideanDistToGoalNode
+    mHfunc = manhattenDistToGoalNode
 
     # Define custom functions if dfs or bfs
     if mode == "dfs":
