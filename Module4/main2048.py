@@ -1,30 +1,19 @@
-from visuals import GameWindow
-from Tkinter import *
+from Module4.visuals import GameWindow
+from tkinter import *
 from random import randint
-from heuristicFunctions import *
+from Module4.heuristicFunctions import *
 from multiprocessing import Process, Queue
 import time
 
-teller = 0
 
-root = Tk()
-
-
-
-maxSearchDepth = 3
-#root.geometry("250x150+300+300")
-#app = GameWindow()
-upScore = 0
-downScore = 0
-leftScore = 0
-rightScore = 0
-
-createCoordList()
-heighestScore = 0
-start = time.time()
-
-#main.mainloop()
-
+board = [   # A list of values currently present in the board on the form 2^x.
+                # Eg: the number 4 implies that the graphical board should display,
+                # 2^4 = 16, the digit 16. This board represents the board in the screen dump below.
+                0, 0, 0, 0,
+                0, 0, 0, 0,
+                0, 0, 0, 0,
+                0, 1, 2, 2
+            ]
 
 def runUp(q):
     #global upScore
@@ -75,26 +64,7 @@ def runLeft(q):
     return
 
 
-#frame = Frame(width=768, height=576, bg="", colormap="new")
-window = GameWindow()
 
-board = [   # A list of values currently present in the board on the form 2^x.
-            # Eg: the number 4 implies that the graphical board should display,
-            # 2^4 = 16, the digit 16. This board represents the board in the screen dump below.
-            0, 1, 2, 3,
-            4, 5, 6, 7,
-            8, 9, 10, 11,
-            12, 13, 14, 15
-        ]
-
-board = [   # A list of values currently present in the board on the form 2^x.
-            # Eg: the number 4 implies that the graphical board should display,
-            # 2^4 = 16, the digit 16. This board represents the board in the screen dump below.
-            0, 0, 0, 0,
-            0, 0, 0, 0,
-            0, 0, 0, 0,
-            0, 1, 2, 2
-        ]
 def slideToTheRight(board,init):
     newBoard = list(board)
     #print("Board: " , newBoard)
@@ -110,7 +80,7 @@ def slideToTheRight(board,init):
         else:
             return False
 
-    for cellIndex in reversed(xrange(0,len(board)-1)):
+    for cellIndex in reversed(range(0,len(board)-1)):
 
         if newBoard[cellIndex] == 0:
             continue
@@ -150,7 +120,7 @@ def slideToTheLeft(board,init):
         else:
             return False
 
-    for cellIndex in xrange(0,len(board)):
+    for cellIndex in range(0,len(board)):
         if newBoard[cellIndex] == 0:
             continue
         currentIndex = cellIndex
@@ -186,7 +156,7 @@ def slideUp(board,init):
         else:
             return False
 
-    for cellIndex in xrange(4,len(board)):
+    for cellIndex in range(4,len(board)):
 
         if newBoard[cellIndex] == 0:
             continue
@@ -229,7 +199,7 @@ def slideDown(board,init):
         else:
             return False
 
-    for cellIndex in [8,4,0,9,5,1,10,6,2,11,7,3]: #reversed(xrange(0,len(board)-4))
+    for cellIndex in [8,4,0,9,5,1,10,6,2,11,7,3]: #reversed(range(0,len(board)-4))
 
         if newBoard[cellIndex] == 0:
             continue
@@ -289,7 +259,7 @@ def createTree(inputBoard, depht, prob, init):
     sum = 0
     if maxSearchDepth <= depht:
         return getHeuristicValueForBoard(inputBoard) * prob
-    for direction in xrange(0,4):
+    for direction in range(0,4):
         if init:
             shiftedBoard = inputBoard
         elif direction == 0:
@@ -319,7 +289,7 @@ def createTree(inputBoard, depht, prob, init):
 
 def createAllEmptyBoardsCombos(board,value):
     openCells = []
-    for cell in xrange(0,len(board)):
+    for cell in range(0,len(board)):
         if board[cell] == 0:
             #for value in [1,2]:
             newBoard = list(board)
@@ -330,7 +300,7 @@ def createAllEmptyBoardsCombos(board,value):
 
 def getRandomOpenCellInBoard(board):
     openCells = []
-    for cell in xrange(0,len(board)):
+    for cell in range(0,len(board)):
         if board[cell] == 0:
             openCells.append(cell)
     if len(openCells) == 0:
@@ -350,10 +320,7 @@ def hei():
     #time.sleep(2)
 
 
-board = addNewCellToBoard(board)
-#board = slideDown(board)
-window.update_view( board ) # 1D list representing the board
-#window.after(1000,hei)
+
 
 def getProbs():
     global board
@@ -377,20 +344,20 @@ def getProbs():
     right = Queue()
 
     t1 = Process(target=runUp, args=(up,))
-    #t1.daemon = True
+    t1.daemon = True
     t1.start()
     #print("runUp started")
     t2 = Process(target=runDown, args= (down,))
-    #t2.daemon = True
+    t2.daemon = True
     t2.start()
     #print("runDown started")
 
     t3 = Process(target=runLeft, args= (left,))
-    #t3.daemon = True
+    t3.daemon = True
     t3.start()
     #print("runLeft started")
     t4 = Process(target=runRight, args= (right,))
-    #t4.daemon = True
+    t4.daemon = True
     t4.start()
     #print("runRight started")
 
@@ -406,16 +373,19 @@ def getProbs():
     rightScore=right.get()
     leftScore=left.get()
 
+    scores = [downScore,upScore,rightScore,leftScore]
 
-    bestScore = downScore
-    bestNumber = 0
-    teller = 1
-    #print("Scores: ", [downScore,upScore,rightScore,leftScore])
-    for dir in [upScore,rightScore,leftScore]:
-        if dir > bestScore:
-            bestScore = dir
-            bestNumber = teller
-        teller += 1
+    # bestScore = downScore
+    # bestNumber = 0
+    # teller = 1
+    print("Scores: ", scores)
+    # for dir in [upScore,rightScore,leftScore]:
+    #     if dir > bestScore:
+    #         bestScore = dir
+    #         bestNumber = teller
+    #     teller += 1
+
+    bestNumber = scores.index(max(scores))
 
     if bestNumber == 0:
         newBoard = slideDown(board,True)
@@ -426,18 +396,21 @@ def getProbs():
     if bestNumber == 3:
         newBoard = slideToTheLeft(board,True)
 
-    board = newBoard
-    largestTile = newBoard[getLargestCellInBoard(board)]
-    global heighestScore
-    global start
-    if largestTile > heighestScore:
-        heighestScore = largestTile
-        if 2 ** largestTile >= 512:
-            print("New highest tile: " + str(2 ** largestTile) + " - " + str((time.time() - start)/60) + " min")
-        else:
-            print("New highest tile: " + str(2 ** largestTile) + " - " + str(time.time() - start) + " sec")
+    if not newBoard is None:
+        board = newBoard
+        largestTile = newBoard[getLargestCellInBoard(board)]
 
-    board = addNewCellToBoard(board)
+        global heighestScore
+        global start
+        if largestTile > heighestScore:
+            heighestScore = largestTile
+            if 2 ** largestTile >= 512:
+                print("New highest tile: " + str(2 ** largestTile) + " - " + str((time.time() - start)/60) + " min")
+            else:
+                print("New highest tile: " + str(2 ** largestTile) + " - " + str(time.time() - start) + " sec")
+
+        board = addNewCellToBoard(board)
+
     window.update_view( board )
     window.after(1,getProbs)
 
@@ -446,51 +419,78 @@ def getProbs():
 
 def leftKey(event):
     global board
-    print "Left key pressed"
-    newBoard = slideToTheLeft(board)
+    print("Left key pressed")
+    newBoard = slideToTheLeft(board, False)
     board = newBoard
     board = addNewCellToBoard(board)
     window.update_view( board )
 
 def rightKey(event):
     global board
-    print "Right key pressed"
-    newBoard = slideToTheRight(board)
+    print("Right key pressed")
+    newBoard = slideToTheRight(board, False)
     board = newBoard
     board = addNewCellToBoard(board)
     window.update_view( board )
 
 def upKey(event):
     global board
-    print "Up key pressed"
-    newBoard = slideUp(board)
+    print("Up key pressed")
+    newBoard = slideUp(board, False)
     board = newBoard
     board = addNewCellToBoard(board)
     window.update_view( board )
 
 def downKey(event):
     global board
-    print "Down key pressed"
-    newBoard = slideDown(board)
+    print("Down key pressed")
+    newBoard = slideDown(board, False)
     board = newBoard
     board = addNewCellToBoard(board)
     window.update_view( board )
 
-#frame = Frame(main, width=100, height=100)
-root.bind('<Left>', leftKey)
-root.bind('<Right>', rightKey)
-root.bind('<Up>', upKey)
-root.bind('<Down>', downKey)
-root.bind('<space>', getProbs)
+if __name__ == '__main__':
+    
+    teller = 0
+    
+    root = Tk()
+    
+    maxSearchDepth = 3
+    #root.geometry("250x150+300+300")
+    #app = GameWindow()
+    upScore = 0
+    downScore = 0
+    leftScore = 0
+    rightScore = 0
+    
+    createCoordList()
+    heighestScore = 0
+    start = time.time()
 
-root.focus_set()
-#root.pack()
+
+    window = GameWindow()
 
 
+    board = addNewCellToBoard(board)
+    #board = slideDown(board)
+    window.update_view( board ) # 1D list representing the board
+    #window.after(1000,hei)
+    
+    #frame = Frame(main, width=100, height=100)
+    root.bind('<Left>', leftKey)
+    root.bind('<Right>', rightKey)
+    root.bind('<Up>', upKey)
+    root.bind('<Down>', downKey)
+    root.bind('<space>', getProbs)
+    
+    root.focus_set()
+    #root.pack()
+    
 
-#createCoordList()
-window.after(1,getProbs)
-
-root.mainloop()
+    
+    #createCoordList()
+    window.after(1,getProbs)
+    
+    root.mainloop()
 
 

@@ -18,7 +18,7 @@ def getHeuristicValueForBoard(board):
 
         sortedIndex = getIndeciesForList(board)
         #print(sortedIndex)
-        for i in xrange(1,len(sortedIndex)):
+        for i in range(1,len(sortedIndex)):
             if board[sortedIndex[i]] < 4:
                 break
             c1 = sortedIndex[i-1]
@@ -80,8 +80,8 @@ def isCellInCorner(cell):
 def createCoordList():
     global cords
     cords = []
-    for y in xrange(0,4):
-        for x in xrange(0,4):
+    for y in range(0,4):
+        for x in range(0,4):
             cords.append([y,x])
 
     #print(list)
@@ -125,7 +125,7 @@ def getEmptyCellsInBoard(board):
 def getLargestCellInBoard(board):
     largestValue = 0
     cellWithLargestValue = -1
-    for cell in xrange(0,len(board)):
+    for cell in range(0,len(board)):
         if board[cell] > largestValue:
             largestValue = board[cell]
             cellWithLargestValue = cell

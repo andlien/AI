@@ -1,4 +1,4 @@
-from Tkinter import *
+from tkinter import *
 
 GRID_LEN              = 4
 GRID_PADDING          = 10
@@ -66,8 +66,8 @@ class GameWindow(Frame):
     #end
     
     def update_view(self, board ):
-        for i in xrange( GRID_LEN ):
-            for j in xrange( GRID_LEN ):
+        for i in range( GRID_LEN ):
+            for j in range( GRID_LEN ):
                 digit = board[i*4+j]
                 if digit == 0:
                     self.grid_cells[i][j].configure(
