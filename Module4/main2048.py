@@ -12,7 +12,7 @@ board = [   # A list of values currently present in the board on the form 2^x.
                 0, 0, 0, 0,
                 0, 0, 0, 0,
                 0, 0, 0, 0,
-                0, 1, 2, 2
+                0, 0, 0, 0
             ]
 
 def runUp(q):
@@ -248,14 +248,18 @@ def addNewCellToBoard(board):
 
 def createTree(inputBoard, depht, prob, init):
     global maxSearchDepth
-    if getEmptyCellsInBoard(board) > 4:
+    if getEmptyCellsInBoard(board) > 5 :#and heighestScore < 12:
         maxSearchDepth = 2
     elif getEmptyCellsInBoard(board) == 2:
-        maxSearchDepth = 2
-    elif getEmptyCellsInBoard(board) <= 1:
         maxSearchDepth = 3
+    elif getEmptyCellsInBoard(board) == 1:
+        maxSearchDepth = 4
+    elif getEmptyCellsInBoard(board) == 0:
+        maxSearchDepth = 4
     else:
-        maxSearchDepth = 2
+        maxSearchDepth = 3
+
+    #maxSearchDepth = 2
     sum = 0
     if maxSearchDepth <= depht:
         return getHeuristicValueForBoard(inputBoard) * prob
@@ -280,7 +284,7 @@ def createTree(inputBoard, depht, prob, init):
         for child in childBoards:
             sum += createTree(child,depht +1, prob*0.9, False)
 
-        if  depht == 0 and  getEmptyCellsInBoard(board) <= 2:
+        if  (depht == 0 and  getEmptyCellsInBoard(board) <= 3 ):# or (getEmptyCellsInBoard(board) == 0):
             childBoards = createAllEmptyBoardsCombos(shiftedBoard,2)
             for child in childBoards:
                 sum += createTree(child,depht +1, prob*0.1,False)
@@ -374,11 +378,14 @@ def getProbs():
     leftScore=left.get()
 
     scores = [downScore,upScore,rightScore,leftScore]
+    if max(scores) == -1:
+        print("Bard is full!");
+        return
 
     # bestScore = downScore
     # bestNumber = 0
     # teller = 1
-    print("Scores: ", scores)
+    #print("Scores: ", scores)
     # for dir in [upScore,rightScore,leftScore]:
     #     if dir > bestScore:
     #         bestScore = dir
@@ -420,7 +427,9 @@ def getProbs():
 def leftKey(event):
     global board
     print("Left key pressed")
-    newBoard = slideToTheLeft(board, False)
+    newBoard = slideToTheLeft(board, True)
+    if newBoard == None:
+        return
     board = newBoard
     board = addNewCellToBoard(board)
     window.update_view( board )
@@ -428,7 +437,9 @@ def leftKey(event):
 def rightKey(event):
     global board
     print("Right key pressed")
-    newBoard = slideToTheRight(board, False)
+    newBoard = slideToTheRight(board, True)
+    if newBoard == None:
+        return
     board = newBoard
     board = addNewCellToBoard(board)
     window.update_view( board )
@@ -436,7 +447,9 @@ def rightKey(event):
 def upKey(event):
     global board
     print("Up key pressed")
-    newBoard = slideUp(board, False)
+    newBoard = slideUp(board, True)
+    if newBoard == None:
+        return
     board = newBoard
     board = addNewCellToBoard(board)
     window.update_view( board )
@@ -444,10 +457,16 @@ def upKey(event):
 def downKey(event):
     global board
     print("Down key pressed")
-    newBoard = slideDown(board, False)
+    newBoard = slideDown(board, True)
+    if newBoard == None:
+        return
     board = newBoard
     board = addNewCellToBoard(board)
     window.update_view( board )
+
+
+def spaceKey(event):
+    window.after(1,getProbs)
 
 if __name__ == '__main__':
     
@@ -481,7 +500,7 @@ if __name__ == '__main__':
     root.bind('<Right>', rightKey)
     root.bind('<Up>', upKey)
     root.bind('<Down>', downKey)
-    root.bind('<space>', getProbs)
+    root.bind('<space>', spaceKey)
     
     root.focus_set()
     #root.pack()
