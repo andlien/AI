@@ -1,5 +1,9 @@
+from Module4.main2048 import slideDown, slideToTheLeft, slideToTheRight, slideUp
+
 cords = []
-from main2048 import  *
+for y in range(0,4):
+    for x in range(0,4):
+        cords.append([y,x])
 
 def getHeuristicValueForBoard22(board):
     sum = 0
@@ -194,16 +198,6 @@ def isCellInCorner(cell):
             # 4, 5, 6, 7,
             # 8, 9, 10, 11,
             # 12, 13, 14, 15
-
-def createCoordList():
-    global cords
-    cords = []
-    for y in range(0,4):
-        for x in range(0,4):
-            cords.append([y,x])
-
-    #print(list)
-    #return list
 
 def getCellsCloseToCorners(cornerCell):
     if cornerCell == 15:
