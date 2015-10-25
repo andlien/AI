@@ -70,7 +70,7 @@ def getHeuristicValueForBoard(board):
 
     sum += (getEmptyCellsInBoard(board))# ** 2
 
-    if sum == 0:
+    if sum <= 1:
         teller = isBoardStuck(board)
         sum += 1/teller
 

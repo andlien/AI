@@ -248,7 +248,7 @@ def addNewCellToBoard(board):
 
 def createTree(inputBoard, depht, prob, init):
     global maxSearchDepth
-    if getEmptyCellsInBoard(board) > 5 :#and heighestScore < 12:
+    if getEmptyCellsInBoard(board) > 7 :#and heighestScore < 12:
         maxSearchDepth = 2
     elif getEmptyCellsInBoard(board) == 2:
         maxSearchDepth = 3
