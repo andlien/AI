@@ -15,11 +15,11 @@ board = [   # A list of values currently present in the board on the form 2^x.
                 0, 0, 0, 0
             ]
 
-def runUp(q):
+def runUp(q, board):
     #global upScore
 
     newBoard = slideUp(board,True)
-    if newBoard == None:
+    if newBoard is None:
         q.put(-1)
         return
     upScore = createTree(newBoard,0,1,True)
@@ -27,10 +27,10 @@ def runUp(q):
     #print("Up dune: ", upScore)
     return
 
-def runDown(q):
+def runDown(q, board):
     #global downScore
     newBoard = slideDown(board,True)
-    if newBoard == None:
+    if newBoard is None:
         q.put(-1)
         return
 
@@ -39,10 +39,10 @@ def runDown(q):
     #print("downScore dune ", downScore)
     return
 
-def runRight(q):
+def runRight(q, board):
     #global rightScore
     newBoard = slideToTheRight(board,True)
-    if newBoard == None:
+    if newBoard is None:
         q.put(-1)
         return
 
@@ -51,10 +51,10 @@ def runRight(q):
     #print("rightScore dune", rightScore)
     return
 
-def runLeft(q):
+def runLeft(q, board):
     #global leftScore
     newBoard = slideToTheLeft(board,True)
-    if newBoard == None:
+    if newBoard is None:
         q.put(-1)
         return
 
@@ -75,18 +75,19 @@ def slideToTheRight(board,init):
             return False
         elif cellIndex < 0:
             return False
-        elif newBoard[cellIndex +1] == 0:
+        elif newBoard[cellIndex +1] == 0 or newBoard[cellIndex] == newBoard[cellIndex+1]:
             return True
         else:
             return False
 
-    for cellIndex in reversed(range(0,len(board)-1)):
+    for cellIndex in [2,1,0,6,5,4,10,9,8,14,13,12]:
+    # for cellIndex in [i for i in range(len(board)-1, -1, -1) if (i-3) % 4 != 0]:
 
         if newBoard[cellIndex] == 0:
             continue
         currentIndex = cellIndex
 
-        while canSlideRight(currentIndex) or newBoard[currentIndex] == newBoard[currentIndex+1]:
+        while canSlideRight(currentIndex):
             if newBoard[currentIndex] == newBoard[currentIndex+1]:
                 newBoard[currentIndex+1] += 1
                 newBoard[currentIndex] = 0
@@ -115,16 +116,17 @@ def slideToTheLeft(board,init):
             return False
         elif cellIndex < 0:
             return False
-        elif newBoard[cellIndex -1] == 0:
+        elif newBoard[cellIndex-1] == 0 or newBoard[cellIndex] == newBoard[cellIndex-1]:
             return True
         else:
             return False
 
-    for cellIndex in range(0,len(board)):
+    for cellIndex in [1,2,3,5,6,7,9,10,11,13,14,15]:
+    # for cellIndex in [i for i in range(1, len(board)) if i % 4 != 0]:
         if newBoard[cellIndex] == 0:
             continue
         currentIndex = cellIndex
-        while canSlideLeft(currentIndex) or newBoard[currentIndex] == newBoard[currentIndex-1]:
+        while canSlideLeft(currentIndex):
             if newBoard[currentIndex] == newBoard[currentIndex-1]:
                 newBoard[currentIndex-1] += 1
                 newBoard[currentIndex] = 0
@@ -151,18 +153,19 @@ def slideUp(board,init):
             return False
         elif cellIndex < 0:
             return False
-        elif newBoard[cellIndex - 4] == 0:
+        elif newBoard[cellIndex - 4] == 0 or newBoard[cellIndex] == newBoard[cellIndex-4]:
             return True
         else:
             return False
 
-    for cellIndex in range(4,len(board)):
+    for cellIndex in [4,8,12,5,9,13,6,10,14,7,11,15]:
+    # for cellIndex in range(4, len(board)):
 
         if newBoard[cellIndex] == 0:
             continue
         currentIndex = cellIndex
 
-        while canSlideUp(currentIndex) or newBoard[currentIndex] == newBoard[currentIndex-4]:
+        while canSlideUp(currentIndex):
             if newBoard[currentIndex] == newBoard[currentIndex-4]:
                 newBoard[currentIndex-4] += 1
                 newBoard[currentIndex] = 0
@@ -174,8 +177,6 @@ def slideUp(board,init):
                 newBoard[currentIndex] = 0
                 didSomethingChange = True
             currentIndex = currentIndex-4
-            if currentIndex < 4:
-                break
             #print("Hei")
 
     if not didSomethingChange and init:# and getEmptyCellsInBoard(newBoard) == 0:
@@ -194,18 +195,19 @@ def slideDown(board,init):
             return False
         elif cellIndex < 0:
             return False
-        elif newBoard[cellIndex + 4] == 0:
+        elif newBoard[cellIndex + 4] == 0 or newBoard[cellIndex] == newBoard[cellIndex+4]:
             return True
         else:
             return False
 
     for cellIndex in [8,4,0,9,5,1,10,6,2,11,7,3]: #reversed(range(0,len(board)-4))
+    # for cellIndex in range(len(board)-4-1, -1, -1): #reversed(range(0,len(board)-4))
 
         if newBoard[cellIndex] == 0:
             continue
         currentIndex = cellIndex
 
-        while canSlideDown(currentIndex) or newBoard[currentIndex] == newBoard[currentIndex+4]:
+        while canSlideDown(currentIndex):
             if newBoard[currentIndex] == newBoard[currentIndex+4]:
                 newBoard[currentIndex+4] += 1
                 newBoard[currentIndex] = 0
@@ -217,12 +219,9 @@ def slideDown(board,init):
                 newBoard[currentIndex] = 0
                 didSomethingChange = True
             currentIndex = currentIndex+4
-            if currentIndex >= 12:
-                break
             #print("Hei")
 
     if not didSomethingChange and init:# and getEmptyCellsInBoard(newBoard) == 0:
-        #print("Dead end!!!")
         return None
     return newBoard
 
@@ -311,17 +310,17 @@ def getRandomOpenCellInBoard(board):
         return -1
     return openCells[randint(0,len(openCells)-1)]
 
-def hei():
-    global teller
-    teller += 2
-    global board
-    newBoard = addNewCellToBoard(board)
-    if newBoard == None:
-        return
-    window.update_view( newBoard )
-    board = newBoard
-    window.after(1000,hei)
-    #time.sleep(2)
+# def hei():
+#     global teller
+#     teller += 2
+#     global board
+#     newBoard = addNewCellToBoard(board)
+#     if newBoard == None:
+#         return
+#     window.update_view( newBoard )
+#     board = newBoard
+#     window.after(1000,hei)
+#     #time.sleep(2)
 
 
 
@@ -329,39 +328,26 @@ def hei():
 def getProbs():
     global board
 
-    global upScore
-    # global downScore,leftScore,rightScore
-    # downScore = createTree(slideDown(board),0,1)
-    # upScore = createTree(slideUp(board),0,1)
-    # rightScore = createTree(slideToTheRight(board),0,1)
-    # leftScore = createTree(slideToTheLeft(board),0,1)
-    #print("Down: ", down)
-    #print("Up: ", up)
-    #print("Right: ", right)
-    #print("Left: ", left)
-
-
-
     up = Queue()
     down = Queue()
     left = Queue()
     right = Queue()
 
-    t1 = Process(target=runUp, args=(up,))
-    t1.daemon = True
+    t1 = Process(target=runDown, args=(down,board))
+    # t1.daemon = True
     t1.start()
     #print("runUp started")
-    t2 = Process(target=runDown, args= (down,))
-    t2.daemon = True
+    t2 = Process(target=runUp, args= (up,board))
+    # t2.daemon = True
     t2.start()
     #print("runDown started")
 
-    t3 = Process(target=runLeft, args= (left,))
-    t3.daemon = True
+    t3 = Process(target=runLeft, args= (left,board))
+    # t3.daemon = True
     t3.start()
     #print("runLeft started")
-    t4 = Process(target=runRight, args= (right,))
-    t4.daemon = True
+    t4 = Process(target=runRight, args= (right,board))
+    # t4.daemon = True
     t4.start()
     #print("runRight started")
 
@@ -370,27 +356,13 @@ def getProbs():
     t3.join()  # This waits until the thread has completed
     t4.join()
 
-    #print("All threads finished?")
 
+    downScore = down.get()
     upScore = up.get()
-    downScore=down.get()
-    rightScore=right.get()
-    leftScore=left.get()
+    rightScore = right.get()
+    leftScore = left.get()
 
     scores = [downScore,upScore,rightScore,leftScore]
-    if max(scores) == -1:
-        print("Bard is full!");
-        return
-
-    # bestScore = downScore
-    # bestNumber = 0
-    # teller = 1
-    #print("Scores: ", scores)
-    # for dir in [upScore,rightScore,leftScore]:
-    #     if dir > bestScore:
-    #         bestScore = dir
-    #         bestNumber = teller
-    #     teller += 1
 
     bestNumber = scores.index(max(scores))
 
@@ -417,8 +389,11 @@ def getProbs():
                 print("New highest tile: " + str(2 ** largestTile) + " - " + str(time.time() - start) + " sec")
 
         board = addNewCellToBoard(board)
+    else:
+        print("Baard is full")
+        return
 
-    window.update_view( board )
+    window.update_view(board)
     window.after(1,getProbs)
 
 
@@ -482,7 +457,6 @@ if __name__ == '__main__':
     leftScore = 0
     rightScore = 0
     
-    createCoordList()
     heighestScore = 0
     start = time.time()
 
@@ -505,10 +479,8 @@ if __name__ == '__main__':
     root.focus_set()
     #root.pack()
     
-
-    
     #createCoordList()
-    window.after(1,getProbs)
+    # window.after(1,getProbs)
     
     root.mainloop()
 
