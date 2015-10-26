@@ -56,7 +56,7 @@ def getHeuristicValueForBoard(board):
 
         #print("Dist: ", getDistance(c2,c1))
 
-        # sum += (1 / (1 + getDistance(c2,c1))**2) * board[sortedIndex[cell]]
+        sum += (1 / (1 + getDistance(c2,c1))**2) * board[sortedIndex[cell]]
             #if getDistance(sortedIndex[cell],sortedIndex[cell+1]) > 1:
                 #sum -= board[sortedIndex[cell]]
             #sum += board[sortedIndex[cell]]
@@ -103,20 +103,20 @@ def getSnakeScore(board, largestCell):
             break
         if board[largestCell-(i-1)*diff] == board[largestCell-i*diff]:
             continue
-        sum += ((board[largestCell-i*diff] * 3) ** 2)
+        sum += ((board[largestCell-i*diff] * 2) ** 2)
     #second snakerow
     else:
         nextRowStart = lastSnakeCell - diff * 3
 
         if board[nextRowStart] < board[largestCell-3*diff]:
-            sum += ((board[nextRowStart] * 3) ** 2)
+            sum += ((board[nextRowStart] * 2) ** 2)
             diff = -diff
             for i in range(1, 4):
                 if board[nextRowStart-(i-1)*diff] < board[nextRowStart-i*diff]:
                     break
                 if board[nextRowStart-(i-1)*diff] == board[nextRowStart-i*diff]:
                     continue
-                sum += ((board[nextRowStart-i*diff] * 3) ** 2)
+                sum += ((board[nextRowStart-i*diff] * 2) ** 2)
     return sum
 
 
