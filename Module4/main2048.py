@@ -34,7 +34,7 @@ def runDown(q, board):
         q.put(-1)
         return
 
-    downScore = createTree(newBoard,0,1,True)
+    downScore = createTree(newBoard,0,1,True) #* 0.9
     q.put(downScore)
     #print("downScore dune ", downScore)
     return
@@ -247,16 +247,16 @@ def addNewCellToBoard(board):
 
 def createTree(inputBoard, depht, prob, init):
     global maxSearchDepth
-    if getEmptyCellsInBoard(board) > 7 :#and heighestScore < 12:
+    if getEmptyCellsInBoard(board) > 5:#and heighestScore < 12:
         maxSearchDepth = 2
     elif getEmptyCellsInBoard(board) == 2:
         maxSearchDepth = 3
     elif getEmptyCellsInBoard(board) == 1:
-        maxSearchDepth = 4
-    elif getEmptyCellsInBoard(board) == 0:
-        maxSearchDepth = 4
-    else:
         maxSearchDepth = 3
+    elif getEmptyCellsInBoard(board) == 0:
+        maxSearchDepth = 3
+    else:
+        maxSearchDepth = 2
 
     #maxSearchDepth = 2
     sum = 0
@@ -288,7 +288,7 @@ def createTree(inputBoard, depht, prob, init):
             for child in childBoards:
                 sum += createTree(child,depht +1, prob*0.1,False)
 
-    return sum
+    return sum #+ getHeuristicValueForBoard(inputBoard) * prob
 
 def createAllEmptyBoardsCombos(board,value):
     openCells = []
@@ -480,7 +480,7 @@ if __name__ == '__main__':
     #root.pack()
     
     #createCoordList()
-    # window.after(1,getProbs)
+    window.after(1,getProbs)
     
     root.mainloop()
 
