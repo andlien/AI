@@ -75,11 +75,13 @@ def slideToTheRight(board,init):
             return False
         elif cellIndex < 0:
             return False
-        elif newBoard[cellIndex +1] == 0 or newBoard[cellIndex] == newBoard[cellIndex+1]:
+        elif (newBoard[cellIndex +1] == 0 or newBoard[cellIndex] == newBoard[cellIndex+1]) and cellIndex+1 not in stackedList:
             return True
         else:
             return False
 
+    # contains indices that has been stacked
+    stackedList = []
     for cellIndex in [2,1,0,6,5,4,10,9,8,14,13,12]:
     # for cellIndex in [i for i in range(len(board)-1, -1, -1) if (i-3) % 4 != 0]:
 
@@ -92,8 +94,8 @@ def slideToTheRight(board,init):
                 newBoard[currentIndex+1] += 1
                 newBoard[currentIndex] = 0
                 didSomethingChange = True
-                #print("Stacked!")
-                break #According to ios version, a cell can only stack ones per slide
+                stackedList.append(currentIndex+1)
+                break
             else:
                 didSomethingChange = True
                 newBoard[currentIndex+1] = newBoard[currentIndex]
@@ -116,11 +118,12 @@ def slideToTheLeft(board,init):
             return False
         elif cellIndex < 0:
             return False
-        elif newBoard[cellIndex-1] == 0 or newBoard[cellIndex] == newBoard[cellIndex-1]:
+        elif (newBoard[cellIndex-1] == 0 or newBoard[cellIndex] == newBoard[cellIndex-1]) and cellIndex-1 not in stackedList:
             return True
         else:
             return False
 
+    stackedList = []
     for cellIndex in [1,2,3,5,6,7,9,10,11,13,14,15]:
     # for cellIndex in [i for i in range(1, len(board)) if i % 4 != 0]:
         if newBoard[cellIndex] == 0:
@@ -131,7 +134,7 @@ def slideToTheLeft(board,init):
                 newBoard[currentIndex-1] += 1
                 newBoard[currentIndex] = 0
                 didSomethingChange = True
-                #print("Stacked!")
+                stackedList.append(currentIndex-1)
                 break #According to ios version, a cell can only stack ones per slide
             else:
                 newBoard[currentIndex-1] = newBoard[currentIndex]
@@ -153,11 +156,12 @@ def slideUp(board,init):
             return False
         elif cellIndex < 0:
             return False
-        elif newBoard[cellIndex - 4] == 0 or newBoard[cellIndex] == newBoard[cellIndex-4]:
+        elif (newBoard[cellIndex - 4] == 0 or newBoard[cellIndex] == newBoard[cellIndex-4]) and cellIndex-4 not in stackedList:
             return True
         else:
             return False
 
+    stackedList = []
     for cellIndex in [4,8,12,5,9,13,6,10,14,7,11,15]:
     # for cellIndex in range(4, len(board)):
 
@@ -170,7 +174,7 @@ def slideUp(board,init):
                 newBoard[currentIndex-4] += 1
                 newBoard[currentIndex] = 0
                 didSomethingChange = True
-                #print("Stacked!")
+                stackedList.append(currentIndex-4)
                 break #According to ios version, a cell can only stack ones per slide
             else:
                 newBoard[currentIndex-4] = newBoard[currentIndex]
@@ -195,11 +199,12 @@ def slideDown(board,init):
             return False
         elif cellIndex < 0:
             return False
-        elif newBoard[cellIndex + 4] == 0 or newBoard[cellIndex] == newBoard[cellIndex+4]:
+        elif (newBoard[cellIndex + 4] == 0 or newBoard[cellIndex] == newBoard[cellIndex+4]) and cellIndex+4 not in stackedList:
             return True
         else:
             return False
 
+    stackedList = []
     for cellIndex in [8,4,0,9,5,1,10,6,2,11,7,3]: #reversed(range(0,len(board)-4))
     # for cellIndex in range(len(board)-4-1, -1, -1): #reversed(range(0,len(board)-4))
 
@@ -212,7 +217,7 @@ def slideDown(board,init):
                 newBoard[currentIndex+4] += 1
                 newBoard[currentIndex] = 0
                 didSomethingChange = True
-                #print("Stacked!")
+                stackedList.append(currentIndex+4)
                 break #According to ios version, a cell can only stack ones per slide
             else:
                 newBoard[currentIndex+4] = newBoard[currentIndex]
@@ -250,13 +255,13 @@ def createTree(inputBoard, depht, prob, init):
     if getEmptyCellsInBoard(board) > 5:#and heighestScore < 12:
         maxSearchDepth = 2
     elif getEmptyCellsInBoard(board) == 2:
-        maxSearchDepth = 3
+        maxSearchDepth = 5
     elif getEmptyCellsInBoard(board) == 1:
-        maxSearchDepth = 3
+        maxSearchDepth = 6
     elif getEmptyCellsInBoard(board) == 0:
-        maxSearchDepth = 3
+        maxSearchDepth = 5
     else:
-        maxSearchDepth = 2
+        maxSearchDepth = 3
 
     #maxSearchDepth = 2
     sum = 0
@@ -275,7 +280,7 @@ def createTree(inputBoard, depht, prob, init):
             shiftedBoard = slideToTheLeft(inputBoard,False)
 
         if shiftedBoard is None:
-            break
+            continue
 
         #print("shiftedBoard: ", shiftedBoard)
         childBoards = createAllEmptyBoardsCombos(shiftedBoard,1)
@@ -283,11 +288,12 @@ def createTree(inputBoard, depht, prob, init):
         for child in childBoards:
             sum += createTree(child,depht +1, prob*0.9, False)
 
-        if  (depht == 0 and  getEmptyCellsInBoard(board) <= 3 ):# or (getEmptyCellsInBoard(board) == 0):
+        if  (depht == 0):# and  getEmptyCellsInBoard(board) <= 3 ):# or (getEmptyCellsInBoard(board) == 0):
             childBoards = createAllEmptyBoardsCombos(shiftedBoard,2)
             for child in childBoards:
                 sum += createTree(child,depht +1, prob*0.1,False)
-
+        if init:
+            break
     return sum #+ getHeuristicValueForBoard(inputBoard) * prob
 
 def createAllEmptyBoardsCombos(board,value):
@@ -480,7 +486,7 @@ if __name__ == '__main__':
     #root.pack()
     
     #createCoordList()
-    window.after(1,getProbs)
+    # window.after(1,getProbs)
     
     root.mainloop()
 
