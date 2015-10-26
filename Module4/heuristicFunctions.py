@@ -235,8 +235,26 @@ def getHeuristicValueForBoard(board):
     #sum = getEmptyCellsInBoard(board)*20
     #sum += 2 ** board[getLargestCellInBoard(board)]
 
-    if isCellInCorner(getLargestCellInBoard(board)):
-        sum += board[getLargestCellInBoard(board)] ** 2
+    largestCell = getLargestCellInBoard(board)
+    if isCellInCorner(largestCell):
+        sum += board[largestCell] ** 2
+
+        # snake
+        neighbours = getNeighbourCells(largestCell)
+        if board[neighbours[0]] > board[neighbours[1]]:
+            diff = largestCell - neighbours[0]
+        else:
+            diff = largestCell - neighbours[1]
+        #first snakerow
+        for i in range(1, 4):
+            if board[largestCell-(i-1)*diff] < board[largestCell-i*diff]:
+                break
+            sum += ((board[largestCell-i*diff] * 1.5 * i) ** 2)
+        # #second snakerow
+        # if
+        # for i in range(1, 4):
+
+
 
     for cell in range(0, len(board)):
         sum += compareToCellsAround(cell, board)
