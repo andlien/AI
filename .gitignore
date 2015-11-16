@@ -1,3 +1,4 @@
 .idea
 __pycache__
 *.pyc
+Module5/basics/mnist_basics.py
