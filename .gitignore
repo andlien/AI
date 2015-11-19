@@ -2,3 +2,4 @@
 __pycache__
 *.pyc
 Module5/basics/mnist_basics.py
+Module5/basics/all_flat_mnist_training_cases_text.txt
