@@ -6,6 +6,7 @@ import theano
 from theano import tensor as T
 from theano.sandbox.rng_mrg import MRG_RandomStreams as RandomStreams
 import numpy as np
+import matplotlib.pyplot as p
 
 
 srng = RandomStreams()
@@ -66,10 +67,13 @@ trainingInput,trainingOutput = load_mnist()
 #     index = trainingOutput[i]
 #     trY[i][index] = 1.0
 
+
+
+
 trainingInput, trainingOutput = gen_flat_cases()
 
-trX = np.zeros((6000, 784), dtype=np.float32)
-trY = np.zeros((6000, 10), dtype=np.float32)
+trX = np.zeros((60000, 784), dtype=np.float32)
+trY = np.zeros((60000, 10), dtype=np.float32)
 for i in range(6000):
     trX[i] = np.array(trainingInput[i])
             #trX[i][x+y] = trainingInput[i][y][x]
@@ -81,21 +85,27 @@ for i in range(6000):
     #print(index)
 
 
+#
+# testingInput, testingOutput = gen_flat_cases(type="testing")
+#
+# testingInput2, testingOutput2 = load_mnist()
+#
+# teX = np.zeros((10000, 784), dtype=np.float32)
+# teY = np.zeros((10000, 10), dtype=np.float32)
+# for i in range(10000):
+#     teX[i] = np.array(testingInput[i])
+#             #trX[i][x+y] = trainingInput[i][y][x]
+#     #print(str(trX[i]))
+#
+#     index = int(testingOutput[i])
+#     # trY[i][0] = index
+#     teY[i][index] += 1
+#     #print(index)
 
-testingInput, testingOutput = gen_flat_cases(type="testing")
 
-teX = np.zeros((10000, 784), dtype=np.float32)
-teY = np.zeros((10000, 10), dtype=np.float32)
-for i in range(10000):
-    teX[i] = np.array(testingInput[i])
-            #trX[i][x+y] = trainingInput[i][y][x]
-    #print(str(trX[i]))
-
-    index = int(testingOutput[i])
-    # trY[i][0] = index
-    teY[i][index] += 1
-    #print(index)
-
+#show_avg_digit(0)
+#show_avg_digit(0)
+#show_digit_image( reconstruct_image ( testingInput[0]) )
 
 # testinInput,testingOutput = load_mnist("testing")
 #
@@ -134,6 +144,24 @@ updates = RMSprop(cost, params, lr=0.001)
 train = theano.function(inputs=[X, Y], outputs=cost, updates=updates, allow_input_downcast=True)
 predict = theano.function(inputs=[X], outputs=y_x, allow_input_downcast=True)
 
+
+class theNet:
+
+    def setPrediction(self, newPredict):
+        self.predictFunc = newPredict
+
+    def blind_test(self,cases):
+        preds = self.predictFunc(cases)
+        predFormated = [0] * len(preds)
+        for x in range(0,len(preds)):
+            predFormated[x] = preds[x]
+
+        return predFormated
+
+
+sveisann = theNet()
+sveisann.setPrediction(predict)
+
 # for i in range(1):
 #     #for start, end in zip(range(0, len(trX), 784), range(784, len(trX), 784)):
 #     for s in range(0,100):
@@ -144,9 +172,13 @@ predict = theano.function(inputs=[X], outputs=y_x, allow_input_downcast=True)
 #     #print(i)
 
 
-for i in range(200):
-    for start, end in zip(range(0, len(trX), 900), range(900, len(trX), 900)):
+for i in range(20):
+    for start, end in zip(range(0, len(trX), 128), range(128, len(trX), 128)):
         #print("trX[start:end] shape: ", trX[start:end].shape)
         #print("trY[start:end] shape: ", trY[start:end].shape)
         cost = train(trX[start:end], trY[start:end])
-    print (np.mean(np.argmax(teY, axis=1) == predict(teX)))
+    #print (np.mean(np.argmax(teY, axis=1) == predict(teX)))
+    print(i)
+
+
+minor_demo(sveisann)
