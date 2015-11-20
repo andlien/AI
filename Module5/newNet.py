@@ -1,3 +1,5 @@
+from threading import Thread
+
 __author__ = 'simen'
 
 from Module5.basics.mnist_basics import *
@@ -161,18 +163,29 @@ sveisann.setPrediction(predict)
 #         #print(predict(teX))
 #         print ( np.mean(np.argmax(trY, axis=1) == predict(trX)))
 #     #print(i)
+
+def trainFunc():
+    global cost
+    for start, end in zip(range(0, len(trX), 900), range(900, len(trX), 900)):
+        #print("trX[start:end] shape: ", trX[start:end].shape)
+        #print("trY[start:end] shape: ", trY[start:end].shape)
+        cost = train(trX[start:end], trY[start:end])
+    print (np.mean(np.argmax(teY, axis=1) == predict(teX)))
+
 print("Start looping")
-try:
-    while True:
-        for start, end in zip(range(0, len(trX), 900), range(900, len(trX), 900)):
-            #print("trX[start:end] shape: ", trX[start:end].shape)
-            #print("trY[start:end] shape: ", trY[start:end].shape)
-            cost = train(trX[start:end], trY[start:end])
-        print (np.mean(np.argmax(teY, axis=1) == predict(teX)))
-except KeyboardInterrupt:
-    pass
+keep_running = True
+thr = None
+while keep_running:
+    try:
+        thr = Thread(target=trainFunc)
+        thr.start()
+        thr.join()
+    except KeyboardInterrupt:
+        # Interrupt happens on main-thread
+        keep_running = False
+        # Do not continue untill trainFunc has finished!
+        # Prevents inconsistent state?
+        thr.join()
 
 print("Start tests!")
-print("hei")
-
 minor_demo(sveisann)
