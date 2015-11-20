@@ -1,7 +1,6 @@
 __author__ = 'simen'
 
-
-from basics.mnist_basics import *
+from Module5.basics.mnist_basics import *
 import theano
 from theano import tensor as T
 from theano.sandbox.rng_mrg import MRG_RandomStreams as RandomStreams
@@ -52,7 +51,6 @@ def model(X, w_h, w_h2, w_o, p_drop_input, p_drop_hidden):
     h2 = dropout(h2, p_drop_hidden)
     py_x = softmax(T.dot(h2, w_o))
     return h, h2, py_x
-trainingInput,trainingOutput = load_mnist()
 
 
 #
@@ -66,36 +64,39 @@ trainingInput,trainingOutput = load_mnist()
 #     index = trainingOutput[i]
 #     trY[i][index] = 1.0
 
-trainingInput, trainingOutput = gen_flat_cases()
+trainingInput, trainingOutput = load_mnist()
 
-trX = np.zeros((6000, 784), dtype=np.float32)
-trY = np.zeros((6000, 10), dtype=np.float32)
-for i in range(6000):
-    trX[i] = np.array(trainingInput[i])
-            #trX[i][x+y] = trainingInput[i][y][x]
-    #print(str(trX[i]))
+trX = np.zeros((60000, 784), dtype=np.float32)
+trY = np.zeros((60000, 10), dtype=np.float32)
+for i in range(60000):
+    flat = np.array(flatten_image(trainingInput[i]), dtype=np.float32)
+    trX[i] = (flat - flat.min()) / (flat.max() - flat.min())
 
-    index = int(trainingOutput[i])
+    index = int(trainingOutput[i][0])
     # trY[i][0] = index
     trY[i][index] += 1
     #print(index)
 
+trainingInput = None
+trainingOutput = None
 
-
-testingInput, testingOutput = gen_flat_cases(type="testing")
+testingInput, testingOutput = load_mnist(dataset="testing")
 
 teX = np.zeros((10000, 784), dtype=np.float32)
 teY = np.zeros((10000, 10), dtype=np.float32)
 for i in range(10000):
-    teX[i] = np.array(testingInput[i])
+    flat = np.array(flatten_image(testingInput[i]), dtype=np.float32)
+    teX[i] = (flat - flat.min()) / (flat.max() - flat.min())
             #trX[i][x+y] = trainingInput[i][y][x]
     #print(str(trX[i]))
 
-    index = int(testingOutput[i])
+    index = int(testingOutput[i][0])
     # trY[i][0] = index
     teY[i][index] += 1
     #print(index)
 
+testingInput = None
+testingOutput = None
 
 # testinInput,testingOutput = load_mnist("testing")
 #
@@ -142,11 +143,16 @@ predict = theano.function(inputs=[X], outputs=y_x, allow_input_downcast=True)
 #         #print(predict(teX))
 #         print ( np.mean(np.argmax(trY, axis=1) == predict(trX)))
 #     #print(i)
+print("Start looping")
+try:
+    while True:
+        for start, end in zip(range(0, len(trX), 900), range(900, len(trX), 900)):
+            #print("trX[start:end] shape: ", trX[start:end].shape)
+            #print("trY[start:end] shape: ", trY[start:end].shape)
+            cost = train(trX[start:end], trY[start:end])
+        print (np.mean(np.argmax(teY, axis=1) == predict(teX)))
+except KeyboardInterrupt:
+    pass
 
-
-for i in range(200):
-    for start, end in zip(range(0, len(trX), 900), range(900, len(trX), 900)):
-        #print("trX[start:end] shape: ", trX[start:end].shape)
-        #print("trY[start:end] shape: ", trY[start:end].shape)
-        cost = train(trX[start:end], trY[start:end])
-    print (np.mean(np.argmax(teY, axis=1) == predict(teX)))
+print("Start tests!")
+print("hei")
