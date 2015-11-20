@@ -135,6 +135,24 @@ updates = RMSprop(cost, params, lr=0.001)
 train = theano.function(inputs=[X, Y], outputs=cost, updates=updates, allow_input_downcast=True)
 predict = theano.function(inputs=[X], outputs=y_x, allow_input_downcast=True)
 
+
+class theNet:
+
+    def setPrediction(self, newPredict):
+        self.predictFunc = newPredict
+
+    def blind_test(self,cases):
+        preds = self.predictFunc(cases)
+        predFormated = [0] * len(preds)
+        for x in range(0,len(preds)):
+            predFormated[x] = preds[x]
+
+        return predFormated
+
+
+sveisann = theNet()
+sveisann.setPrediction(predict)
+
 # for i in range(1):
 #     #for start, end in zip(range(0, len(trX), 784), range(784, len(trX), 784)):
 #     for s in range(0,100):
@@ -156,3 +174,5 @@ except KeyboardInterrupt:
 
 print("Start tests!")
 print("hei")
+
+minor_demo(sveisann)
