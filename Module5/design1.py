@@ -1,5 +1,3 @@
-from threading import Thread
-
 __author__ = 'simen'
 
 from Module5.basics.mnist_basics import *
@@ -8,7 +6,6 @@ from theano import tensor as T
 from theano.sandbox.rng_mrg import MRG_RandomStreams as RandomStreams
 import numpy as np
 from Module5.ann import ANN
-import os
 
 # features in this design:
 #
@@ -19,18 +16,7 @@ import os
 # Error func: Root mean squared propagation
 #
 
-print(os.getpid())
-
 srng = RandomStreams()
-
-def floatX(X):
-    return np.asarray(X, dtype=theano.config.floatX)
-
-def init_neural_net_weights(*args):
-    weights = []
-    for shape in args:
-        weights.append(theano.shared(floatX(np.random.randn(*shape) * 0.01)))
-    return weights
 
 def rectify(X):
     return T.maximum(X, 0.)
@@ -107,30 +93,16 @@ testingInput = None
 testingOutput = None
 
 # THEANO, I CHOOSE YOU!
-X = T.fmatrix()
-Y = T.fmatrix()
+
+
+mNeuralNet = ANN()
 
 # neural net is represented by weights and activation function
-ws = init_neural_net_weights((784, 600), (600, 150), (150, 10))
+mNeuralNet.init_weights((784, 600), (600, 150), (150, 10))
+mNeuralNet.init_training_data(model=model, errorprop=RMSprop)
 
-noise_py_x = model(X, 0.2, 0.5, ws)
-py_x = model(X, 0., 0., ws)
-
-# Currently the output given the inputs and weights
-y_x = T.argmax(py_x, axis=1)
-
-cost = T.mean(T.nnet.categorical_crossentropy(noise_py_x, Y))
-updates = RMSprop(cost, ws, learning_rate=0.001)
-
-# train runs "update" on each run (for each image) with the inputs given
-# update includes symbols to update each weight
-train = theano.function(inputs=[X, Y], outputs=None, updates=updates, allow_input_downcast=True)
-# predict use symbol y_x which is given by the model
-predict = theano.function(inputs=[X], outputs=y_x, allow_input_downcast=True)
-
-mNeuralNet = ANN(predict)
-
-mNeuralNet.train(train, trX, trY, teX, teY)
+print("Start training!")
+mNeuralNet.train(trX, trY, teX, teY)
 
 print("Start tests!")
 minor_demo(mNeuralNet)

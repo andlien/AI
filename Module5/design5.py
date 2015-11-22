@@ -1,4 +1,5 @@
 from threading import Thread
+from Module5.ann import ANN
 
 __author__ = 'simen'
 
@@ -17,29 +18,7 @@ import numpy as np
 # Error func: Root mean squared propagation
 #
 
-class ANN:
-
-    def __init__(self, newPredict):
-        self.predictFunc = newPredict
-
-    def blind_test(self,cases):
-        preds = self.predictFunc(cases)
-        predFormated = [0] * len(preds)
-        for x in range(0,len(preds)):
-            predFormated[x] = preds[x]
-
-        return predFormated
-
 srng = RandomStreams()
-
-def floatX(X):
-    return np.asarray(X, dtype=theano.config.floatX)
-
-def init_neural_net_weights(*args):
-    weights = []
-    for shape in args:
-        weights.append(theano.shared(floatX(np.random.randn(*shape) * 0.01)))
-    return weights
 
 def rectify(X):
     return T.maximum(X, 0.)
@@ -116,52 +95,15 @@ testingInput = None
 testingOutput = None
 
 # THEANO, I CHOOSE YOU!
-X = T.fmatrix()
-Y = T.fmatrix()
+
+mNeuralNet = ANN()
 
 # neural net is represented by weights and activation function
-ws = init_neural_net_weights((784, 600), (600, 150), (150, 10))
+mNeuralNet.init_weights((784, 600), (600, 150), (150, 10))
+mNeuralNet.init_training_data(model=model, errorprop=RMSprop)
 
-noise_py_x = model(X, 0.2, 0.5, ws)
-py_x = model(X, 0., 0., ws)
-
-# Currently the output given the inputs and weights
-y_x = T.argmax(py_x, axis=1)
-
-cost = T.mean(T.nnet.categorical_crossentropy(noise_py_x, Y))
-updates = RMSprop(cost, ws, learning_rate=0.001)
-
-# train runs "update" on each run (for each image) with the inputs given
-# update includes symbols to update each weight
-train = theano.function(inputs=[X, Y], outputs=None, updates=updates, allow_input_downcast=True)
-# predict use symbol y_x which is given by the model
-predict = theano.function(inputs=[X], outputs=y_x, allow_input_downcast=True)
-
-mNeuralNet = ANN(predict)
-
-# ONE RUN OVER THE TRAINING SET, RUN IN A SEPARATE THREAD
-def trainFunc():
-    global cost
-    # for start, end in zip(range(0, len(trX), 900), range(900, len(trX), 900)):
-    #     #print("trX[start:end] shape: ", trX[start:end].shape)
-    #     #print("trY[start:end] shape: ", trY[start:end].shape)
-    train(trX, trY)
-    print (np.mean(np.argmax(teY, axis=1) == predict(teX)))
-
-print("Start looping")
-keep_running = True
-thr = None
-while keep_running:
-    try:
-        thr = Thread(target=trainFunc)
-        thr.start()
-        thr.join()
-    except KeyboardInterrupt:
-        # Interrupt happens on main-thread, not on training thread
-        keep_running = False
-        # Do not continue until trainFunc has finished!
-        # Prevents inconsistent state?
-        thr.join()
+print("Start training!")
+mNeuralNet.train(trX, trY, teX, teY)
 
 print("Start tests!")
 minor_demo(mNeuralNet)
