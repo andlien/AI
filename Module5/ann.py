@@ -17,7 +17,7 @@ class ANN:
 
     def init_weights(self, *args):
         for shape in args:
-            self.weights.append(theano.shared(floatX(np.random.randn(*shape) * 0.1)))
+            self.weights.append(theano.shared(floatX(np.random.randn(*shape) * 0.01)))
 
     def init_training_data(self, model=None, errorFunc=None, learningAlgorithm=None):
         assert not (model is None or errorFunc is None or learningAlgorithm is None)
@@ -29,7 +29,8 @@ class ANN:
         py_x = model(X, 0., 0., self.weights)
 
         # Currently the output given the inputs and weights
-        y_x = T.argmax(py_x, axis=1)
+        # y_x = T.argmax(py_x, axis=1)
+        y_x = py_x
 
         error = T.mean(errorFunc(noise_py_x, Y))
         updates = learningAlgorithm(error, self.weights)
@@ -40,14 +41,15 @@ class ANN:
         # predict use symbol y_x which is given by the model
         self.predictFunc = theano.function(inputs=[X], outputs=y_x, allow_input_downcast=True)
 
-    def train(self,trX, trY, teX, teY):
+    def train(self,trX, trY, teX=None, teY=None):
         # ONE RUN OVER THE TRAINING SET, RUN IN A SEPARATE THREAD
         def threadTrainingFunc():
             for start, end in zip(range(0, len(trX), 1000), range(1000, len(trX), 1000)):
                 #print("trX[start:end] shape: ", trX[start:end].shape)
                 #print("trY[start:end] shape: ", trY[start:end].shape)
                 self.trainFunc(trX[start:end], trY[start:end])
-            self.current_best = np.mean(np.argmax(teY, axis=1) == self.predictFunc(teX))
+            if teX is not None and teY is not None:
+                self.current_best = np.mean(np.argmax(teY, axis=1) == self.predictFunc(teX))
             print(self.current_best)
 
         def stopTrainingListener():
@@ -85,6 +87,7 @@ class ANN:
         print("Time elapsed:", time() - startTime)
         
         return progress
+
 
     def blind_test(self,cases):
         preds = self.predictFunc(cases)

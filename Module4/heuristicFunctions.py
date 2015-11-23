@@ -1,4 +1,4 @@
-from Module4.main2048 import slideDown, slideToTheLeft, slideToTheRight, slideUp
+from main2048 import *#slideDown, slideToTheLeft, slideToTheRight, slideUp
 
 cords = []
 for y in range(0,4):
@@ -22,6 +22,7 @@ def isBoardStuck(board):
         teller += 1
 
     return teller
+
 
 
 def getHeuristicValueForBoard(board):
@@ -63,9 +64,9 @@ def getHeuristicValueForBoard(board):
 
 
     emptyCells = getEmptyCellsInBoard(board)
-    if emptyCells == 0:
-        teller = isBoardStuck(board)
-        emptyCells += 1/teller
+    # if emptyCells == 0:
+    #     #teller = isBoardStuck(board)
+    #     emptyCells += 1/teller
 
     sum += emptyCells * 15
     if sum < 0:
@@ -75,6 +76,57 @@ def getHeuristicValueForBoard(board):
     return sum
 #def areTheFourLargestTilesOnTheSameRow(board):
 
+
+#
+
+def getSnakeScoreForBoardList(board):
+    sum = 0
+    returnList = []
+
+    largestCell = getLargestCellInBoard(board)
+    if isCellInCorner(largestCell):
+        return getSnakeScoreList(board, largestCell)
+    return [0]*3
+
+
+def getSnakeScoreForBoard(board):
+    sum = 0
+    largestCell = getLargestCellInBoard(board)
+
+    if isCellInCorner(largestCell):
+        sum += board[largestCell] ** 2
+
+        # snake
+        sum += getSnakeScore(board, largestCell)
+
+
+
+    return sum
+
+def getAScoreForCellsAround(board):
+    sum =0
+    for cell in range(0, len(board)):
+        sum += compareToCellsAround(cell, board)
+
+    return sum
+
+
+def getAScoreForCellsAroundList(board):
+    returnList1 = 0
+    returnList2 = 0
+    returnList3 = 0
+    returnList4 = 0
+    sortedBoard = list(board)
+    sortedBoard.sort()
+    for cell in range(0, 3):
+        returnList1 += compareToCellsAround(sortedBoard[cell], board)
+    for cell in range(3, 8):
+        returnList2 += compareToCellsAround(sortedBoard[cell], board)
+    for cell in range(8, 11):
+        returnList3 += compareToCellsAround(sortedBoard[cell], board)
+    for cell in range(11, len(board)):
+        returnList4 += compareToCellsAround(sortedBoard[cell], board)
+    return returnList1,returnList2,returnList3,returnList4
 
 def getIndeciesForList(board):
     sortedBoard = list(board)
@@ -88,8 +140,9 @@ def getIndeciesForList(board):
 
     return indices
 
-def getSnakeScore(board, largestCell):
+def getSnakeScoreList(board, largestCell):
     sum = 0
+    returnList = [0.0]*3
     neighbours = getNeighbourCells(largestCell)
     if board[neighbours[0]] > board[neighbours[1]]:
         diff = largestCell - neighbours[0]
@@ -104,12 +157,14 @@ def getSnakeScore(board, largestCell):
         if board[largestCell-(i-1)*diff] == board[largestCell-i*diff]:
             continue
         sum += ((board[largestCell-i*diff] * 2) ** 2)
+        returnList[0] +=((board[largestCell-i*diff] * 2) ** 2)
     #second snakerow
     else:
         nextRowStart = lastSnakeCell - diff * 3
 
         if board[nextRowStart] < board[largestCell-3*diff]:
             sum += ((board[nextRowStart] * 2) ** 2)
+            returnList[1] +=((board[largestCell-i*diff] * 2) ** 2)
             diff = -diff
             for i in range(1, 4):
                 if board[nextRowStart-(i-1)*diff] < board[nextRowStart-i*diff]:
@@ -117,10 +172,49 @@ def getSnakeScore(board, largestCell):
                 if board[nextRowStart-(i-1)*diff] == board[nextRowStart-i*diff]:
                     continue
                 sum += ((board[nextRowStart-i*diff] * 2) ** 2)
+                returnList[2] +=((board[nextRowStart-i*diff] * 2) ** 2)
+    return returnList
+
+def getSnakeScore(board, largestCell):
+    sum = 0
+    #returnList = []
+    neighbours = getNeighbourCells(largestCell)
+    if board[neighbours[0]] > board[neighbours[1]]:
+        diff = largestCell - neighbours[0]
+        lastSnakeCell = neighbours[1]
+    else:
+        diff = largestCell - neighbours[1]
+        lastSnakeCell = neighbours[0]
+    #first snakerow
+    for i in range(1, 4):
+        if board[largestCell-(i-1)*diff] < board[largestCell-i*diff]:
+            break
+        if board[largestCell-(i-1)*diff] == board[largestCell-i*diff]:
+            continue
+        sum += ((board[largestCell-i*diff] * 2) ** 2)
+       # returnList.append(((board[largestCell-i*diff] * 2) ** 2))
+    #second snakerow
+    else:
+        nextRowStart = lastSnakeCell - diff * 3
+
+        if board[nextRowStart] < board[largestCell-3*diff]:
+            sum += ((board[nextRowStart] * 2) ** 2)
+            #returnList.append(((board[nextRowStart] * 2) ** 2))
+            diff = -diff
+            for i in range(1, 4):
+                if board[nextRowStart-(i-1)*diff] < board[nextRowStart-i*diff]:
+                    break
+                if board[nextRowStart-(i-1)*diff] == board[nextRowStart-i*diff]:
+                    continue
+                sum += ((board[nextRowStart-i*diff] * 2) ** 2)
+                #eturnList.append(((board[nextRowStart-i*diff] * 2) ** 2))
     return sum
 
-
-
+def isGreatestTileInCorner(board):
+    largestCell = getLargestCellInBoard(board)
+    if isCellInCorner(largestCell):
+        return 1
+    return 0
 
 def getDistance(cell1, cell2):
     #cords = createCoordList()
@@ -133,6 +227,34 @@ def isCellInCorner(cell):
     if cell in [0,3,12,15]:
         return True
     return False
+
+
+def greatestCellInCornerSingle(board):
+    largestCell = getLargestCellInBoard(board)
+    if largestCell in [0,3,12,15]:
+        return largestCell/16
+    return 0
+
+
+def greatestCellInCorner(board):
+    largestCell = getLargestCellInBoard(board)
+    sum = [0,0,0,0]
+    corners = [0,3,12,15]
+    if largestCell in corners:
+        for i in range(3):
+            if corners[i] == largestCell:
+               sum[i] = 1
+               #print(sum)
+    else:
+        if largestCell in [1,4]:
+            sum[0] += 0.5
+        if largestCell in [2,7]:
+            sum[1] += 0.5
+        if largestCell in [8,13]:
+            sum[2] += 0.5
+        if largestCell in [14,11]:
+            sum[3] += 0.5
+    return sum
 
             # 0, 1, 2, 3,
             # 4, 5, 6, 7,
@@ -178,10 +300,10 @@ def scanColumns(board):
         lista = []
         for index in range(0,3):
             cell = board[row+index]
-            if cell not in lista:
-                lista.append(cell)
+            if cell == 0:
+                sum += 1
 
-        sum += ( (1/len(lista)))
+
     return sum
 
 def scanRows(board):
@@ -191,25 +313,22 @@ def scanRows(board):
         lista = []
         for index in [0,4,8,12]:
             cell = board[row+index]
-            if cell not in lista:
-                lista.append(cell)
+            if cell == 0:
+                sum += 1
 
-        sum += ((1/len(lista)))
     return sum
 
 
 def compareToCellsAround(cell ,board):
     sum = 0
-    if board[cell] == 0:
-        return 2
     for nabo in getNeighbourCells(cell):
         if board[nabo] == board[cell]:
-            sum += board[cell] ** 2
+            sum += board[cell] + 1
             # sum += 2 ** board[cell]
-        elif (board[nabo] -1 == board[cell] or board[nabo] -1 == board[cell] -1) and board[cell] > 0:
-            sum +=1
+        elif (board[nabo] -1 == board[cell] ) and board[cell] > 0:
+            sum +=0.1
         elif board[nabo] == 0:
-            sum += 2
+            sum += 0.1
         else:
             sum -= 0#board[cell]
     return sum

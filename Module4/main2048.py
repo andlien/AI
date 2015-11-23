@@ -1,10 +1,15 @@
 from Module4.visuals import GameWindow
 from tkinter import *
-from random import randint
+from random import *
 from Module4.heuristicFunctions import *
 from multiprocessing import Process, Queue
 import time
+import requests
+import numpy as np
+from Module6.theano2048 import *
+import math
 
+from Module6.createAbstractBoard import *
 
 board = [   # A list of values currently present in the board on the form 2^x.
                 # Eg: the number 4 implies that the graphical board should display,
@@ -14,6 +19,9 @@ board = [   # A list of values currently present in the board on the form 2^x.
                 0, 0, 0, 0,
                 0, 0, 0, 0
             ]
+
+
+
 
 def runUp(q, board):
     #global upScore
@@ -307,6 +315,53 @@ def createAllEmptyBoardsCombos(board,value):
 
     return openCells
 
+
+def printReport():
+    global bestScores
+    global bestScoresRandom
+    print()
+    # print("Totalt runs: ", len(bestScores))
+    # currentNumber = -1
+    # instancesOfCurrentNumber = 0
+    #
+    # for tall in bestScores:
+    #     if currentNumber == -1:
+    #         currentNumber = tall
+    #         instancesOfCurrentNumber =1
+    #     elif tall == currentNumber:
+    #         instancesOfCurrentNumber +=1
+    #     else:
+    #         print(currentNumber," - ",int((instancesOfCurrentNumber / len(bestScores))*100),"%")
+    #         instancesOfCurrentNumber = 1
+    #         currentNumber = tall
+    #
+    # print(currentNumber," - ",int((instancesOfCurrentNumber / len(bestScores))*100),"%")
+
+    # for tall in bestScoresRandom:
+    #     if currentNumber == -1:
+    #         currentNumber = tall
+    #         instancesOfCurrentNumber =1
+    #     elif tall == currentNumber:
+    #         instancesOfCurrentNumber +=1
+    #     else:
+    #         print(currentNumber," - ",int((instancesOfCurrentNumber / len(bestScoresRandom))*100),"%")
+    #         instancesOfCurrentNumber = 1
+    #         currentNumber = tall
+    #
+    # print(currentNumber," - ",int((instancesOfCurrentNumber / len(bestScores))*100),"%")
+
+
+
+    params = {"results": str(bestScoresRandom) + " " + str(bestScores), "raw": "1"}
+    resp = requests.post('http://folk.ntnu.no/valerijf/6/', data=params)
+    print( resp.text)
+
+    bestScoresRandom = []
+    bestScores = []
+
+    window.after(1,getProbsANN)
+
+
 def getRandomOpenCellInBoard(board):
     openCells = []
     for cell in range(0,len(board)):
@@ -402,8 +457,106 @@ def getProbs():
     window.update_view(board)
     window.after(1,getProbs)
 
+predict = None
+def setPredict(newPredict):
+    global predict
+    predict = newPredict
+    window.after(1,getProbsANN)
 
 
+def getProbsANN():
+    global board
+    #print(list(predict( np.array([board]))[0] ))
+    scores = list(predict( np.array([getAbstractBoard(board)]))[0] )
+    bestNumber = 0
+    #print(scores)
+
+    if(len(bestScores) >= 50):
+        scores[0] = uniform(0.00, 1.00)
+        scores[1] = uniform(0.00, 1.00)
+        scores[2] = uniform(0.00, 1.00)
+        scores[3] = uniform(0.00, 1.00)
+
+
+    if slideDown(board,True) == None:
+        scores[0] = -1
+    if slideUp(board,True) == None:
+        scores[1] = -1
+    if slideToTheRight(board,True) == None:
+        scores[2] = -1
+    if slideToTheLeft(board,True) == None:
+        scores[3] = -1
+
+    bestNumber = scores.index(max(scores))
+    newBoard = None
+    if max(scores) > 0:
+
+        if bestNumber == 0:
+            # print("Down")
+            newBoard = slideDown(board,True)
+        if bestNumber == 1:
+            newBoard = slideUp(board,True)
+            # print("Up")
+        if bestNumber == 2:
+            newBoard = slideToTheRight(board,True)
+            # print("Right")
+        if bestNumber == 3:
+            newBoard = slideToTheLeft(board,True)
+            # print("Left")
+
+    if not newBoard is None:
+        board = newBoard
+        largestTile = newBoard[getLargestCellInBoard(board)]
+
+        global heighestScore
+        global start
+        if largestTile > heighestScore:
+            heighestScore = largestTile
+            if 2 ** largestTile >= 512:
+                print("New highest tile: " + str(2 ** largestTile) + " - " + str((time.time() - start)/60) + " min")
+            else:
+                print("New highest tile: " + str(2 ** largestTile) + " - " + str(time.time() - start) + " sec")
+
+        board = addNewCellToBoard(board)
+    else:
+        largestTile = board[getLargestCellInBoard(board)]
+
+        if(len(bestScores) >= 50):
+            bestScoresRandom.append(2**largestTile)
+        else:
+            bestScores.append(2**largestTile)
+        #bestScores.sort()
+        #print(bestScores)
+        #print("Baard is full. Restrting")
+
+        if len(bestScoresRandom) >= 50 and len(bestScores) >= 50:
+            bestScores.sort()
+            bestScoresRandom.sort()
+            printReport()
+            return
+
+        board =         [0, 0, 0, 0,
+                0, 0, 0, 0,
+                0, 0, 0, 0,
+                0, 0, 0, 0
+            ]
+
+        board = addNewCellToBoard(board)
+
+        #return
+
+    #window.update_view(board)
+    window.after(1,getProbsANN)
+
+def convertBoardToBinary(board):
+    newBoard = []
+    for tile in board:
+        if tile > 0:
+            # newBoard.append(math.log(tile)+0.1)
+            newBoard.append(1)
+        else:
+            newBoard.append(0)
+    return newBoard
 
 def leftKey(event):
     global board
@@ -447,7 +600,12 @@ def downKey(event):
 
 
 def spaceKey(event):
-    window.after(1,getProbs)
+    # window.after(1,getProbs)
+
+    #setPredict( trainNet() )
+
+    #window.after(1,getProbs)
+    window.after(1,getProbsANN)
 
 if __name__ == '__main__':
     
@@ -465,6 +623,8 @@ if __name__ == '__main__':
     
     heighestScore = 0
     start = time.time()
+    bestScores = []
+    bestScoresRandom = []
 
 
     window = GameWindow()
@@ -487,7 +647,8 @@ if __name__ == '__main__':
     
     #createCoordList()
     # window.after(1,getProbs)
-    
+
+    setPredict( trainNet() )
     root.mainloop()
 
 
