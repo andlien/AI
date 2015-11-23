@@ -12,8 +12,8 @@ from Module5.ann import ANN
 # Number of hidden layers: 2
 # Number of nodes in hidden layers: 600, 150
 # Activation: rectified linear units
-# Learning rate: 0.001
-# Error func: Root mean squared propagation
+# Learning algorithm: Root mean squared propagation, learning_rate=0.001
+# Error func: Cross-entropy
 #
 
 srng = RandomStreams()
@@ -94,15 +94,20 @@ testingOutput = None
 
 # THEANO, I CHOOSE YOU!
 
+def main():
+    mNeuralNet = ANN()
 
-mNeuralNet = ANN()
+    # neural net is represented by weights and activation function
+    mNeuralNet.init_weights((784, 600), (600, 150), (150, 10))
+    mNeuralNet.init_training_data(model=model, errorFunc=T.nnet.categorical_crossentropy, learningAlgorithm=RMSprop)
 
-# neural net is represented by weights and activation function
-mNeuralNet.init_weights((784, 600), (600, 150), (150, 10))
-mNeuralNet.init_training_data(model=model, errorprop=RMSprop)
+    print("Start training!")
+    progressList = mNeuralNet.train(trX, trY, teX, teY)
 
-print("Start training!")
-mNeuralNet.train(trX, trY, teX, teY)
+    print("Start tests!")
+    minor_demo(mNeuralNet)
 
-print("Start tests!")
-minor_demo(mNeuralNet)
+    return progressList
+
+if __name__ == '__main__':
+    main()

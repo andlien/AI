@@ -10,17 +10,18 @@ __author__ = 'Anders'
 class ANN:
 
     def __init__(self):
-        self.predictFunc = None
-        self.trainFunc = None
-        self.weights = None
+        self.predictFunc = lambda x : []
+        self.trainFunc = lambda x,y : None
+        self.weights = []
         self.current_best = 0.
 
     def init_weights(self, *args):
-        self.weights = []
         for shape in args:
-            self.weights.append(theano.shared(floatX(np.random.randn(*shape) * 0.01)))
+            self.weights.append(theano.shared(floatX(np.random.randn(*shape) * 0.1)))
 
-    def init_training_data(self, model=None, errorprop=None):
+    def init_training_data(self, model=None, errorFunc=None, learningAlgorithm=None):
+        assert not (model is None or errorFunc is None or learningAlgorithm is None)
+
         X = T.fmatrix()
         Y = T.fmatrix()
 
@@ -30,8 +31,8 @@ class ANN:
         # Currently the output given the inputs and weights
         y_x = T.argmax(py_x, axis=1)
 
-        cost = T.mean(T.nnet.categorical_crossentropy(noise_py_x, Y))
-        updates = errorprop(cost, self.weights)
+        error = T.mean(errorFunc(noise_py_x, Y))
+        updates = learningAlgorithm(error, self.weights)
 
         # train runs "update" on each run (for each image) with the inputs given
         # update includes symbols to update each weight
@@ -41,8 +42,8 @@ class ANN:
 
     def train(self,trX, trY, teX, teY):
         # ONE RUN OVER THE TRAINING SET, RUN IN A SEPARATE THREAD
-        def trainFunc():
-            for start, end in zip(range(0, len(trX), 900), range(900, len(trX), 900)):
+        def threadTrainingFunc():
+            for start, end in zip(range(0, len(trX), 1000), range(1000, len(trX), 1000)):
                 #print("trX[start:end] shape: ", trX[start:end].shape)
                 #print("trY[start:end] shape: ", trY[start:end].shape)
                 self.trainFunc(trX[start:end], trY[start:end])
@@ -51,41 +52,43 @@ class ANN:
 
         def stopTrainingListener():
             input()
-            global keep_running
-            keep_running = False
+            self.keep_running = False
+            return
 
-        keep_running = True
+        self.keep_running = True
         thr = None
 
         print("use (CTRL-C) keyboard interrupt on unix to stop training")
         print("press enter to stop with stopThr (windows)")
         startTime = time()
-        while keep_running:
-            stopThr = Thread(target=stopTrainingListener)
+
+        progress = []
+
+        # for i in range(40):
+        while self.keep_running:
+            stopThr = Thread(target=stopTrainingListener, daemon=True)
             stopThr.start()
             try:
-                thr = Thread(target=trainFunc, daemon=True)
+                thr = Thread(target=threadTrainingFunc)
                 thr.start()
                 thr.join()
             except KeyboardInterrupt:
                 # Interrupt happens on main-thread, not on training thread
-                keep_running = False
+                self.keep_running = False
                 # Do not continue until trainFunc has finished!
                 # Prevents inconsistent state?
                 thr.join()
 
-        print("After 20 runs we acquired a presision of", self.current_best, "on the training set")
+            progress.append(self.current_best)
+
+        # print("After 40 runs we acquired a presision of", self.current_best, "on the mnist testing set")
         print("Time elapsed:", time() - startTime)
         
-        return self.current_best
+        return progress
 
     def blind_test(self,cases):
         preds = self.predictFunc(cases)
-        predFormated = [0] * len(preds)
-        for x in range(0,len(preds)):
-            predFormated[x] = preds[x]
-
-        return predFormated
+        return preds.tolist()
 
 def floatX(X):
     return np.asarray(X, dtype=theano.config.floatX)

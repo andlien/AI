@@ -1,4 +1,3 @@
-from threading import Thread
 from Module5.ann import ANN
 
 __author__ = 'simen'
@@ -12,11 +11,11 @@ import numpy as np
 
 # features in this design:
 #
-# Number of hidden layers: 2
-# Number of nodes in hidden layers: 600, 150
+# Number of hidden layers: 1
+# Number of nodes in hidden layers: 300
 # Activation: rectified linear units
-# Learning rate: 0.001
-# Error func: Root mean squared propagation
+# Learning algorithm: Root mean squared propagation with learning_rate=0.001
+# Error func: Sum of squared errors
 #
 
 
@@ -29,7 +28,7 @@ def softmax(X):
     e_x = T.exp(X - X.max(axis=1).dimshuffle(0, 'x'))
     return e_x / e_x.sum(axis=1).dimshuffle(0, 'x')
 
-def RMSprop(cost, params, learning_rate=0.001, rho=0.9, epsilon=1e-6):
+def RMSprop(cost, params, learning_rate=0.01, rho=0.9, epsilon=1e-6):
     # get gradients (differentiation over variables in params)
     grads = T.grad(cost=cost, wrt=params)
     updates = []
@@ -96,17 +95,22 @@ for i in range(10000):
 testingInput = None
 testingOutput = None
 
+
+
 # THEANO, I CHOOSE YOU!
+def main():
+    mNeuralNet = ANN()
 
+    mNeuralNet.init_weights((784, 300), (300, 10))
+    mNeuralNet.init_training_data(model=model, errorFunc=lambda x,y : T.sum(T.pow(( x - y ), 2)), learningAlgorithm=RMSprop)
 
-mNeuralNet = ANN()
+    print("Start training!")
+    progressList = mNeuralNet.train(trX, trY, teX, teY)
 
-# neural net is represented by weights and activation function
-mNeuralNet.init_weights((784, 600), (600, 150), (150, 10))
-mNeuralNet.init_training_data(model=model, errorprop=RMSprop)
+    print("Start tests!")
+    minor_demo(mNeuralNet)
 
-print("Start training!")
-mNeuralNet.train(trX, trY, teX, teY)
+    return progressList
 
-print("Start tests!")
-minor_demo(mNeuralNet)
+if __name__ == '__main__':
+    main()

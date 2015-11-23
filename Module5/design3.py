@@ -1,4 +1,3 @@
-from threading import Thread
 from Module5.ann import ANN
 
 __author__ = 'simen'
@@ -12,16 +11,13 @@ import numpy as np
 # features in this design:
 #
 # Number of hidden layers: 3
-# Number of nodes in hidden layers: 300, 350, 150
-# Activation: rectified linear units
-# Learning rate: 0.001
-# Error func: Root mean squared propagation
+# Number of nodes in hidden layers: 400, 300, 150
+# Activation: sigmoid
+# Learning algorithm: Root mean squared propagation, learning_rate=0.001
+# Error func: Sum of squared errors
 #
 
 srng = RandomStreams()
-
-def rectify(X):
-    return T.maximum(X, 0.)
 
 def softmax(X):
     e_x = T.exp(X - X.max(axis=1).dimshuffle(0, 'x'))
@@ -55,11 +51,11 @@ def model(X, p_drop_input, p_drop_hidden, weights):
     h = dropout(X, p_drop_input)
     if len(weights) == 1:
         return softmax(T.dot(h, weights[0]))
-    h = rectify(T.dot(h, weights[0]))
+    h = T.nnet.sigmoid(T.dot(h, weights[0]))
 
     for weight in weights[1:len(weights)-1]:
         h = dropout(h, p_drop_hidden)
-        h = rectify(T.dot(h, weight))
+        h = T.nnet.sigmoid(T.dot(h, weight))
 
     h = dropout(h, p_drop_hidden)
     return softmax(T.dot(h, weights[-1]))
@@ -96,14 +92,20 @@ testingOutput = None
 
 # THEANO, I CHOOSE YOU!
 
-mNeuralNet = ANN()
+def main():
+    mNeuralNet = ANN()
 
-# neural net is represented by weights and activation function
-mNeuralNet.init_weights((784, 600), (600, 150), (150, 10))
-mNeuralNet.init_training_data(model=model, errorprop=RMSprop)
+    # neural net is represented by weights and activation function
+    mNeuralNet.init_weights((784, 400), (400, 300), (300, 150), (150, 10))
+    mNeuralNet.init_training_data(model=model, errorFunc=lambda x,y : T.sum(T.pow(( x - y ), 2)), learningAlgorithm=RMSprop)
 
-print("Start training!")
-mNeuralNet.train(trX, trY, teX, teY)
+    print("Start training!")
+    progressList = mNeuralNet.train(trX, trY, teX, teY)
 
-print("Start tests!")
-minor_demo(mNeuralNet)
+    print("Start tests!")
+    minor_demo(mNeuralNet)
+
+    return progressList
+
+if __name__ == '__main__':
+    main()

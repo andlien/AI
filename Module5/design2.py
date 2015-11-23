@@ -1,5 +1,3 @@
-from threading import Thread
-
 __author__ = 'simen'
 
 from Module5.basics.mnist_basics import *
@@ -14,8 +12,8 @@ from Module5.ann import ANN
 # Number of hidden layers: 3
 # Number of nodes in hidden layers: 600, 400, 150
 # Activation: rectified linear units
-# Learning rate: 0.1
-# Error func: Stockastic gradient desent with mini-batches
+# Learning rate: Stochastic gradient descent with mini-batches, learning rate=0.06
+# Error func: cross-entropy
 #
 
 srng = RandomStreams()
@@ -27,7 +25,7 @@ def softmax(X):
     e_x = T.exp(X - X.max(axis=1).dimshuffle(0, 'x'))
     return e_x / e_x.sum(axis=1).dimshuffle(0, 'x')
 
-def MSGD(cost, params, learning_rate=0.001):
+def MSGD(cost, params, learning_rate=0.06):
     # get gradients (differentiation over variables in params)
     grads = T.grad(cost=cost, wrt=params)
     updates = []
@@ -89,14 +87,20 @@ testingOutput = None
 
 # THEANO, I CHOOSE YOU!
 
-mNeuralNet = ANN()
+def main():
+    mNeuralNet = ANN()
 
-# neural net is represented by weights and activation function
-mNeuralNet.init_weights((784, 600), (600,400), (400, 150), (150, 10))
-mNeuralNet.init_training_data(model=model, errorprop=MSGD)
+    # neural net is represented by weights and activation function
+    mNeuralNet.init_weights((784, 600), (600,300), (300, 10))
+    mNeuralNet.init_training_data(model=model, errorFunc=T.nnet.categorical_crossentropy, learningAlgorithm=MSGD)
 
-print("Start training!")
-mNeuralNet.train(trX, trY, teX, teY)
+    print("Start training!")
+    progressList = mNeuralNet.train(trX, trY, teX, teY)
 
-print("Start tests!")
-minor_demo(mNeuralNet)
+    print("Start tests!")
+    minor_demo(mNeuralNet)
+
+    return progressList
+
+if __name__ == '__main__':
+    main()
